@@ -48,8 +48,12 @@ public class ContextViewAction extends ActionSupport implements SessionAware {
             }
         }
         contextObjectId = (Integer)session.get(ContextAware.CONTEXT_OBJECT_ID_AFFIX + contextName);
-        
-        return "success_" + contextName;
+
+        if (contextObjectId == null) {
+          return "success_" + contextName;
+        } else {
+          return "success_id_" + contextName;
+        }
     }
 
     @SuppressWarnings("unchecked")

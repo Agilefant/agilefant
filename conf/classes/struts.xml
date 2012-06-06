@@ -86,16 +86,19 @@
 		</action>
 
 		<action name="contextView" class="contextViewAction">
-			<result name="success_backlog" type="redirectAction">
+			<result name="success_id_backlog" type="redirectAction">
 				<param name="actionName">editBacklog</param>
 				<param name="backlogId">${contextObjectId}</param>
 			</result>
 
 			<result name="success_portfolio" type="redirectAction">
 				<param name="actionName">portlets</param>
-				<param name="collectionId">${contextObjectId}</param>
 			</result>
 
+			<result name="success_id_portfolio" type="redirectAction">
+				<param name="actionName">portlets</param>
+				<param name="collectionId">${contextObjectId}</param>
+			</result>
 
 			<result name="success_dailyWork" type="redirectAction">
 				<param name="actionName">dailyWork</param>
@@ -121,6 +124,9 @@
 
 			<result name="success_noContext" type="redirectAction">
 				<param name="actionName">loginContext</param>
+			</result>
+			<result name="success_backlog" type="redirectAction">
+				<param name="actionName">selectBacklog</param>
 			</result>
 			<result name="success_" type="redirectAction">
 				<param name="actionName">selectBacklog</param>
