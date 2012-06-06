@@ -93,7 +93,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="Compiles source files">
-		<javac debug="${javac.debug}" destdir="${build.classes}" srcdir="${src}">
+		<javac debug="${javac.debug}" destdir="${build.classes}" srcdir="${src}" source="1.6" target="1.6">
 			<classpath refid="compile.classpath" />
 			<!-- <compilerarg value="-Xlint:deprecation"/> -->
 		</javac>
@@ -222,7 +222,7 @@
 
 	<target name="compile-tests" depends="compile">
 		<mkdir dir="${build.test.classes.dir}" />
-		<javac debug="${javac.debug}" destdir="${build.test.classes.dir}" srcdir="${test.dir}">
+		<javac debug="${javac.debug}" destdir="${build.test.classes.dir}" srcdir="${test.dir}" source="1.6" target="1.6">
 			<classpath refid="compile.test.classpath" />
 		</javac>
 	</target>
