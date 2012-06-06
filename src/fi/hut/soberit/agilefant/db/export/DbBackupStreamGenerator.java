@@ -2,6 +2,7 @@ package fi.hut.soberit.agilefant.db.export;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,10 +91,8 @@ public class DbBackupStreamGenerator {
             ZipOutputStream outzip = new ZipOutputStream(zippedDbOutputStream);
             int len;
             if (anonymouse==true) {
-                Sqlfilecontentgenerator sqlscript = new Sqlfilecontentgenerator();
                 outzip.putNextEntry(new ZipEntry("importscript.sql"));
-                               InputStream inscript = sqlscript.getScriptByteStream();
-                 
+                InputStream inscript = new ByteArrayInputStream(Sqlfilecontentgenerator.generateSqlScript().getBytes("UTF-8"));
                 while ((len = inscript.read()) != -1) {
                     outzip.write(len);                
                 }

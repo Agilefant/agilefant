@@ -1,65 +1,68 @@
 package fi.hut.soberit.agilefant.db.export;
 
+import fi.hut.soberit.agilefant.util.DbConnectionInfo;
 import java.util.ArrayList;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.sql.DataSource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
-import fi.hut.soberit.agilefant.util.DbConnectionInfo;
+public class Sqlfilecontentgenerator {
 
+    private static DataSource createDataSource() {
+        DbConnectionInfo dbInfo = new DbConnectionInfo();
 
-public class Sqlfilecontentgenerator 
-{
-    // private static final String dbinfo = null;
-    private ArrayList<String> listOfTables = new ArrayList<String>();
-    private DbConnectionInfo dbinfo;
-    private Connection connection = null; 
-    private String sqlscript= "";
-    public Sqlfilecontentgenerator() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException 
-    {
-        this.dbinfo = new DbConnectionInfo();
-        getdbtables();
-        generateScriptString();
-    }
-
-
-
-    private void getdbtables() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
-    {
-
-        PreparedStatement ps = null;
-        String sqlConnection = this.dbinfo.getUrl(); 
-        Class.forName(dbinfo.getDriver()).newInstance();
-        connection = DriverManager.getConnection(sqlConnection, dbinfo.getUsername(), dbinfo.getPassword());
-        String query = "select  table_name FROM information_schema.tables WHERE table_schema = 'agilefant' AND table_name LIKE 'anonym_%'";
-        ps = connection.prepareStatement(query);
-        ResultSet s = ps.executeQuery();
-        while(s.next())
-        {
-            listOfTables.add(s.getString("table_name"));
+        Class<?> driverClass;
+        try {
+            driverClass = Class.forName(dbInfo.getDriver());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize driver class", e);
         }
 
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+        dataSource.setDriverClass(driverClass);
+        dataSource.setUrl(dbInfo.getUrl());
+        dataSource.setUsername(dbInfo.getUsername());
+        dataSource.setPassword(dbInfo.getPassword());
+        return dataSource;
     }
-    private void generateScriptString() 
-    {
 
-        int tablesize=listOfTables.size();
-        int counter=0;
-        while (tablesize>counter) 
-        {
-            sqlscript= sqlscript + "RENAME TABLE "+ listOfTables.get(counter) + " TO " + listOfTables.get(counter).substring(listOfTables.get(counter).indexOf('_')+1)+ ";" + System.getProperty("line.separator");    
-            counter++;
+    private static List<String> extractTableNames(ResultSet rs) throws SQLException {
+        List<String> names = new ArrayList<String>();
+        while(rs.next()) {
+            names.add(rs.getString("table_name"));
         }
+        return names;
     }
 
+    private static String createSqlString(List<String> names) {
+        StringBuilder sb = new StringBuilder();
 
-    public InputStream getScriptByteStream()
-    {
-        InputStream sqlscriptstream = new ByteArrayInputStream(sqlscript.getBytes());
-        return sqlscriptstream;
+        for (String name : names) {
+            sb.append("RENAME TABLE ");
+            sb.append(name);
+            sb.append(" TO ");
+            sb.append(name.substring(name.indexOf('_') + 1));
+            sb.append(';');
+            sb.append(System.getProperty("line.separator"));
+        }
+
+        return sb.toString();
+    }
+
+    public static String generateSqlScript() {
+        JdbcTemplate jdbc = new JdbcTemplate(createDataSource());
+        String query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'agilefant' AND table_name LIKE 'anonym_%'";
+
+        // Spring >3.x would make this cast unnecessary because ResultSetExtractor uses generics
+        return (String) jdbc.query(query, new ResultSetExtractor() {
+            public Object extractData(ResultSet rs) throws SQLException, DataAccessException {
+                return createSqlString(extractTableNames(rs));
+            }
+        });
     }
 }
