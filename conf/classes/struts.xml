@@ -348,6 +348,14 @@
 			</result>
 		</action>
 
+		<action name="drawCustomIterationBurndown" method="getCustomIterationBurndown"
+			class="chartAction">
+			<result name="success" type="stream">
+				<param name="contentType">image/png</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+
 		<action name="ROdrawCustomIterationBurndownByToken" method="getCustomIterationBurndownByToken"
 			class="chartAction">
 			<result name="success" type="stream">
