@@ -115,9 +115,9 @@ StoryModel.prototype._copyStory = function(story)
     dataType: "json",
     success: function(newData, status) {    	
       var object = ModelFactory.updateObject(newData);
-      possibleBacklog = story.getBacklog();
-      if(newData && newData.id && possibleBacklog) {
-        possibleBacklog.addStory(object);
+      possibleIteration = story.getIteration();
+      if(newData && newData.id && possibleIteration) {
+        possibleIteration.addStory(object);
         object.callListeners(new DynamicsEvents.AddEvent(object));
       }
       object.rankUnder(story.id, object);
