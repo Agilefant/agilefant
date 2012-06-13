@@ -1,5 +1,6 @@
 package fi.hut.soberit.agilefant.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,9 +35,9 @@ public class BacklogAction extends ActionSupport {
 
     private Backlog backlog;
     
-    private Collection<Story> stories;
+    private Collection<Story> stories = new ArrayList<Story>();
     
-    private Collection<Backlog> backlogs;
+    private Collection<Backlog> backlogs = new ArrayList<Backlog>(); 
 
     @Autowired
     private BacklogBusiness backlogBusiness;

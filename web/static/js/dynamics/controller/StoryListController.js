@@ -101,7 +101,7 @@ StoryListController.prototype.createStory = function() {
 
 StoryListController.prototype.copyStorySibling = function(originalStory) { 
   var mockModel = ModelFactory.createObject(ModelFactory.types.story);
-  mockModel.setBacklog(this.model);
+  mockModel.setIteration(this.model);
   mockModel._copyStory(originalStory);
 };
 
