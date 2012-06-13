@@ -376,6 +376,10 @@ var DynamicsDecorators = {
   storyIdWithHash: function(objectId) {
     var display = "#" + objectId;
     var text = "story:" + objectId;
-    return '<a href="qr.action?q='+text+'" title="Click to Open Story">'+display+'</a>';
+    if (objectId) {
+    	return '<a href="qr.action?q='+text+'" title="Click to Open Story">'+display+'</a>';
+    } else {
+    	return "&mdash;";
+    }
   }
 };

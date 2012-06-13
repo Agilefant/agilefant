@@ -608,6 +608,49 @@ public class IterationBusinessTest  extends MockedTestCase {
     
     @Test
     @DirtiesContext
+    public void testDeleteStandaloneIteration() {
+        Iteration iter = new Iteration();
+        iter.setId(112);
+        Story story = new Story();
+        Set<Story> stories = new HashSet<Story>();
+        stories.add(story);
+        iter.setAssignedStories(stories);
+        Set<Task> tasks = new HashSet<Task>();
+        Task task = new Task();
+        tasks.add(task);
+        iter.setTasks(tasks);
+        Set<Assignment> assignments = new HashSet<Assignment>();
+        Assignment assignment = new Assignment();
+        assignments.add(assignment);
+        iter.setAssignments(assignments);
+        Set<IterationHistoryEntry> historyEntries = new HashSet<IterationHistoryEntry>();
+        IterationHistoryEntry historyEntry = new IterationHistoryEntry();
+        historyEntries.add(historyEntry);
+        iter.setHistoryEntries(historyEntries);
+        Set<BacklogHourEntry> hourEntries = new HashSet<BacklogHourEntry>();
+        BacklogHourEntry hourEntry = new BacklogHourEntry();
+        hourEntries.add(hourEntry);
+        iter.setHourEntries(hourEntries);
+        
+        expect(iterationDAO.get(iter.getId())).andReturn(iter);
+        
+        storyRankBusiness.removeBacklogRanks(iter);
+        
+        storyBusiness.forceDelete(story);
+        iterationHistoryEntryBusiness.delete(historyEntry.getId());
+        assignmentBusiness.delete(assignment.getId());
+        taskBusiness.delete(task.getId(), HourEntryHandlingChoice.DELETE);
+        hourEntryBusiness.deleteAll(iter.getHourEntries());
+        
+        iterationDAO.remove(iter);
+        
+        replayAll();
+        iterationBusiness.delete(iter.getId());
+        verifyAll();
+    }
+    
+    @Test
+    @DirtiesContext
     public void testdeleteAndUpdateHistory() {
         Iteration iteration = new Iteration();
         iteration.setId(111);

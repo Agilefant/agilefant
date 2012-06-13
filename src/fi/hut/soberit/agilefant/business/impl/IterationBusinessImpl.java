@@ -120,6 +120,7 @@ public class IterationBusinessImpl extends GenericBusinessImpl<Iteration>
     public void delete(Iteration iteration) {
 
         storyRankBusiness.removeBacklogRanks(iteration);
+        Boolean isStandalone = iteration.isStandAlone();
         
         Set<Task> tasks = new HashSet<Task>(iteration.getTasks());
         for (Task item : tasks) {
@@ -129,6 +130,9 @@ public class IterationBusinessImpl extends GenericBusinessImpl<Iteration>
         Set<Story> stories = new HashSet<Story>(iteration.getAssignedStories());
         for (Story item : stories) {
             storyBusiness.forceDelete(item);
+            /* In case of normal iteration, story is removed from iteration and also from it's parent project.*/
+            if (!isStandalone && iteration.getParent().getStories().contains(item))
+                iteration.getParent().getStories().remove(item);
         }
         Set<Assignment> assignments = new HashSet<Assignment>(iteration
                 .getAssignments());

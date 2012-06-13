@@ -375,10 +375,16 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
     public Story copyStorySibling(Integer storyId, Story story)
     {
         story = this.retrieve(storyId);
-        Backlog backlog = this.backlogBusiness.retrieve(story.getBacklog().getId());
-        if (backlog == null) {
-            throw new ObjectNotFoundException("backlog.notFound");
+        Backlog backlog = null;
+        Boolean hasBacklog = story.getBacklog() != null ;
+        if (hasBacklog) {
+            backlog = this.backlogBusiness.retrieve(story.getBacklog().getId());
+            if (backlog == null) {
+                throw new ObjectNotFoundException("backlog.notFound");
+            }
         }
+        Iteration iteration = story.getIteration();
+
         Story newStory = new Story(story);
         newStory.setName("Copy of " + newStory.getName());
         // Persist the tasks. 
@@ -389,8 +395,10 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             t.setHourEntries(new HashSet<TaskHourEntry>());
             taskBusiness.store(t);
         }
-        
-        newStory.setBacklog(backlog);
+        if (hasBacklog) {
+            newStory.setBacklog(backlog);
+        }
+        newStory.setIteration(iteration);
         create(newStory);
         labelBusiness.createStoryLabelsSet(newStory.getLabels(), newStory.getId());
         this.storyHierarchyBusiness.moveAfter(newStory, story);
