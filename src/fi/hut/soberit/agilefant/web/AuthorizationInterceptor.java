@@ -18,6 +18,10 @@ import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
 
+/**
+ * @author agilefant
+ *
+ */
 @Component("authorizationInterceptor")
 public class AuthorizationInterceptor implements Interceptor {
 
@@ -104,6 +108,8 @@ public class AuthorizationInterceptor implements Interceptor {
             } else {
                 accessDenied = !checkAccess(((TaskAction)action).getParentStory().getIteration().getId());
             }
+        } else if (action instanceof ProjectPortfolioAction){
+            accessDenied = !checkAccessToPortfolioView(currentUser);
         } else {
             //admin authorizations
             currentUser = SecurityUtil.getLoggedUser();
@@ -125,6 +131,21 @@ public class AuthorizationInterceptor implements Interceptor {
         
         if (accessDenied) return "noauth";
             return invocation.invoke();
+    }
+    
+    /**
+     * Check weather the user has access to see the Portfolio view. 
+     * 
+     * @param currentUser
+     * @return true if admin, false if non-admin user
+     */
+    private boolean checkAccessToPortfolioView(User currentUser) {
+        if (currentUser.isAdmin()) {
+            return true;
+        } else {
+            return false;
+        }
+        
     }
     
     // check from the backlogId if the associated product is accessible for the current user    

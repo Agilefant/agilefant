@@ -51,6 +51,7 @@ $(document).ready(function() {
 
 
 <!-- Portlets -->
+<c:if test="${currentUser.admin}">
 <c:if test="${settings.devPortfolio}">
 <li id="navitab-portfolio">
   <a href="contextView.action?contextName=portfolio">
@@ -60,6 +61,7 @@ $(document).ready(function() {
   </span>
   </a>
 </li>
+</c:if>
 </c:if>
 
 <%-- Settings --%>
