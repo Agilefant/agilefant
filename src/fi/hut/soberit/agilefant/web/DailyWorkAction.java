@@ -63,9 +63,13 @@ public class DailyWorkAction extends ActionSupport {
         }
 
         user = getDefaultUser();
-
-        enabledUsers.addAll(userBusiness.getEnabledUsers());
-        Collections.sort(enabledUsers, new PropertyComparator("fullName", true, true));
+        if (user.isAdmin()) {
+            enabledUsers.addAll(userBusiness.getEnabledUsers());
+            Collections.sort(enabledUsers, new PropertyComparator("fullName", true, true));
+        } else {
+            enabledUsers.add(user);
+        }
+        
         return Action.SUCCESS;
     }
     /**

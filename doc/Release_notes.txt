@@ -14,8 +14,8 @@ This helps us keep a full-featured Agilefant free-of-charge forever!
 Changes from 3.0 alpha 7 to 3.0 alpha 8
 2012-06-15
 + Bug fixes related to user & access rights:
-  + #1165 Hide Administration -> Teams & Users from non-admin users
-  + #1161 Restrict non-admins from viewing anyone else's daily work (URL hack still possible)
+  + #1165 Hide Administration -> Teams & Users from non-admin users (quickfix; still #1179 and #1180)
+  + #1161 Restrict non-admins from viewing anyone else's daily work (also prevent URL hack)
   + #1155 Hide the portfolio view from non-admin users AND prevent lookup via url-guessing
 
 
