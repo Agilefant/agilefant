@@ -3,6 +3,7 @@ package fi.hut.soberit.agilefant.web;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fi.hut.soberit.agilefant.annotations.PrefetchId;
 import fi.hut.soberit.agilefant.business.UserBusiness;
+import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
 
@@ -32,12 +34,14 @@ public class UserAction extends ActionSupport implements CRUDAction, Prefetching
     private int userId;
 
     private User user;
+    private User loggedUser;
     
     private String password1;
     private String password2;
     
     private String loginName;
     private boolean valid;
+    private boolean isAdmin;
 
     private Collection<User> users = new ArrayList<User>();
     
@@ -49,11 +53,13 @@ public class UserAction extends ActionSupport implements CRUDAction, Prefetching
 
     @Override
     public String execute() {
+        
         if (userId == 0) {
             userId = getLoggedInUserId();
         }
+
         user = userBusiness.retrieve(userId);
-        
+
         return Action.SUCCESS;
     }
     
@@ -68,12 +74,34 @@ public class UserAction extends ActionSupport implements CRUDAction, Prefetching
     }
 
     public String retrieve() {
-        user = userBusiness.retrieve(userId);
+        
+        this.getLoggedUserAndCheckAdminStatus();
+        
+        if (userId == 0) {
+            userId = getLoggedInUserId();
+        }
+        
+        if (!isAdmin) {
+            this.getTeamMembers(loggedUser);
+            user = userBusiness.retrieve(userId);
+            if (!users.contains(user)) {
+                user = loggedUser;
+            }
+        } else {
+            user = userBusiness.retrieve(userId);
+        }
         return Action.SUCCESS;
     }
     
     public String retrieveAll() {
-        users = userBusiness.retrieveAll();
+        
+        this.getLoggedUserAndCheckAdminStatus();
+        
+        if (isAdmin) {
+            users = userBusiness.retrieveAll();
+        } else {
+            this.getTeamMembers(loggedUser);
+        }
         return Action.SUCCESS;
     }
     
@@ -168,5 +196,21 @@ public class UserAction extends ActionSupport implements CRUDAction, Prefetching
 
     public boolean isValid() {
         return valid;
+    }
+    
+    protected User getLoggedInUser() {
+        return SecurityUtil.getLoggedUser();
+    }
+    private void getTeamMembers(User loggedUser) {
+        Collection<Team> t = loggedUser.getTeams();
+        Iterator<Team> iterator = t.iterator();
+        while (iterator.hasNext()) {
+            Team team = (Team) iterator.next();
+            users.addAll(team.getUsers());
+        }
+    }
+    private void getLoggedUserAndCheckAdminStatus() {
+        loggedUser = getLoggedInUser();
+        isAdmin = loggedUser.isAdmin();
     }
 }

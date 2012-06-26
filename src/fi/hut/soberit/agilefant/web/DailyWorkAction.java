@@ -58,17 +58,29 @@ public class DailyWorkAction extends ActionSupport {
     @SuppressWarnings("unchecked")
     @Override
     public String execute() {
+        /* 
+         * Non-admin user can only watch his/her own daily work, but admin has priviledge to view daily works of other users.
+         * This also prevent non-admin to try url-hack other user's daily work. 
+         * Non-admin user -> userId = 0;
+         */
+        User loggedUser = getLoggedInUser();
+        Boolean isAdmin = loggedUser.isAdmin();
+
+        if (!isAdmin) {
+            userId = 0;
+        }
+        
         if (userId == 0) {
             userId = getStoredDailyWorkUserId();
         }
-
         user = getDefaultUser();
-        if (user.isAdmin()) {
+        if (isAdmin) {
             enabledUsers.addAll(userBusiness.getEnabledUsers());
-            Collections.sort(enabledUsers, new PropertyComparator("fullName", true, true));
         } else {
-            enabledUsers.add(user);
+            enabledUsers.add(loggedUser);
         }
+        Collections.sort(enabledUsers, new PropertyComparator("fullName", true, true));
+      
         
         return Action.SUCCESS;
     }
@@ -167,6 +179,10 @@ public class DailyWorkAction extends ActionSupport {
     
     protected int getLoggedInUserId() {
         return SecurityUtil.getLoggedUserId();
+    }
+    
+    protected User getLoggedInUser() {
+        return SecurityUtil.getLoggedUser();
     }
 
     public int getUserId() {

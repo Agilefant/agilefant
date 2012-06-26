@@ -77,22 +77,22 @@
         <param name="out.statusCode">500</param>
         <param name="target">fieldErrors</param>
       </result>
-      <result name="ajaxException" type="chain">
+     <!-- <result name="ajaxException" type="chain">
         <param name="actionName">ajaxExceptionHandler</param>
-      </result>
+      </result>-->
     </global-results>
 
     <!-- AJAX exceptions -->
-    <global-exception-mappings>
+    <!-- <global-exception-mappings>
       <exception-mapping result="ajaxException"
         exception="fi.hut.soberit.agilefant.exception.ObjectNotFoundException" />
       <exception-mapping result="ajaxException"
         exception="java.lang.IllegalArgumentException" />
       <exception-mapping result="ajaxException"
         exception="java.lang.RuntimeException" />         
-    </global-exception-mappings>
+    </global-exception-mappings>-->
     
-    <action name="ajaxExceptionHandler" class="ajaxExceptionHandler" method="handle">
+   <!-- <action name="ajaxExceptionHandler" class="ajaxExceptionHandler" method="handle">
       <result name="objectNotFound" type="json">
         <param name="out.statusCode">404</param>
         <param name="patterns">+errorMessage, +trace, -*</param>
@@ -109,7 +109,7 @@
         <param name="out.statusCode">500</param>
         <param name="patterns">+errorMessage, +trace, -*</param>
       </result>
-    </action>
+    </action>-->
 
   </package>
   

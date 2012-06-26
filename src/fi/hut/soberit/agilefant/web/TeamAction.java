@@ -16,6 +16,7 @@ import fi.hut.soberit.agilefant.annotations.PrefetchId;
 import fi.hut.soberit.agilefant.business.TeamBusiness;
 import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
+import fi.hut.soberit.agilefant.security.SecurityUtil;
 
 @Component("teamAction")
 @Scope("prototype")
@@ -73,7 +74,15 @@ public class TeamAction extends ActionSupport implements CRUDAction, Prefetching
     }
     
     public String retrieveAll() {
-        teamList.addAll(teamBusiness.retrieveAll());
+        
+        User loggedUser = getLoggedInUser();
+        Boolean isAdmin = loggedUser.isAdmin();
+        
+        if (isAdmin) {
+            teamList.addAll(teamBusiness.retrieveAll());
+        } else {
+            teamList.addAll(loggedUser.getTeams());
+        }
         return Action.SUCCESS;
     }
 
@@ -196,5 +205,8 @@ public class TeamAction extends ActionSupport implements CRUDAction, Prefetching
         team = teamBusiness.retrieve(teamId);
         return Action.SUCCESS;
     }
-
+    
+    protected User getLoggedInUser() {
+        return SecurityUtil.getLoggedUser();
+    }
 }

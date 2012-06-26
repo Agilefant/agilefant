@@ -121,7 +121,11 @@ public class SecurityInterceptor implements Interceptor {
                 } else if (params.containsKey("storyId")){
                     int storyId = Integer.parseInt(((String[]) params.get("storyId"))[0]);
                     Story story = storyBusiness.retrieve(storyId);
-                    id = story.getIteration().getId();
+                    if (story.getIteration() != null) {
+                        id = story.getIteration().getId();
+                    } else {
+                        id = story.getBacklog().getId();
+                    }
                 }
                 
                 boolean attemptTeam = params.containsKey("teamsChanged");

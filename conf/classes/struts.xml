@@ -61,7 +61,7 @@
 		</global-results>
 
 
-		<global-exception-mappings>
+		<!-- <global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"
 				result="rootException" />
 		</global-exception-mappings>
@@ -70,7 +70,7 @@
 			method="handleException">
 			<result name="success" type="dispatcher">/WEB-INF/jsp/fatalError.jsp
 			</result>
-		</action>
+		</action>-->
 		<!-- Context view -->
 
 		<action name="loginContext" class="loginContextAction">

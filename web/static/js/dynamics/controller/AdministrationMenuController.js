@@ -42,21 +42,21 @@ AdministrationMenuController.prototype.initTree = function() {
     icon: false,
     key: "editUser.action"
   });
+  
+  rootNode.addChild({
+	    title: "Users",
+	    icon: false,
+	    key: "listUsers.action"
+	  });
+	  
+rootNode.addChild({
+	    title: "Teams",
+	    icon: false,
+	    key: "listTeams.action"
+	  });
 
   /* Only admin has access to these. */
   if (currentUser.getAdmin()) {
-	  
-	  rootNode.addChild({
-		    title: "Users",
-		    icon: false,
-		    key: "listUsers.action"
-		  });
-		  
-	  rootNode.addChild({
-		    title: "Teams",
-		    icon: false,
-		    key: "listTeams.action"
-		  });
 		  
 	  rootNode.addChild({
 	    title: "Access rights",
