@@ -18,6 +18,7 @@ import fi.hut.soberit.agilefant.business.BacklogBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
 import fi.hut.soberit.agilefant.business.TaskBusiness;
+import fi.hut.soberit.agilefant.business.UserBusiness;
 import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Product;
 import fi.hut.soberit.agilefant.model.Story;
@@ -41,6 +42,9 @@ public class SecurityInterceptor implements Interceptor {
     @Autowired
     private TaskBusiness taskBusiness;
     
+    @Autowired
+    private UserBusiness userBusiness;
+    
     @Override
     public void destroy() {
     }
@@ -51,11 +55,13 @@ public class SecurityInterceptor implements Interceptor {
 
     @Override
     public String intercept(ActionInvocation invocation) throws Exception {
-        System.out.println("URL: " + ServletActionContext.getRequest().getRequestURL().toString());
+        //System.out.println("URL: " + ServletActionContext.getRequest().getRequestURL().toString());
         HttpServletRequest req = ServletActionContext.getRequest();
         String actionName = ServletActionContext.getActionMapping().getName();
         
-        User user = SecurityUtil.getLoggedUser();
+        User loggedUser = SecurityUtil.getLoggedUser(); // SecurityUtil.getLoggedUser() can't get all needed information of user -> should retrieve by making new user.
+        User user = userBusiness.retrieve(loggedUser.getId());
+        
         boolean admin = user.isAdmin();
         boolean readOnly = user.getName().equals("readonly");
         boolean access = false;
@@ -131,7 +137,7 @@ public class SecurityInterceptor implements Interceptor {
                 boolean attemptTeam = params.containsKey("teamsChanged");
                 if(!attemptTeam){
                     if (id != -1)
-                        access = checkAccess(id);
+                        access = checkAccess(id, user);
                     else
                         // Operations without ids must be allowed
                         access = true;
@@ -146,8 +152,8 @@ public class SecurityInterceptor implements Interceptor {
     }
     
     // check from the backlogId if the associated product is accessible for the current user    
-    private boolean checkAccess(int backlogId){
-        User user = SecurityUtil.getLoggedUser();
+    private boolean checkAccess(int backlogId, User user){
+        
         Collection<Team> teams = user.getTeams();
         
         Product product = (backlogBusiness.getParentProduct(backlogBusiness.retrieve(backlogId)));

@@ -1,6 +1,6 @@
-Agilefant 3.0 alpha 8
+Agilefant 3.0 alpha 9
 Release notes
-2012-06-26
+2012-07-02
 --
 
 Please spend a couple of minutes to register your organization at
@@ -10,6 +10,15 @@ This helps us keep a full-featured Agilefant free-of-charge forever!
 +--------------------+
 |     CHANGESET      |
 +--------------------+
+
+Changes from 3.0 alpha 8 to 3.0 alpha 9
+2012-07-02
++ Bug fixes:
+  + #866  Text change tweaks to project burn-up legend
+  + #888  Text change: product/project Leaf stories tab => Backlog, Story tree tab => Breakdown, Story tree header => Product Backlog in product view and Project Backlog in project view
+  + #913  BUG: When a story is in a Product and in a Standalone iteration, it shows up in Product Leaf stories in the product as well (should only be in the standalone iteration)
+  + #1180 Prevent non-admins from seeing Teams and Users they don't belong to via assignee selector (in task, story, iteration, project)
+  + #1191 Daily work - My stories shows Done stories from standalone iterations (should not show them)
 
 Changes from 3.0 alpha 7 to 3.0 alpha 8
 2012-06-26

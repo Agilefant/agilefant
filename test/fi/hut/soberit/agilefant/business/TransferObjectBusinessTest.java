@@ -210,6 +210,7 @@ public class TransferObjectBusinessTest {
         user.setId(1);
         user.setFullName("daadaa");
         user.setLoginName("additional");
+        SecurityUtil.setLoggedUser(user);
         
         expect(userBusiness.retrieveAll()).andReturn(Arrays.asList(user));
         

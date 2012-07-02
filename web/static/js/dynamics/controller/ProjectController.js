@@ -648,7 +648,7 @@ ProjectController.prototype.initializeStoryConfig = function() {
     dataType: "story",
     cssClass: "project-story-table",
     sortCallback: StoryController.prototype.rankStory,
-    caption : "Leaf stories"
+    caption : "Project Backlog"
   });
 
   config.addCaptionItem( {

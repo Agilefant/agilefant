@@ -56,9 +56,9 @@ public class ProjectBurnupBusinessImpl implements ProjectBurnupBusiness {
 
     /* Names */
     protected static final String CHART_NAME = "Project burnup";
-    protected static final String PLANNED_NAME = "Work planned";
-    protected static final String DONE_NAME = "Work done";
-    protected static final String BRANCH_MAX_NAME = "Branch Maximum";
+    protected static final String PLANNED_NAME = "Points in leaf stories";
+    protected static final String BRANCH_MAX_NAME = "Points in project";
+    protected static final String DONE_NAME = "Points done";
 
     
     @Transactional(readOnly = true)

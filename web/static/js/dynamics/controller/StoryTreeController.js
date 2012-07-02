@@ -123,7 +123,7 @@ StoryTreeController.prototype.initHeader = function() {
   var me = this;
   var heading = $('<div class="dynamictable-caption" style="margin-bottom: 1em;"></div>').appendTo(this.headerElement);
   
-  var title = $('<div style="float: left; width:50%"><span style="float: left;">Story tree</span></div>').appendTo(heading);
+  var title = $('<div style="float: left; width:50%"><span style="float: left;">Work Breakdown</span></div>').appendTo(heading);
   this.filterImg = $('<div/>').addClass("storytree-filterimg").appendTo(title);
   
   this.filterImg.click(function() {

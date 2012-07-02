@@ -2,3 +2,6 @@ build
 eclipse-classes
 build-user.properties
 *.js~
+.idea/
+Agilefant.iml
+
