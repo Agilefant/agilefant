@@ -598,17 +598,12 @@ public class IterationBurndownBusinessImpl implements IterationBurndownBusiness 
         return ts;
     }
     
-    protected TimeSeries getPredictedVelocityTimeSeries(
-            LocalDate iterationStart, LocalDate iterationEnd,
-            IterationHistoryEntry yesterdayEntry,
-            IterationHistoryEntry todayEntry) {
+    protected TimeSeries getPredictedVelocityTimeSeries(LocalDate iterationStart, LocalDate iterationEnd,
+            IterationHistoryEntry yesterdayEntry, IterationHistoryEntry todayEntry) {
         LocalDate today = new LocalDate();
-        ExactEstimate startValue = getTodaysStartValueWithScoping(
-                yesterdayEntry, todayEntry);
-        ExactEstimate velocity = iterationBusiness.calculateDailyVelocity(
-                iterationStart, yesterdayEntry);
-        LocalDate startDate = (iterationEnd.isBefore(today)) ? iterationEnd
-                : today;
+        ExactEstimate startValue = getTodaysStartValueWithScoping(yesterdayEntry, todayEntry);
+        ExactEstimate velocity = iterationBusiness.calculateDailyVelocity(iterationStart, iterationEnd, yesterdayEntry);
+        LocalDate startDate = (iterationEnd.isBefore(today)) ? iterationEnd : today;
         LocalDate endDate = iterationHistoryEntryBusiness
                 .calculateExpectedEffortDoneDate(startDate, startValue,
                         velocity);

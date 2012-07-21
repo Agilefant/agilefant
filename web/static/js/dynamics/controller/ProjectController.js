@@ -32,7 +32,7 @@ var ProjectController = function ProjectController(options) {
 	this.initializeIterationListConfig();
 	this.initializeStoryConfig();
 
-	this.changeTabIfFragmentFound();
+	this.tabs.tabs('select', 1);  // Open leaf stories -tab as a default.
 
 	this.paint();
 	window.pageController.setMainController(this);
@@ -574,6 +574,7 @@ ProjectController.prototype._iterationListColumnConfig = function(config) {
 				openOnRowEdit : false,
 				edit : {
 					editor : "Autocomplete",
+					dialogTitle: "Select users",
 					dataType : "usersAndTeams",
 					set : BacklogModel.prototype.setAssignees
 				}

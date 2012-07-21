@@ -183,6 +183,7 @@ public class StoryTreeIntegrityBusinessImpl implements StoryTreeIntegrityBusines
          */
         if (newParent.getBacklog() instanceof Project) {
             Set<Backlog> allowedBacklogs = getAllowedBacklogsForChildren(newParent.getBacklog());
+            getAllowedIterationforChildren(story, allowedBacklogs);
             
             checkTargetBacklogInWrongBranch(story, newParent, messages, allowedBacklogs);
             
@@ -191,6 +192,21 @@ public class StoryTreeIntegrityBusinessImpl implements StoryTreeIntegrityBusines
         
         
         return messages;
+    }
+
+    /**
+     * Add story's iteration (in case of standalone) to the allowedBacklog list in order to
+     * make possible to create stories in standalone iteration if there is stories which backlog
+     * refers to project or product.
+     *  
+     * @param story
+     * @param allowedBacklogs
+     * @return 
+     */
+    private Set<Backlog> getAllowedIterationforChildren(Story story, Set<Backlog> allowedBacklogs) {
+        if (story.getIteration()!=null && story.getIteration().isStandAlone())
+            allowedBacklogs.add((Backlog)story.getIteration());
+        return allowedBacklogs;
     }
 
     private void checkTargetBacklogInWrongBranch(Story story, Story newParent,

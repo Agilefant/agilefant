@@ -8,6 +8,6 @@
     <div class="confirmation">
     <input type="checkbox" name="confirmationString" value="yes" /> Yes, delete the project and all of its contents.
     </div>
-   </div></div>'
+   </div></div>
   </div>
 </form>

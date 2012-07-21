@@ -169,6 +169,7 @@ HourEntryListController.prototype.initConfig = function() {
     minWidth : 120,
     autoScale : true,
     title : "Date",
+    headerTooltip: "Select date",
     get : HourEntryModel.prototype.getDate,
     decorator: DynamicsDecorators.dateTimeDecorator,
     sortCallback: HourEntryModel.dateComparator,
@@ -185,6 +186,7 @@ HourEntryListController.prototype.initConfig = function() {
     minWidth : 120,
     autoScale : true,
     title : "User",
+    headerTooltip: "Select users for this effort",
     get : HourEntryModel.prototype.getUser,
     decorator: DynamicsDecorators.userNameDecorator
   };
@@ -192,6 +194,7 @@ HourEntryListController.prototype.initConfig = function() {
     minWidth : 30,
     autoScale : true,
     title : "ES",
+    headerTooltip: "Effort spent",
     get : HourEntryModel.prototype.getMinutesSpent,
     decorator: DynamicsDecorators.exactEstimateDecorator,
     editable: true,
@@ -207,6 +210,7 @@ HourEntryListController.prototype.initConfig = function() {
 	minWidth : 30,
 	autoScale : true,
 	title : "EL",
+	headerTooltip: "Effort left",
 	get : HourEntryModel.prototype.getEffortLeft,
 	decorator : DynamicsDecorators.exactEstimateDecorator,
 	editable: true,
@@ -222,6 +226,7 @@ HourEntryListController.prototype.initConfig = function() {
   var desc = {
     minWidth : 200,
     autoScale : true,
+    headerTooltip: "Comment this effort",
     title : "Comment",
     editable: true,
     get : HourEntryModel.prototype.getDescription,

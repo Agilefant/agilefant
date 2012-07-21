@@ -151,7 +151,7 @@ public class StoryHierarchyBusinessImpl implements StoryHierarchyBusiness {
             firstSibling = parent.getChildren().get(0);
         }
         
-        if ((firstSibling != null) && (story != null)) {
+        if ((firstSibling != null)) {
             this.moveBefore(story, firstSibling);
         }
         // root story

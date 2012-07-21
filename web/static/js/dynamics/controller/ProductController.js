@@ -421,6 +421,7 @@ ProductController.prototype.initializeProjectListConfig = function() {
     openOnRowEdit: false,
     edit : {
       editor : "Autocomplete",
+      dialogTitle: "Select users",
       dataType: "usersAndTeams",
       set : BacklogModel.prototype.setAssignees
     }

@@ -21,8 +21,7 @@ public interface IterationBusiness extends GenericBusiness<Iteration> {
 
     public IterationMetrics getIterationMetrics(Iteration iteration);
 
-    ExactEstimate calculateDailyVelocity(LocalDate startDate,
-            IterationHistoryEntry yesterdayEntry);
+    ExactEstimate calculateDailyVelocity(LocalDate startDate, LocalDate end, IterationHistoryEntry yesterdayEntry);
 
     public IterationTO storeStandAlone(int iterationId, Iteration iterationData, Set<Integer> assigneeIds, Set<Integer> teams);
     

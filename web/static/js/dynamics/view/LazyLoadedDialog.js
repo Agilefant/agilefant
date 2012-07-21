@@ -10,7 +10,7 @@ LazyLoadedDialog.prototype.init = function(options) {
   this.loadCallback = options.loadCallback;
   this.disableClose = options.disableClose;
   this.contentElement = $('<div><div style="text-align: center"><img src="static/img/pleasewait.gif" alt="Loading..." /></div></div>').appendTo(document.body);
-  var me = this;
+  var me = this; 
   this.contentElement.dialog({
     modal: true,
     title: me.title,
@@ -31,6 +31,7 @@ LazyLoadedDialog.prototype.init = function(options) {
             }
           });
           if (me.loadCallback) {
+        	//$(this.parentElement).find('Button')[0].focus();
             me.loadCallback(me.contentElement);
           }
         } else if (textStatus === 'error') {
@@ -42,6 +43,8 @@ LazyLoadedDialog.prototype.init = function(options) {
           });
           $("<p>Error loading dialog</p>").appendTo(me.contentElement);
         }
+        
+        $(this.nextElementSibling).find('Button')[0].focus();
       });
     }
   });
