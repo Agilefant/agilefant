@@ -306,10 +306,15 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
     }
 
     private void createStoryRanks(Story story, Backlog backlog) {
-        if(!(backlog instanceof Product)) {            
-            this.storyRankBusiness.rankToBottom(story, backlog);
-            if (backlog instanceof Iteration && !backlog.isStandAlone()) {                
-                this.storyRankBusiness.rankToBottom(story, backlog.getParent());
+        if (!(backlog instanceof Product)) {
+            if (backlog instanceof Project) {
+                this.storyRankBusiness.rankToBottom(story, backlog);
+            } else {
+                this.storyRankBusiness.rankToHead(story, backlog);
+                if (!backlog.isStandAlone()) {
+                    this.storyRankBusiness.rankToBottom(story,
+                            backlog.getParent());
+                }
             }
         }
     }
@@ -412,7 +417,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         Story persisted = null;
         if (iterationId != null && iterationId != 0) {
             persisted = this.persistNewStory(dataItem, backlogId, iterationId, responsibleIds);
-            storyRankBusiness.rankToHead(persisted, backlogBusiness.retrieve(iterationId));
+            //storyRankBusiness.rankToHead(persisted, backlogBusiness.retrieve(iterationId)); // Rank in iteration
         } else {
             persisted = this.persistNewStory(dataItem, backlogId, responsibleIds);        
         }
@@ -487,7 +492,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         int newId = (Integer) storyDAO.create(story);
         story = storyDAO.get(newId);
 
-        if (backlog != null) {
+        if (backlog != null && backlog != iteration) {
             createStoryRanks(story, backlog);
             if (backlog instanceof Project) {
                 backlogHistoryEntryBusiness.updateHistory(backlog.getId());

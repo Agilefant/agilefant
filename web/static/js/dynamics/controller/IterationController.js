@@ -29,9 +29,9 @@ var IterationController = function IterationController(options) {
   this.tabs.bind('tabsselect', function(event, ui) {
     if(ui.index === 1) {
       me.selectAssigneesTab();
-    } else if(ui.index === 2) {
-      me.historyElement.load("ajax/iterationHistory.action",{iterationId: me.id});
-    }
+    } //else if(ui.index === 2) {
+     //me.historyElement.load("ajax/iterationHistory.action",{iterationId: me.id});
+   //}
   });
   window.pageController.setMainController(this);
 };

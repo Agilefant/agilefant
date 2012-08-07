@@ -136,8 +136,7 @@ public class StoryHierarchyBusinessImpl implements StoryHierarchyBusiness {
         Story firstSibling = null;
         if (parent == null) {             
             Product prod = backlogBusiness.getParentProduct(story.getBacklog());  
-            if(prod == null){
-                //standalone iteration
+            if(prod == null){  //standalone iteration
                 Set<Story> stories = story.getIteration().getAssignedStories();
                 if(stories.size() == 0){
                     firstSibling = null;
@@ -151,7 +150,7 @@ public class StoryHierarchyBusinessImpl implements StoryHierarchyBusiness {
             firstSibling = parent.getChildren().get(0);
         }
         
-        if ((firstSibling != null)) {
+        if (firstSibling != null) {
             this.moveBefore(story, firstSibling);
         }
         // root story
@@ -166,6 +165,13 @@ public class StoryHierarchyBusinessImpl implements StoryHierarchyBusiness {
     private LinkedList<Story> retrieveChildListAndMoveStory(Story story,
             Story oldParent, Story parent) {
         LinkedList<Story> tmpList = new LinkedList<Story>();
+        if (story.getIteration()!=null && story.getIteration().isStandAlone()) {
+            tmpList.addAll(story.getIteration().getStories());
+            if (tmpList.contains(story)) {
+                tmpList.remove(story);
+            }
+            return tmpList;
+        }
         if (parent != oldParent) {
             if(parent != null) {
                 this.storyTreeIntegrityBusiness.checkChangeParentStoryAndThrow(story, parent);

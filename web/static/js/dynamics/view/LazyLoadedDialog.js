@@ -46,6 +46,8 @@ LazyLoadedDialog.prototype.init = function(options) {
         
         $(this.nextElementSibling).find('Button')[0].focus();
       });
+  //    $(this.nextElementSibling).find('Button')[0].focus();
+      //this.nextElementSibling.firstChild.focus(); // Focus to Cancel button
     }
   });
 };
