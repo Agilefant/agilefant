@@ -169,15 +169,12 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             iterationHistoryEntryBusiness.updateIterationHistory(persisted
                     .getIteration().getId());
         }
-
-        
-        // backlogID = ympäristö, jossa pörrätään; dataitem.getBacklog() = minne haluat siirtää; persisted.getBacklog() = missä story oli ennen tallennusta
         
         // Don't do anything if:
         // - iteration id remains same
         // - project/product id remains same, no iteration id exists
         // MAYBE also - moved away from standalone to parent project (removed from standalone; but rank in project should remain the same)
-        if (dataItem.getIteration() != null && dataItem.getIteration() == persisted.getIteration()) { 
+        if (dataItem.getIteration() == persisted.getIteration() && dataItem.getBacklog() == persisted.getBacklog()) { 
             // do nothing
         } else if (dataItem.getIteration() == null && dataItem.getBacklog() == persisted.getBacklog()) {             
             // do nothing
@@ -326,7 +323,8 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         persisted.setStoryValue(dataItem.getStoryValue());
         persisted.setStoryPoints(dataItem.getStoryPoints());
         persisted.setParent(dataItem.getParent());
-        persisted.setIteration(dataItem.getIteration());
+        //persisted.setIteration(dataItem.getIteration());
+        //persisted.setBacklog(dataItem.getBacklog());
     }
 
     private void setResponsibles(Story story, Set<Integer> responsibleIds) {
@@ -595,15 +593,22 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
                 story.setBacklog(target.getParent());
                 target.getParent().getStories().add(story);
             }
+            
+            rankToBottom(story, target, oldBacklog, oldIteration);
+            
         } else {
+            
+            if (oldIteration != null && oldIteration.isStandAlone() && oldBacklog != target) {
+                // DO NOTHING
+            } else {
+                story.setIteration(null);
+            }
             story.setBacklog(target);
-            if(oldIteration != null && !oldIteration.isStandAlone())
-              story.setIteration(null);
             target.getStories().add(story);
+            rankToBottom(story, target, oldBacklog, oldIteration);
         }
 
         storyDAO.store(story);
-        rankToBottom(story, target, oldBacklog, oldIteration);
         updateHistories(target, oldBacklog, oldIteration);
     }
 
