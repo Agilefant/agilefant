@@ -36,12 +36,11 @@ SpentEffortWidget.prototype.initDialog = function() {
   this.userSpentEffort = new UserSpentEffortWidget(this.userEffortEl,
       window.pageController.getCurrentUser().getId());
   
-  ///TODO: Focus to effort spent box -> $(this.element[0]).parent().find('####').focus();
 };
 
 SpentEffortWidget.prototype.entriesChanged = function() {
   this.userSpentEffort.reload();
-  $(this.element[0]).parent().find('Button').focus();
+  // $(this.element[0]).parent().find('Button').focus(); -> Should first focus to ES box and after save to Close-button. This focus direct to Close-button.
 };
 
 /**

@@ -216,7 +216,7 @@ public class HourEntryDAOHibernate extends GenericDAOHibernate<HourEntry>
         criteria = criteria.createCriteria("task");
         criteria.add(Restrictions.isNotNull("story"));
         criteria = criteria.createCriteria("story");
-        criteria = criteria.createCriteria("backlog");
+        criteria = criteria.createCriteria("iteration");
         criteria.add(Restrictions.idEq(iterationId));
         
         return asList(criteria);
@@ -246,7 +246,7 @@ public class HourEntryDAOHibernate extends GenericDAOHibernate<HourEntry>
         Criteria criteria = getCurrentSession().createCriteria(StoryHourEntry.class);
         
         criteria = criteria.createCriteria("story");
-        criteria = criteria.createCriteria("backlog");
+        criteria = criteria.createCriteria("iteration");
         criteria.add(Restrictions.idEq(iterationId));
         
         return asList(criteria);
