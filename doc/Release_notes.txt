@@ -1,6 +1,6 @@
-Agilefant 3.0 alpha 12
+Agilefant 3.0 alpha 13
 Release notes
-2012-08-09
+2012-08-10
 --
 
 Please spend a couple of minutes to register your organization at
@@ -10,6 +10,12 @@ This helps us keep a full-featured Agilefant free-of-charge forever!
 +--------------------+
 |     CHANGESET      |
 +--------------------+
+
+Changes from 3.0 alpha 12 to 3.0 alpha 13
+2012-08-10
++ Bug fixes:
+  + #1240: Effort spent calculation in iteration Burndown graph.
+  + #Change: Reverted Effort Spent focus directly to Close-button.
 
 Changes from 3.0 alpha 11 to 3.0 alpha 12
 2012-08-09
