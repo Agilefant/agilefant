@@ -94,9 +94,9 @@ This is a quick start guide on using <a href="http://www.agilefant.org/">Agilefa
 
 <p class="infoBox">
 <strong>Note on user rights</strong><br/>
-Currently, Agilefant does not support user rights management. 
-Please use the <a href="http://agilefant.freeforums.org">Agilefant forum</a> to discuss this topic.
-For feature requests, please post to the forum.
+Agilefant 3.0 makes a difference between Admin and Non-admin users, and supports limiting access to Products and/or Standalone iterations. 
+You can also share Iterations as 'read-only'.  
+See the related <a href="http://agilefant.freeforums.org/post957.html#p957">forum post</a> for further info regarding user rights.
 </p>
 
 <ol>
@@ -137,11 +137,14 @@ For feature requests, please post to the forum.
 
 <h3>Backlog hierarchy</h3>
 
-<p>Agilefant has three different levels of backlogs: products, projects,
-and iterations to represent different levels of planning.</p>
+<p>Agilefant has three different levels of backlogs: Products, Projects
+and Iterations to represent different levels of planning.</p>
 
-<p>Currently, you cannot create iterations before projects, or projects
-before products.</p>
+<p>Currently, you cannot create projects before products. Agilefant has a special iteration type called 'Standalone iteration'.</p>
+ 
+<p>Unlike regular iterations, standalone iterations can include stories from multiple products. Standalone iterations are 
+created like regular iterations, with the exception that the 'parent project' in the creation dialog is simply left empty. 
+For further info regarding standalone iterations, check out the <a href="http://agilefant.freeforums.org/how-do-standalone-iterations-work-t238.html">related forum post</a>.</p>
 
 
 <div style="width:40%; border: 1px solid #ccc; margin: 1em; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;">
@@ -156,6 +159,7 @@ before products.</p>
       <li style="margin-left: 4em;">Past iteration</li>
       <li style="margin-left: 4em;">Iteration in progress</li>
   <li style="margin-left: 0em;">Another Product</li>
+  <li style="margin-left: 0em;">Standalone iteration</li>
 </ul>
 </div>
 
@@ -177,16 +181,17 @@ before products.</p>
 <div class="rightHandImage">
   <img src="static/img/help/story_info_bubble.png" alt="Story info bubble" />
   <br/>
-  <p>By clicking on a story in the tree, you can see and change its details</p>
+  <p>By clicking on a story in the breakdown view, you can see and change its details</p>
 </div>
 
-<h3>Story tree</h3>
+<h3>Work breakdown</h3>
 
 <p>
-The story tree is a view into the product and project backlogs that
+The work breakdown (or simply breakdown) is a view into the product and project backlogs that
 displays how the smaller stories have been refined from the higher
 level epics and features. Stories that have no children are called
-<em>leaf stories</em>. Iterations can contain only leaf stories.
+<em>leaf stories</em>. Iterations can contain only leaf stories; 
+likewise a project backlog displays only the leaf stories included in the project.
 </p>
 
 <p>
@@ -194,12 +199,13 @@ level epics and features. Stories that have no children are called
 </p>
 
 
-<h3>Iteration tasks</h3>
+<h3>Tasks</h3>
 
 <p>
 Tasks are the means of getting the stories done. They can reside
-within a story, or directly in an iteration. Tasks can only be viewed
-and edited in the iteration view.
+within a story, or directly in an iteration. While tasks can only be viewed
+and edited in the iteration view, they do not disappear when a story is moved 
+back to the project or product backlogs.
 </p>
 
 </div>
@@ -221,8 +227,8 @@ and edited in the iteration view.
 </div>
  --%>
 
-<p>Beside the basic functionality of managing backlogs, Agilefant has the possibility
-to toggle some specialized views on or off on the system settings page.</p>
+<p>Beside the basic functionality for backlog management, Agilefant has some specialized views 
+that can be toggled on or off on the system settings page.</p>
 
 <h3>Daily Work</h3>
 

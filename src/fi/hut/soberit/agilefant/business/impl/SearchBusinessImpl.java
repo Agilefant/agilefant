@@ -36,7 +36,7 @@ public class SearchBusinessImpl implements SearchBusiness {
     private UserDAO userDAO;
     @Autowired
     private TaskDAO taskDAO;
-
+    
     public List<SearchResultRow> searchStoriesAndBacklog(String searchTerm) {
         List<SearchResultRow> result = new ArrayList<SearchResultRow>();
         NamedObject quickRefMatch = this.searchByReference(searchTerm);
@@ -177,8 +177,10 @@ public class SearchBusinessImpl implements SearchBusiness {
         }
         if (type.equals("story")) {
             Story story = storyDAO.get(objectId);
-            if(story != null && checkAccess(story.getBacklog())){  
+            if(story != null && checkAccess(story.getBacklog()) && story.getBacklog() != null){  
                 return story;
+            } else if (story.getBacklog() == null){
+                return story.getIteration();
             }
         } else if (type.equals("backlog")) {
             Backlog bl = backlogDAO.get(objectId);
@@ -188,7 +190,7 @@ public class SearchBusinessImpl implements SearchBusiness {
         }
         return null;
     }
-
+    
     public List<SearchResultRow> searchIterations(String searchTerm) {
         List<SearchResultRow> result = new ArrayList<SearchResultRow>();
         List<Backlog> backlogs = backlogDAO.searchByName(searchTerm, Iteration.class);

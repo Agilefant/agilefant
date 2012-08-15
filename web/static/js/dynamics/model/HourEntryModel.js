@@ -106,14 +106,26 @@ HourEntryModel.prototype._saveData = function(id, changedData) {
     data.hourEntryId = id;
     url = "ajax/storeEffortEntry.action";
   } else if(this.relations.backlog instanceof BacklogModel) {
-    url = "ajax/logBacklogEffort.action";
-    data.parentObjectId = this.relations.backlog.getId();
+	if (changedData.minutesSpent) {
+	  url = "ajax/logBacklogEffort.action";
+	  data.parentObjectId = this.relations.backlog.getId();
+	} else {
+		return;
+	}
   } else if(this.relations.story instanceof StoryModel) {
-    url = "ajax/logStoryEffort.action";
-    data.parentObjectId = this.relations.story.getId();
+	if (changedData.minutesSpent) {
+	  url = "ajax/logStoryEffort.action";
+	  data.parentObjectId = this.relations.story.getId();
+	} else {
+		return;
+	}
   } else if(this.relations.task instanceof TaskModel) {
-    url = "ajax/logTaskEffort.action";
-    data.parentObjectId = this.relations.task.getId();
+	if (changedData.minutesSpent) {
+		url = "ajax/logTaskEffort.action";
+    	data.parentObjectId = this.relations.task.getId();
+	} else {
+		return;
+	}
   }
   if(this.tmpUsers) {
     var userIds = [];
@@ -186,7 +198,8 @@ HourEntryModel.prototype.setEffortSpent = function(effortSpent) {
 };
 
 HourEntryModel.prototype.setMinutesSpent = function(minutesSpent) {
-  this.currentData.minutesSpent = minutesSpent;
+  if (minutesSpent)
+	  this.currentData.minutesSpent = minutesSpent;
 };
 
 HourEntryModel.prototype.getRelatedTask = function() {
@@ -206,7 +219,7 @@ HourEntryModel.prototype.getEffortLeft = function() {
 };
 
 HourEntryModel.prototype.setEffortLeft = function(effortLeft) {
-  if(this.relations.task !== null) {
+  if(this.relations.task !== null && effortLeft) {
     this.relations.task.setEffortLeft(effortLeft);
     this.relations.task.commit();
   }

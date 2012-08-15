@@ -377,7 +377,7 @@ var DynamicsDecorators = {
     var display = "#" + objectId;
     var text = "story:" + objectId;
     if (objectId) {
-    	return '<a href="qr.action?q='+text+'" title="Click to Open Story">'+display+'</a>';
+    	return '<a href="qrq.action?q='+text+'" title="Click to Open Story">'+display+'</a>';
     } else {
     	return "&mdash;";
     }

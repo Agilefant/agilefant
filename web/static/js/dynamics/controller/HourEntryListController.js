@@ -203,7 +203,7 @@ HourEntryListController.prototype.initConfig = function() {
       editor : "ExactEstimate",
       decorator: DynamicsDecorators.exactEstimateEditDecorator,
       set : HourEntryModel.prototype.setEffortSpent,
-      required: true
+      required: false
     }
   };
   var el = {
@@ -220,7 +220,7 @@ HourEntryListController.prototype.initConfig = function() {
 	  editor : "ExactEstimate",
       decorator: DynamicsDecorators.exactEstimateEditDecorator,
       set : HourEntryModel.prototype.setEffortLeft,
-      required: true
+      required: false
     }
   };
   var desc = {

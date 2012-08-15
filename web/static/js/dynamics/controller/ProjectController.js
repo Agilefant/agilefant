@@ -31,8 +31,8 @@ var ProjectController = function ProjectController(options) {
 	this.initializeProjectDetailsConfig();
 	this.initializeIterationListConfig();
 	this.initializeStoryConfig();
-
-	this.tabs.tabs('select', 1);  // Open leaf stories -tab as a default.
+	this.changeTabIfFragmentFound();
+	//this.tabs.tabs('select', 1);  // Open leaf stories -tab as a default.
 
 	this.paint();
 	window.pageController.setMainController(this);
@@ -773,9 +773,9 @@ ProjectController.prototype.initializeStoryConfig = function() {
     get : StoryModel.prototype.getIteration,
     decorator: DynamicsDecorators.iterationSelectDecorator,
     sortCallback: DynamicsComparators.storyBacklogNameComparator,
-    editable : false, // had to remove direct editing because then we would had to have both Backlogs and Iterations in the same select list; even if that would have worked, the current logic would break when both backlog and iteration have the same id
+    editable : true,
     openOnRowEdit: false,
-    edit: {  // dead code; resurrect if and when this is made editable again
+    edit: {
       editor: "Selection",
       items: function() { return me.getSelectableBacklogs(); },
       set: StoryModel.prototype.moveStory

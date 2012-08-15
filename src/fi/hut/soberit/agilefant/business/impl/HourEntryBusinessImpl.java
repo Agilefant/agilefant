@@ -182,9 +182,6 @@ public class HourEntryBusinessImpl extends GenericBusinessImpl<HourEntry>
     
     @Transactional(readOnly = true)
     public long calculateSumOfIterationsHourEntries(Iteration iteration) {
-        if (iteration == null) {
-            throw new IllegalArgumentException("Iteration can't be null");
-        }
         return hourEntryDAO.calculateIterationHourEntriesSum(iteration.getId());
     }
     

@@ -112,7 +112,7 @@ UserSpentEffortWidget.prototype.initConfig = function() {
       editor : "ExactEstimate",
       decorator: DynamicsDecorators.exactEstimateEditDecorator,
       set : HourEntryModel.prototype.setEffortSpent,
-      required: true
+      //required: true
     }
   };
   var el = {
@@ -127,7 +127,7 @@ UserSpentEffortWidget.prototype.initConfig = function() {
 	  editor : "ExactEstimate",
       decorator: DynamicsDecorators.exactEstimateEditDecorator,
       set : TaskModel.prototype.setEffortLeft,
-      required: true
+      //required: true
     }
   };
   var desc = {

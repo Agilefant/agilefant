@@ -451,6 +451,14 @@
 			<result name="product" type="redirect">editProduct.action?productId=${backlogId}#${hash}
 			</result>
 		</action>
+		<action name="qrq" class="referenceIDAction" method="execute1">
+			<result name="iteration" type="redirect">editIteration.action?iterationId=${backlogId}#${hash}
+			</result>
+			<result name="project" type="redirect">editProject.action?projectId=${backlogId}#${hash}
+			</result>
+			<result name="product" type="redirect">editProduct.action?productId=${backlogId}#${hash}
+			</result>
+		</action>
 		
 		
 		<action name="dbexport">

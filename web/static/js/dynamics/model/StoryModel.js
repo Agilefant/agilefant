@@ -265,7 +265,8 @@ StoryModel.prototype.canMoveStory = function(backlogId) {
   return sendAjax;
 };
 StoryModel.prototype.moveStory = function(backlogId) {
-  this._moveStory(backlogId, "ajax/moveStory.action", false);
+	if (backlogId)
+		this._moveStory(backlogId, "ajax/moveStory.action", false);
 };
 
 StoryModel.prototype.moveStoryOnly = function(backlogOrIterationId, moveParents) {

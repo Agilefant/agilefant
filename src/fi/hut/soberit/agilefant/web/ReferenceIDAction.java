@@ -9,6 +9,7 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fi.hut.soberit.agilefant.business.SearchBusiness;
+import fi.hut.soberit.agilefant.business.StoryAccessBusiness;
 import fi.hut.soberit.agilefant.model.Backlog;
 import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.NamedObject;
@@ -46,9 +47,49 @@ public class ReferenceIDAction extends ActionSupport {
         } 
         
         if(res instanceof Story) {
-            backlog = ((Story)res).getBacklog();
-            backlogId = backlog.getId();
+            if (((Story)res).getIteration() != null) {
+                backlog = ((Story)res).getIteration();
+                backlogId = backlog.getId();
+            } else {
+                backlog = ((Story)res).getBacklog();
+                backlogId = backlog.getId();
+                }
+            }
+        
+        if(backlog instanceof Iteration) {
+            return "iteration";
+        } else if(backlog instanceof Project) {
+            return "project";
+        } else if(backlog instanceof Product) {
+            return "product";
+        } 
+        
+        return Action.ERROR;
+    }
+    
+    public String execute1() {
+        NamedObject res = this.searchBusiness.searchByReference(q);
+        if(res == null) {
+            return Action.ERROR;
         }
+        
+        hash = res.getClass().getCanonicalName() + "_" + res.getId();
+        Backlog backlog = null;
+        
+        if(res instanceof Backlog) {
+            backlog = (Backlog)res;
+            backlogId = backlog.getId();
+        } 
+        
+        if(res instanceof Story) {
+            if (((Story)res).getBacklog() != null) {
+                backlog = ((Story)res).getBacklog();
+                backlogId = backlog.getId();
+            } else {
+                backlog = ((Story)res).getIteration();
+                backlogId = backlog.getId();
+                }
+            }
         
         if(backlog instanceof Iteration) {
             return "iteration";
