@@ -363,6 +363,7 @@
 	<target name="release" depends="clean, production-war, create-ddl" description="Generates release directory">
 		<mkdir dir="${release.dir}" />
 		<mkdir dir="${release.dir}/upgrade" />
+		<mkdir dir="${release.dir}/exampledb" />
 		<copy file="${warFile}" todir="${release.dir}" />
 		<copy file="${basedir}/doc/License.txt" todir="${release.dir}" />
 		<copy file="${basedir}/doc/sql/insert-users.sql" todir="${release.dir}" />
@@ -370,6 +371,7 @@
 		<copy file="${basedir}/doc/Release_notes.txt" todir="${release.dir}" />
 		<copy file="${basedir}/doc/Summary_about_used_libraries.txt" todir="${release.dir}" />
 		<copy file="${basedir}/doc/Install.txt" todir="${release.dir}" />
+		<copy file="${basedir}/doc/sql/exampledb/exampledb.sql" todir="${release.dir}/exampledb" />
 		<copy todir="${release.dir}/upgrade">
 			<fileset dir="${basedir}/doc/upgrade/" />
 			<fileset dir="${basedir}/doc/sql/upgrader/" />
