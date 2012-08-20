@@ -1,94 +1,97 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE hibernate-configuration PUBLIC
-    "-//Hibernate/Hibernate Configuration DTD//EN"
-    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+"-//Hibernate/Hibernate Configuration DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
 
 
 <!-- org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'transactionManager' defined in ServletContext resource [/WEB-INF/applicationContext.xml]:
- Cannot resolve reference to bean 'sessionFactory' while setting bean property 'sessionFactory'; nested exception is org.springframework.beans.factory.BeanCreationException: 
- Error creating bean with name 'sessionFactory' defined in ServletContext resource [/WEB-INF/applicationContext.xml]: Invocation of init method failed;
-  nested exception is java.lang.ClassFormatError: Illegal class name "fi/hut/soberit/agilefant/model/package-info" in class file fi/hut/soberit/agilefant/model/package-info
- -->
+Cannot resolve reference to bean 'sessionFactory' while setting bean property 'sessionFactory'; nested exception is org.springframework.beans.factory.BeanCreationException:
+Error creating bean with name 'sessionFactory' defined in ServletContext resource [/WEB-INF/applicationContext.xml]: Invocation of init method failed;
+nested exception is java.lang.ClassFormatError: Illegal class name "fi/hut/soberit/agilefant/model/package-info" in class file fi/hut/soberit/agilefant/model/package-info
+-->
 
 <hibernate-configuration>
-	<session-factory name="hibernateSessionFactory">
-		<!--
-			we need the package mapping to make package-info.java work, but it
-			won't map all the package classes
-		-->
-        <property name="org.hibernate.envers.store_data_at_delete">true</property>
+<session-factory name="hibernateSessionFactory">
+<!--
+we need the package mapping to make package-info.java work, but it
+won't map all the package classes
+-->
+<property name="org.hibernate.envers.store_data_at_delete">true</property>
         
-		<mapping package="fi.hut.soberit.agilefant.model" />
+<mapping package="fi.hut.soberit.agilefant.model" />
 
-		<mapping class="fi.hut.soberit.agilefant.model.Assignment" />
-		<mapping class="fi.hut.soberit.agilefant.model.Backlog" />
-		<mapping class="fi.hut.soberit.agilefant.model.BacklogHistoryEntry" />
-		<mapping class="fi.hut.soberit.agilefant.model.BacklogHourEntry" />
-		<mapping class="fi.hut.soberit.agilefant.model.ExactEstimate" />
-        <mapping class="fi.hut.soberit.agilefant.model.SignedExactEstimate" />
-		<mapping class="fi.hut.soberit.agilefant.model.Iteration" />
-		<mapping class="fi.hut.soberit.agilefant.model.IterationHistoryEntry" />
-		<mapping class="fi.hut.soberit.agilefant.model.Label" />
-		<mapping class="fi.hut.soberit.agilefant.model.Product" />
-		<mapping class="fi.hut.soberit.agilefant.model.Project" />
-		<mapping class="fi.hut.soberit.agilefant.model.Setting" />
-		<mapping class="fi.hut.soberit.agilefant.model.Story" />
-		<mapping class="fi.hut.soberit.agilefant.model.StoryHourEntry" />
-		<mapping class="fi.hut.soberit.agilefant.model.Task" />
-		<mapping class="fi.hut.soberit.agilefant.model.TaskHourEntry" />
-		<mapping class="fi.hut.soberit.agilefant.model.Team" />
-		<mapping class="fi.hut.soberit.agilefant.model.User" />
-		<mapping class="fi.hut.soberit.agilefant.model.Holiday" />
-		<mapping class="fi.hut.soberit.agilefant.model.HolidayAnomaly" />
-		<mapping class="fi.hut.soberit.agilefant.model.AgilefantRevisionEntity" />
-        <mapping class="fi.hut.soberit.agilefant.model.WhatsNextEntry" />
-    	<mapping class="fi.hut.soberit.agilefant.model.StoryRank" />
-    	<mapping class="fi.hut.soberit.agilefant.model.AgilefantWidget" />
-    	<mapping class="fi.hut.soberit.agilefant.model.WidgetCollection" />
-    	<mapping class="fi.hut.soberit.agilefant.model.StoryAccess" />
+<mapping class="fi.hut.soberit.agilefant.model.Assignment" />
+<mapping class="fi.hut.soberit.agilefant.model.Backlog" />
+<mapping class="fi.hut.soberit.agilefant.model.BacklogHistoryEntry" />
+<mapping class="fi.hut.soberit.agilefant.model.BacklogHourEntry" />
+<mapping class="fi.hut.soberit.agilefant.model.ExactEstimate" />
+<mapping class="fi.hut.soberit.agilefant.model.SignedExactEstimate" />
+<mapping class="fi.hut.soberit.agilefant.model.Iteration" />
+<mapping class="fi.hut.soberit.agilefant.model.IterationHistoryEntry" />
+<mapping class="fi.hut.soberit.agilefant.model.Label" />
+<mapping class="fi.hut.soberit.agilefant.model.Product" />
+<mapping class="fi.hut.soberit.agilefant.model.Project" />
+<mapping class="fi.hut.soberit.agilefant.model.Setting" />
+<mapping class="fi.hut.soberit.agilefant.model.Story" />
+<mapping class="fi.hut.soberit.agilefant.model.StoryHourEntry" />
+<mapping class="fi.hut.soberit.agilefant.model.Task" />
+<mapping class="fi.hut.soberit.agilefant.model.TaskHourEntry" />
+<mapping class="fi.hut.soberit.agilefant.model.Team" />
+<mapping class="fi.hut.soberit.agilefant.model.User" />
+<mapping class="fi.hut.soberit.agilefant.model.Holiday" />
+<mapping class="fi.hut.soberit.agilefant.model.HolidayAnomaly" />
+<mapping class="fi.hut.soberit.agilefant.model.AgilefantRevisionEntity" />
+<mapping class="fi.hut.soberit.agilefant.model.WhatsNextEntry" />
+<mapping class="fi.hut.soberit.agilefant.model.StoryRank" />
+<mapping class="fi.hut.soberit.agilefant.model.AgilefantWidget" />
+<mapping class="fi.hut.soberit.agilefant.model.WidgetCollection" />
+<mapping class="fi.hut.soberit.agilefant.model.StoryAccess" />
 
-		<!--
-			<mapping class="fi.hut.soberit.agilefant.model.BusinessTheme" />
-			<mapping class="fi.hut.soberit.agilefant.model.BacklogThemeBinding"
-			/>
-		-->
+<!--
+<mapping class="fi.hut.soberit.agilefant.model.BusinessTheme" />
+<mapping class="fi.hut.soberit.agilefant.model.BacklogThemeBinding"
+/>
+-->
 
 
-		<!--
-			Activate hibernate validation: these listeners will raise an
-			exception if an annotation validation constraint is violated.
-		-->
-		<event type="pre-update">
-			<listener
-				class="org.hibernate.validator.event.ValidatePreUpdateEventListener" />
-		</event>
-		<event type="pre-insert">
-			<listener
-				class="org.hibernate.validator.event.ValidatePreInsertEventListener" />
-		</event>
+<!--
+Activate hibernate validation: these listeners will raise an
+exception if an annotation validation constraint is violated.
+-->
+<event type="pre-update">
+<listener
+class="org.hibernate.validator.event.ValidatePreUpdateEventListener" />
+</event>
+<event type="pre-insert">
+<listener
+class="org.hibernate.validator.event.ValidatePreInsertEventListener" />
+</event>
 
-		<!-- 
-			Envers version listeners
-		 -->
+<!--
+Envers version listeners
+-->
 
-		<event type="post-insert">
-			<listener class="org.hibernate.envers.event.AuditEventListener" />
-		</event>
-		<event type="post-update">
-			<listener class="org.hibernate.envers.event.AuditEventListener" />
-		</event>
-		<event type="post-delete">
-			<listener class="org.hibernate.envers.event.AuditEventListener" />
-		</event>
-		<event type="pre-collection-update">
-			<listener class="org.hibernate.envers.event.AuditEventListener" />
-		</event>
-		<event type="pre-collection-remove">
-			<listener class="org.hibernate.envers.event.AuditEventListener" />
-		</event>
-		<event type="post-collection-recreate">
-			<listener class="org.hibernate.envers.event.AuditEventListener" />
-		</event>
-	</session-factory>
+<event type="post-insert">
+<listener class="org.hibernate.envers.event.AuditEventListener" />
+<listener class="fi.hut.soberit.agilefant.db.hibernate.notification.NotificationEventListener" />
+</event>
+<event type="post-update">
+<listener class="org.hibernate.envers.event.AuditEventListener" />
+<listener class="fi.hut.soberit.agilefant.db.hibernate.notification.NotificationEventListener" />
+</event>
+<event type="post-delete">
+<listener class="org.hibernate.envers.event.AuditEventListener" />
+<listener class="fi.hut.soberit.agilefant.db.hibernate.notification.NotificationEventListener" />
+</event>
+<event type="pre-collection-update">
+<listener class="org.hibernate.envers.event.AuditEventListener" />
+</event>
+<event type="pre-collection-remove">
+<listener class="org.hibernate.envers.event.AuditEventListener" />
+</event>
+<event type="post-collection-recreate">
+<listener class="org.hibernate.envers.event.AuditEventListener" />
+</event>
+</session-factory>
 </hibernate-configuration>

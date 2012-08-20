@@ -3,26 +3,40 @@
                        "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-	<bean name="mailSender"
-		class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host">
-			<value>${smtp.host}</value>
-		</property>
-	</bean>
 
-	<bean name="updateTaskTemplate"
-		class="org.springframework.mail.SimpleMailMessage">
-		<property name="from" value="${smtp.from}" />
-		<property name="subject" value="Task updated: $task.name$" />
-		<property name="text">
-			<value>
-				<![CDATA[Task updated: $task.name$
-View it from URL: http://hypertorni.dyndns.org/agilefant/editTask.action?taskId=$task.id$
----
-This message was automatically sent by Agilefant]]>
-			</value>
-		</property>
-	</bean>
+    <!--Original mailSender from Agilefant, could be reused?-->
+    <!--<bean name="mailSender"-->
+          <!--class="org.springframework.mail.javamail.JavaMailSenderImpl">-->
+
+        <!--<property name="host">-->
+            <!--<value>${smtp.host}</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!-- mailSender for project - it migth require different types of settings depending on SMTP server -->
+    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mailserver.host}" />
+        <property name="port" value="${mailserver.port}" />
+        <property name="protocol" value="${mailserver.protocol}" />
+        <property name="username" value="${mailserver.username}" />
+        <property name="password" value="${mailserver.password}" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.quitwait">false</prop>
+                <prop key="mail.debug">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="notificationEmailSender" class="fi.hut.soberit.agilefant.business.impl.NotificationEmailSender">
+        <!--This is a workaround how to inject string property into the beans in Spring 2.5.x-->
+        <!--In Spring 3 you can directly use @Value annotation-->
+        <property name="agilefantUrl" value="${agilefant.url}" />
+        <property name="notificationsEnabled" value="${notifications.enabled}" />
+        <!--all other properties are injected via annotations-->
+    </bean>
 
 	<bean name="newPasswordTemplate"
 		class="org.springframework.mail.SimpleMailMessage">
@@ -37,17 +51,92 @@ This message was automatically sent by Agilefant]]>
 		</property>
 	</bean>
 
-	<bean name="createTaskTemplate"
-		class="org.springframework.mail.SimpleMailMessage">
-		<property name="from" value="${smtp.from}" />
-		<property name="subject" value="Task created: $task.name$" />
-		<property name="text">
-			<value>
-				<![CDATA[New task created: $task.name$
-View it from URL: http://hypertorni.dyndns.org/agilefant/editTask.action?taskId=$task.id$
+    <bean name="newStoryTemplate"
+          class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${smtp.from}" />
+        <property name="subject" value="Story created: $storyName$" />
+        <property name="text">
+            <value>
+<![CDATA[New story created: $storyName$
+Check it out at $agilefantUrl$/qr.action?q=story:$storyId$
 ---
 This message was automatically sent by Agilefant]]>
-			</value>
-		</property>
-	</bean>
+            </value>
+        </property>
+    </bean>
+
+
+    <bean name="updateStoryTemplate"
+          class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${smtp.from}" />
+        <property name="subject" value="Story updated: $storyName$" />
+        <property name="text">
+            <value>
+<![CDATA[Story updated: $storyName$
+Check it out at $agilefantUrl$/qr.action?q=story:$storyId$
+---
+This message was automatically sent by Agilefant]]>
+            </value>
+        </property>
+    </bean>
+
+    <bean name="deleteStoryTemplate"
+          class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${smtp.from}" />
+        <property name="subject" value="Story updated: $task.name$" />
+        <property name="text">
+            <value>
+                <![CDATA[Story Deleted: $storyName$
+Check it out at $agilefantUrl$/qr.action?q=story:$storyId$
+---
+This message was automatically sent by Agilefant]]>
+            </value>
+        </property>
+    </bean>
+
+
+
+    <bean name="newTaskTemplate"
+          class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${smtp.from}" />
+        <property name="subject" value="Task created: $taskName$" />
+        <property name="text">
+            <value>
+<![CDATA[New task created: $taskName$
+Check it out at $taskParentUrl$
+---
+This message was automatically sent by Agilefant]]>
+            </value>
+        </property>
+    </bean>
+
+
+    <bean name="updateTaskTemplate"
+          class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${smtp.from}" />
+        <property name="subject" value="Task updated: $taskName$" />
+        <property name="text">
+            <value>
+<![CDATA[Task updated: $taskName$
+Check it out at $taskParentUrl$
+---
+This message was automatically sent by Agilefant]]>
+            </value>
+        </property>
+    </bean>
+
+    <bean name="deleteTaskTemplate"
+          class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${smtp.from}" />
+        <property name="subject" value="Task deleted: $taskName$" />
+        <property name="text">
+            <value>
+<![CDATA[Task deleted: $taskName$
+Check it out at $taskParentUrl$
+---
+This message was automatically sent by Agilefant]]>
+            </value>
+        </property>
+    </bean>
+
 </beans>

@@ -102,8 +102,8 @@ public class StoryBusinessCreateStoryTest extends MockedTestCase {
         
         expect(storyDAO.create(EasyMock.capture(capturedStory))).andReturn(88);
         expect(storyDAO.get(88)).andReturn(tmp);
-        storyRankBusiness.rankToBottom(tmp, blog);
         storyRankBusiness.rankToBottom(tmp, proj);
+        storyRankBusiness.rankToBottom(tmp, blog);
         storyRankBusiness.rankToBottom(tmp, proj);
         
         Story returnedStory = new Story();
@@ -117,7 +117,7 @@ public class StoryBusinessCreateStoryTest extends MockedTestCase {
         dataItem.setState(StoryState.STARTED);
         
         storyHierarchyBusiness.moveToTop(returnedStory);
-        storyRankBusiness.rankToHead(returnedStory, blog);
+        //storyRankBusiness.rankToHead(returnedStory, blog);
         storyRankBusiness.rankToHead(returnedStory, blog);
         labelBusiness.createStoryLabels(null, 88);
         backlogHistoryEntryBusiness.updateHistory(12);
@@ -212,7 +212,8 @@ public class StoryBusinessCreateStoryTest extends MockedTestCase {
         expect(storyDAO.create(story)).andReturn(new Integer(1));
         expect(storyDAO.get(1)).andReturn(story);
         
-        storyRankBusiness.rankToBottom(story, iteration);
+        //storyRankBusiness.rankToBottom(story, project);
+        storyRankBusiness.rankToHead(story, iteration);
         storyRankBusiness.rankToBottom(story, project);
         
         iterationHistoryEntryBusiness.updateIterationHistory(2);

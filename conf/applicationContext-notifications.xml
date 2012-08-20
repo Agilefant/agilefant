@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    <util:list id="notificationsConfiguration">
+        <bean class="fi.hut.soberit.agilefant.model.notification.NotificationConfiguration">
+            <constructor-arg value="fi.hut.soberit.agilefant.model.Story" />
+            <!-- If you are only interested in some specific events, you can define specific conditions which triggers a notification -->
+ 			<!--<property name="eventTypes" value="INSERT" />-->
+            <!--<property name="eventTypes" value="DELETE" />-->
+            <!--<property name="eventTypes" value="UPDATE" />-->
+        </bean>
+        <bean class="fi.hut.soberit.agilefant.model.notification.NotificationConfiguration">
+            <constructor-arg value="fi.hut.soberit.agilefant.model.Task" />
+            <!--<property name="eventTypes" value="INSERT" />-->
+            <!--<property name="eventTypes" value="DELETE" />-->
+            <!--<property name="eventTypes" value="UPDATE" />-->
+        </bean>
+    </util:list>
+
+
+</beans>
