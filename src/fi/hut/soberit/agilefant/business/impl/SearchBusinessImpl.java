@@ -179,7 +179,7 @@ public class SearchBusinessImpl implements SearchBusiness {
             Story story = storyDAO.get(objectId);
             if(story != null && checkAccess(story.getBacklog()) && story.getBacklog() != null){  
                 return story;
-            } else if (story.getBacklog() == null){
+            } else if (story != null && story.getBacklog() == null){
                 return story.getIteration();
             }
         } else if (type.equals("backlog")) {

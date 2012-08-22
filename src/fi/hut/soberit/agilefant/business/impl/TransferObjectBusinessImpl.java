@@ -168,7 +168,7 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
     @Transactional(readOnly = true)
     public List<AutocompleteDataNode> constructTeamAutocompleteData(boolean listUserIds) {
         User loggedUser = SecurityUtil.getLoggedUser();
-        User user = userBusiness.retrieve(loggedUser.getId()); // TODO: Why use.getTeams() shows null?
+        User user = userBusiness.retrieve(loggedUser.getId()); // TODO: Why user.getTeams() shows null?
         Collection<Team> allTeams = new ArrayList<Team>();
         if (user.isAdmin()) {
             allTeams = this.teamBusiness.retrieveAll();
@@ -421,4 +421,5 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
         User user = userBusiness.retrieve(loggedUser.getId());
         return user;
     }
+
 }

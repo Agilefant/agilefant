@@ -203,15 +203,16 @@ public class TransferObjectBusinessTest {
         assertEquals(ScheduleStatus.PAST, actual.getScheduleStatus());
     }
     
-    
-    @Test
-    public void testConstructUserAutocompleteData() {
+   @Test
+   public void testConstructUserAutocompleteData() {
         User user = new User();
         user.setId(1);
         user.setFullName("daadaa");
         user.setLoginName("additional");
+        user.setAdmin(true);
         SecurityUtil.setLoggedUser(user);
         
+        expect(userBusiness.retrieve(1)).andReturn(user);
         expect(userBusiness.retrieveAll()).andReturn(Arrays.asList(user));
         
         replayAll();
@@ -237,6 +238,7 @@ public class TransferObjectBusinessTest {
         team.setUsers(Arrays.asList(user1,user2));
         SecurityUtil.setLoggedUser(user1);
         
+        expect(userBusiness.retrieve(1)).andReturn(user1);
         expect(teamBusiness.retrieveAll()).andReturn(Arrays.asList(team));
         
         replayAll();
@@ -261,7 +263,9 @@ public class TransferObjectBusinessTest {
         team.setName("daa");
         team.setId(1);
         team.setUsers(Arrays.asList(user1,user2));
+        SecurityUtil.setLoggedUser(user1);
         
+        expect(userBusiness.retrieve(1)).andReturn(user1);
         expect(teamBusiness.retrieveAll()).andReturn(Arrays.asList(team));
         
         replayAll();

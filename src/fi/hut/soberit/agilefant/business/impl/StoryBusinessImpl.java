@@ -143,6 +143,9 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         }
 
         Story persisted = this.retrieve(storyId);
+        
+        Iteration iteration = persisted.getIteration();
+        Backlog backlog     = persisted.getBacklog();
 
         if (storyHasChildren(persisted) && dataItem.getIteration() != null) {
             throw new OperationNotPermittedException("Can't move a story with children to an iteration");
@@ -157,36 +160,29 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         }
         
         populateStoryFields(persisted, dataItem);
-
         
         // Store the story
         storyDAO.store(persisted);
 
-        if (tasksToDone && persisted.getIteration() != null) {
+        if (tasksToDone && iteration != null) {
             for (Task t : persisted.getTasks()) {
                 taskBusiness.setTaskToDone(t);
             }
-            iterationHistoryEntryBusiness.updateIterationHistory(persisted
-                    .getIteration().getId());
+            iterationHistoryEntryBusiness.updateIterationHistory(iteration.getId());
         }
         
-        // Don't do anything if:
-        // - iteration id remains same
-        // - project/product id remains same, no iteration id exists
-        // MAYBE also - moved away from standalone to parent project (removed from standalone; but rank in project should remain the same)
-        if (dataItem.getIteration() == persisted.getIteration() && dataItem.getBacklog() == persisted.getBacklog()) { 
-            // do nothing
-        } else if (dataItem.getIteration() == null && dataItem.getBacklog() == persisted.getBacklog()) {             
-            // do nothing
-        } else if (backlogId != null && (dataItem.getBacklog() == null || (dataItem.getBacklog() == persisted.getBacklog()) )) {  //now, case where moved from standalone to standalone
+        if (dataItem.getIteration() == iteration && dataItem.getBacklog() == backlog) { 
+            // do nothing, if iteration id and backlog id remains same
+        } else if (dataItem.getIteration() == null && dataItem.getBacklog() == backlog) {             
+            // do nothing, if project/product id remains same and no iteration id exists
+        } else if (backlogId != null && (dataItem.getBacklog() == null || (dataItem.getBacklog() == backlog) )) {  //now, case where moved from standalone to another standalone
             this.moveStoryAway(persisted, backlogBusiness.retrieve(backlogId));
-        } else if (dataItem.getBacklog() != persisted.getBacklog() && dataItem.getBacklog() != null) {   // case, where story is moved to another backlog
+        } else if (dataItem.getBacklog() != backlog && dataItem.getBacklog() != null) {   // case, where story is moved to another backlog
             this.moveStoryAway(persisted, dataItem.getBacklog());
         }
         
-        if (persisted.getBacklog() != null) {
-            backlogHistoryEntryBusiness.updateHistory(persisted.getBacklog()
-                    .getId());
+        if (backlog != null) {
+            backlogHistoryEntryBusiness.updateHistory(backlog.getId());
         }
         
         return persisted;
@@ -323,7 +319,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         persisted.setStoryValue(dataItem.getStoryValue());
         persisted.setStoryPoints(dataItem.getStoryPoints());
         persisted.setParent(dataItem.getParent());
-        //persisted.setIteration(dataItem.getIteration());
+        persisted.setIteration(dataItem.getIteration());
         //persisted.setBacklog(dataItem.getBacklog());
     }
 
@@ -814,6 +810,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
                     if (taskHourEntryHandlingChoice == HourEntryHandlingChoice.MOVE) {
                         hourEntryBusiness.moveToBacklog(task.getHourEntries(),
                                 story.getBacklog());
+                        task.getHourEntries().clear();
                     }
                     taskBusiness.delete(task.getId(), taskHourEntryHandlingChoice);
                 }
@@ -827,6 +824,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
                 break;
             }
             story.getTasks().clear();
+            
         }
         if (storyHourEntryHandlingChoice != null) {
             switch (storyHourEntryHandlingChoice) {

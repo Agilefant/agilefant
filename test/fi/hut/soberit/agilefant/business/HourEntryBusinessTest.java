@@ -103,7 +103,7 @@ public class HourEntryBusinessTest {
         verify(hourEntryDAO);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected=NullPointerException.class)
     public void testCalculateSumOfBacklogsHourEntries_nullBacklog() {
         hourEntryBusiness.calculateSumOfIterationsHourEntries(null);
     }

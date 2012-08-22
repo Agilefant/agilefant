@@ -1,6 +1,6 @@
-Agilefant 3.0 beta 1
+Agilefant 3.0 beta 2
 Release notes
-2012-08-15
+2012-08-22
 --
 
 Please spend a couple of minutes to register your organization at
@@ -11,14 +11,11 @@ This helps us keep a full-featured Agilefant free-of-charge forever!
 |     CHANGESET      |
 +--------------------+
 
-Changes from 3.0 alpha 13 to 3.0 beta 1
-2012-08-15
+Changes from 3.0 beta 1 to 3.0 beta 2
+2012-08-22
 + Bug fixes:
-  + #850:  "Make navigation from story info bubble reference id or project leaf list id into iteration work"
-  + #1214: "ES dialog final polishing - Should not complain when you leave either the ES or EL boxes empty"
-  + #1242: "Text change to left hand accordion: My Assingments => My Backlogs | Backlogs => All Backlogs"
-  + #1103: "Make "iteration" column in project leaf view editable again"
-
+  + #1201: Email notification implemented by https://github.com/jumarkoJuraj%20Martinka from GoodData
+  + #1258: Fix broken Breakdown view operations: treerank & deletion
 
 Changes from 3.0 alpha 12 to 3.0 alpha 13
 2012-08-10

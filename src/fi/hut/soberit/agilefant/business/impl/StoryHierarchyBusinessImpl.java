@@ -97,6 +97,7 @@ public class StoryHierarchyBusinessImpl implements StoryHierarchyBusiness {
 
     }
 
+    
     @Transactional
     public void moveBefore(Story story, Story reference) {        
         Story oldParent = story.getParent();
@@ -165,13 +166,13 @@ public class StoryHierarchyBusinessImpl implements StoryHierarchyBusiness {
     private LinkedList<Story> retrieveChildListAndMoveStory(Story story,
             Story oldParent, Story parent) {
         LinkedList<Story> tmpList = new LinkedList<Story>();
-        if (story.getIteration()!=null && story.getIteration().isStandAlone()) {
-            tmpList.addAll(story.getIteration().getStories());
+       /* if (story.getIteration()!=null && story.getIteration().isStandAlone()) {
+            tmpList.addAll(storyBusiness.retrieveStoriesInIteration(story.getIteration()));
             if (tmpList.contains(story)) {
                 tmpList.remove(story);
             }
             return tmpList;
-        }
+        }*/
         if (parent != oldParent) {
             if(parent != null) {
                 this.storyTreeIntegrityBusiness.checkChangeParentStoryAndThrow(story, parent);
