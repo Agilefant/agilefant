@@ -1,6 +1,6 @@
-Agilefant 3.0 beta 2
+Agilefant 3.0.0
 Release notes
-2012-08-22
+2012-09-14
 --
 
 Please spend a couple of minutes to register your organization at
@@ -10,6 +10,12 @@ This helps us keep a full-featured Agilefant free-of-charge forever!
 +--------------------+
 |     CHANGESET      |
 +--------------------+
+
+Changes from 3.0 beta 2 to 3.0.0
+2012-09-14
++ Bug fixes:
+  + No burndown if sprint start date <= creation date
+  + exampledatabase.sql works also on case-sensitive environments like Linux
 
 Changes from 3.0 beta 1 to 3.0 beta 2
 2012-08-22
