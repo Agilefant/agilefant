@@ -427,12 +427,20 @@ public class IterationBurndownBusinessImpl implements IterationBurndownBusiness 
             double spentMax = 0, leftMax = 0;
             
             if (!dataset.getSeries(CURRENT_DAY_EFFORT_SPENT_SERIES_NO).isEmpty() && settingBusiness.isHourReportingEnabled()) {
-                spentMax = dataset.getSeries(CURRENT_DAY_EFFORT_SPENT_SERIES_NO).getValue(1).doubleValue();
-                spentMax += spentMax * valueAxis.getUpperMargin();
+                try {
+                    spentMax = dataset.getSeries(CURRENT_DAY_EFFORT_SPENT_SERIES_NO).getValue(1).doubleValue();
+                    spentMax += spentMax * valueAxis.getUpperMargin();
+                } catch (Exception e) {
+                    System.out.println("Problem with formatChartAxes: " + e.getMessage());
+                }
             }
             if (!dataset.getSeries(CURRENT_DAY_EFFORT_LEFT_SERIES_NO).isEmpty()) {
-                leftMax = dataset.getSeries(CURRENT_DAY_EFFORT_LEFT_SERIES_NO).getValue(1).doubleValue();
-                leftMax += leftMax * valueAxis.getUpperMargin();
+                try {
+                    leftMax = dataset.getSeries(CURRENT_DAY_EFFORT_LEFT_SERIES_NO).getValue(1).doubleValue();
+                    leftMax += leftMax * valueAxis.getUpperMargin();
+                } catch (Exception e) {
+                    System.out.println("Problem with formatChartAxes: " + e.getMessage());
+                }
             }
             
             valueAxis.setRange(0, Math.max(valueAxis.getRange().getUpperBound(), Math.max(spentMax, leftMax)));
