@@ -1,6 +1,6 @@
 Agilefant 3.0.0
 Release notes
-2012-09-14
+2012-10-15
 --
 
 Please spend a couple of minutes to register your organization at
@@ -12,7 +12,8 @@ This helps us keep a full-featured Agilefant free-of-charge forever!
 +--------------------+
 
 Changes from 3.0 beta 2 to 3.0.0
-2012-09-14
+2012-10-15
++ spent effort can now be logged directly to any story from the breakdown view
 + Bug fixes:
   + No burndown if sprint start date <= creation date
   + exampledatabase.sql works also on case-sensitive environments like Linux

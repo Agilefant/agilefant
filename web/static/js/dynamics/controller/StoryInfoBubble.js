@@ -195,7 +195,12 @@ StoryInfoBubble.prototype.addLinks = function() {
   
   var links = $('<div style="height: 1.5em;" />').addClass('details-links');
   this.element.find('.close-button').after(links);
-  
+
+  $('<a>spent effort</a>').click(function() {
+    me.bubble.destroy();
+    me.openLogEffort();
+  }).appendTo(links);
+
   $('<a>add child</a>').click(function() {
     me.bubble.destroy();
     me.treeController.createNode(me.storyElement,"inside", me.model);
@@ -218,6 +223,7 @@ StoryInfoBubble.prototype.addLinks = function() {
       controller.removeStory();
     });
   }).appendTo(links);
+
 };
 
 
