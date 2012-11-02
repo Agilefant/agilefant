@@ -147,6 +147,16 @@
       <role-name>agilefantremote</role-name>
     </auth-constraint>
   </security-constraint>
+
+	<!--<security-constraint>-->
+		<!--<web-resource-collection>-->
+			<!--<web-resource-name>Default</web-resource-name>-->
+			<!--<url-pattern>/*</url-pattern>-->
+		<!--</web-resource-collection>-->
+		<!--<auth-constraint>-->
+			<!--<role-name>user</role-name>-->
+		<!--</auth-constraint>-->
+	<!--</security-constraint>-->
   
   <login-config>
     <auth-method>BASIC</auth-method>
@@ -158,6 +168,9 @@
   </security-role>
   <security-role>
     <role-name>agilefantreadonly</role-name>
+  </security-role>
+  <security-role>
+  	<role-name>user</role-name>
   </security-role>
   
   <env-entry>

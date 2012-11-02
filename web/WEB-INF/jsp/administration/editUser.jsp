@@ -21,7 +21,7 @@
 <c:if test="${currentUser.admin || userId == currentUser.id}">
 <script type="text/javascript">
 $(document).ready(function() {
-  var controller = new UserController({
+    var controller = new UserController({
     id:                  ${userId},
     userInfoElement:     $('#userInfoDiv'),
     passwordElement:     $('#changePasswordDiv')

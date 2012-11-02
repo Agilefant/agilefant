@@ -23,15 +23,33 @@
 				pattern="/ROIteration.action" />
 			<security:filter-chain filters="readonlyFilter"
 				pattern="/ajax/RO*" />
-			<security:filter-chain
-				filters="httpSessionContextIntegrationFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,ajaxExceptionTranslationFilter,filterInvocationInterceptor"
-				pattern="/ajax/**" />
-			<security:filter-chain
-				filters="httpSessionContextIntegrationFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor"
-				pattern="/**" />
-		</security:filter-chain-map>
+            <security:filter-chain
+            filters="httpSessionContextIntegrationFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,ajaxExceptionTranslationFilter,filterInvocationInterceptor"
+            pattern="/ajax/**" />
+            <security:filter-chain
+            filters="httpSessionContextIntegrationFilter,j2eePreAuthFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor"
+            pattern="/**" />
+        </security:filter-chain-map>
 	</bean>
-	
+
+
+	<bean id="preAuthenticatedUserDetailsService"
+		class="fi.hut.soberit.agilefant.security.PreAuthenticatedAgilefantUserDetailsService"
+            autowire="byType" />
+
+    <bean id="preAuthAuthenticationProvider"
+          class="org.springframework.security.providers.preauth.PreAuthenticatedAuthenticationProvider">
+        <property name="preAuthenticatedUserDetailsService" ref="preAuthenticatedUserDetailsService" />
+
+    </bean>
+
+	<bean id="j2eePreAuthFilter"
+		class="org.springframework.security.ui.preauth.j2ee.J2eePreAuthenticatedProcessingFilter">
+		<property name="authenticationManager" ref="authenticationManager" />
+
+	</bean>
+
+
 	<bean id="remoteServicesFilter" class="fi.hut.soberit.agilefant.security.RemoteServicesFilter" />
 	
 	<bean id="readonlyFilter" class="fi.hut.soberit.agilefant.readonly.ReadonlyFilter" />
@@ -80,11 +98,9 @@
 			value="anonymousUser,ROLE_ANONYMOUS" />
 	</bean>
 
-	<bean id="exceptionTranslationFilter"
-		class="org.springframework.security.ui.ExceptionTranslationFilter">
+	<bean id="exceptionTranslationFilter" class="org.springframework.security.ui.ExceptionTranslationFilter">
 		<property name="authenticationEntryPoint">
-			<bean
-				class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+			<bean class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
 				<property name="loginFormUrl" value="/login.jsp" />
 				<property name="forceHttps" value="false" />
 			</bean>
@@ -160,7 +176,10 @@
 		class="org.springframework.security.providers.ProviderManager">
 		<property name="providers">
 			<list>
-				<ref local="daoAuthenticationProvider" />
+
+                <ref local="preAuthAuthenticationProvider" />
+
+                <ref local="daoAuthenticationProvider" />
 				<bean
 					class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
 					<property name="key"

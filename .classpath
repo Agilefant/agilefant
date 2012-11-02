@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="lib/freemarker-2.3.13.jar"/>
 	<classpathentry kind="lib" path="lib/ognl-2.6.11.jar"/>
 	<classpathentry kind="lib" path="lib/struts2-core-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/xwork-2.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/xwork-2.1.2.jar" sourcepath="lib-src/xwork-2.1.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/struts2-spring-plugin-2.1.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.3.jar"/>
@@ -25,7 +25,6 @@
 	<classpathentry kind="lib" path="lib/httpclient-cache-4.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.1.3.jar"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://jakarta.apache.org/commons/logging/apidocs/"/>
@@ -70,7 +69,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-security-core-2.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-security-core-2.0.3.jar" sourcepath="lib-src/spring-security-core-2.0.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-security-core-tiger-2.0.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/flexjson.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-5.1.7-bin.jar"/>
@@ -100,5 +99,11 @@
 	<classpathentry kind="lib" path="lib/jersey-core-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/jersey-server-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/jersey-spring-1.3.jar"/>
-	<classpathentry kind="output" path="eclipse-classes"/>
+	<classpathentry kind="lib" path="lib/jaxen-1.1.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-6-openjdk-amd64">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

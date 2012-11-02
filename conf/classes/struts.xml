@@ -83,7 +83,10 @@
 			<result name="selectBacklog" type="redirectAction">
 				<param name="actionName">selectBacklog</param>
 			</result>
-		</action>
+            <result name="edit" type="redirectAction">
+                <param name="actionName">editUser</param>
+            </result>
+        </action>
 
 		<action name="contextView" class="contextViewAction">
 			<result name="success_id_backlog" type="redirectAction">
