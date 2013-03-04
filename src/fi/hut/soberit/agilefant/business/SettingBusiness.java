@@ -168,4 +168,39 @@ public interface SettingBusiness extends GenericBusiness<Setting> {
      * Toggle the displaying of weekends in burndown.
      */
     void setWeekendsInBurndown(boolean mode);
+    
+    /**
+     * Set Location for saving comment attachments
+     */
+    
+    boolean setAttachmentSaveLocation(String location);
+    
+    
+    /**
+     * Get Location for saving comment attachments
+     */
+    String getAttachmentSaveLocation();
+    
+    
+    /**
+     * Set max number of attachment for a comment
+     */
+    
+    void setMaxNumberOfAttachment(int noOfAttachment);
+    
+    /**
+     * Get max number of attachment for a comment
+     */
+    int getMaxNumberOfAttachment();
+    
+    /**
+     * Set max size for all attachment.
+     */
+    void setMaxSizeForAllAttachment(int maxSize);
+    
+    /**
+     * Get max size for all attachment.
+     */
+     int getMaxSizeForAllAttachment();
+    
 }

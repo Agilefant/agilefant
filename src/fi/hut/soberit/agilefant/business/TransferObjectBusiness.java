@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import fi.hut.soberit.agilefant.model.Backlog;
+import fi.hut.soberit.agilefant.model.StoryComment;
 import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Project;
 import fi.hut.soberit.agilefant.model.Story;
@@ -11,6 +12,7 @@ import fi.hut.soberit.agilefant.model.Task;
 import fi.hut.soberit.agilefant.model.WhatsNextEntry;
 import fi.hut.soberit.agilefant.transfer.AssignedWorkTO;
 import fi.hut.soberit.agilefant.transfer.AutocompleteDataNode;
+import fi.hut.soberit.agilefant.transfer.StoryCommentTO;
 import fi.hut.soberit.agilefant.transfer.DailyWorkTaskTO;
 import fi.hut.soberit.agilefant.transfer.IterationTO;
 import fi.hut.soberit.agilefant.transfer.ProjectTO;
@@ -24,6 +26,12 @@ public interface TransferObjectBusiness {
      * Constructs a new transfer object based on given task.
      */
     public TaskTO constructTaskTO(Task task);
+    
+    /**
+     * Constructs a new transfer object based on given comment.
+     */
+    
+    public StoryCommentTO constructCommentTO(StoryComment storyComment);
     
     /**
      * Constructs a new transfer object based on given story.

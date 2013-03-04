@@ -18,6 +18,7 @@ import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.business.IterationHistoryEntryBusiness;
 import fi.hut.soberit.agilefant.business.LabelBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
+import fi.hut.soberit.agilefant.business.StoryCommentBusiness;
 import fi.hut.soberit.agilefant.business.StoryHierarchyBusiness;
 import fi.hut.soberit.agilefant.business.StoryRankBusiness;
 import fi.hut.soberit.agilefant.business.StoryTreeIntegrityBusiness;
@@ -79,6 +80,8 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
     private StoryTreeIntegrityBusiness storyTreeIntegrityBusiness;
     @Autowired
     private LabelBusiness labelBusiness;
+    @Autowired
+    private StoryCommentBusiness storyCommentBusiness;
     
     public StoryBusinessImpl() {
         super(Story.class);
@@ -164,9 +167,9 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         
         // Store the story
         storyDAO.store(persisted);
-
+        
         updateParentStates(persisted);
-   
+
         if (tasksToDone && iteration != null) {
             for (Task t : persisted.getTasks()) {
                 taskBusiness.setTaskToDone(t);
@@ -190,7 +193,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         
         return persisted;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void updateParentStates(Story story) {
@@ -793,6 +796,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             HourEntryHandlingChoice taskHourEntryHandlingChoice,
             ChildHandlingChoice childHandlingChoice) {
       
+        storyCommentBusiness.deleteAttachmentsInStoryComments(story.getId());
         if (childHandlingChoice != null) {
             switch (childHandlingChoice) {
             case MOVE:
@@ -929,6 +933,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         for (Story s : story.getChildren()) {
             s.setParent(null);
         }
+        storyCommentBusiness.deleteAttachmentsInStoryComments(story.getId());
         story.getChildren().clear();
         
         // Remove tasks
@@ -989,5 +994,11 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
     public void setStoryHierarchyBusiness(StoryHierarchyBusiness storyHierarchyBusiness) {
         this.storyHierarchyBusiness = storyHierarchyBusiness;
     }
+
+    public void setStoryCommentBusiness(StoryCommentBusiness storyCommentBusiness) {
+        this.storyCommentBusiness = storyCommentBusiness;
+    }
+    
+    
     
 }

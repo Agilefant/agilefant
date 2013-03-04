@@ -16,6 +16,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import fi.hut.soberit.agilefant.annotations.PrefetchId;
 import fi.hut.soberit.agilefant.business.HourEntryBusiness;
 import fi.hut.soberit.agilefant.model.HourEntry;
+import fi.hut.soberit.agilefant.security.SecurityUtil;
+import fi.hut.soberit.agilefant.transfer.HourEntryDelta;
 
 @Component("hourEntryAction")
 @Scope("prototype")
@@ -32,6 +34,8 @@ public class HourEntryAction extends ActionSupport implements CRUDAction, Prefet
     private boolean limited;
     
     private List<HourEntry> hourEntries = new ArrayList<HourEntry>();
+    
+    private HourEntryDelta delta;
    
     public String retrieveTaskHourEntries() {
         this.hourEntries = hourEntryBusiness.retrieveTaskHourEntries(parentObjectId, limited);
@@ -43,6 +47,15 @@ public class HourEntryAction extends ActionSupport implements CRUDAction, Prefet
     }
     public String retrieveBacklogHourEntries() {
         this.hourEntries = hourEntryBusiness.retrieveBacklogHourEntries(parentObjectId, limited);
+        return Action.SUCCESS;
+    }
+    
+    public String retrieveLatestHourEntryDelta() {
+        this.delta = new HourEntryDelta();
+        long deltaMinutes = hourEntryBusiness.retrieveLatestHourEntryDelta(SecurityUtil.getLoggedUserId());
+        if (deltaMinutes > 0) {
+            this.delta.setDelta(deltaMinutes);
+        }
         return Action.SUCCESS;
     }
     
@@ -141,6 +154,10 @@ public class HourEntryAction extends ActionSupport implements CRUDAction, Prefet
     }
     public void initializePrefetchedData(int objectId) {
         this.hourEntry = hourEntryBusiness.retrieve(objectId);
+    }
+    
+    public HourEntryDelta getDelta() {
+        return delta;
     }
 
 }

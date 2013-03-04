@@ -102,3 +102,7 @@ div.dynamictable-infobox {
   border: 1px solid #F0C000;
   background-color: #FFFFCE;
 }
+
+.warning-text {
+	color: #f00;
+}

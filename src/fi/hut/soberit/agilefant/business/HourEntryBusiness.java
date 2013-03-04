@@ -94,5 +94,6 @@ public interface HourEntryBusiness extends GenericBusiness<HourEntry> {
 
     void moveToBacklog(Collection<? extends HourEntry> hourEntries,
             Backlog backlog);
+    long retrieveLatestHourEntryDelta(int userId);
 
 }

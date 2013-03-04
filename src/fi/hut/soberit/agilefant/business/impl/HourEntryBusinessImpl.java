@@ -366,4 +366,11 @@ public class HourEntryBusinessImpl extends GenericBusinessImpl<HourEntry>
             hourEntryDAO.store(newHourEntry);
         }
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public long retrieveLatestHourEntryDelta(int userId) {
+        return hourEntryDAO.retrieveLatestHourEntryDelta(userId);
+    }
+
 }

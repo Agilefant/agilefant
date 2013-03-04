@@ -253,6 +253,7 @@ StoryListController.prototype._addColumnConfigs = function(config) {
   config.addColumnConfiguration(StoryController.columnIndices.buttons, StoryListController.columnConfig.buttons);
   config.addColumnConfiguration(StoryController.columnIndices.details, StoryListController.columnConfig.details);
   config.addColumnConfiguration(StoryController.columnIndices.tasksData, StoryListController.columnConfig.tasks);
+
 };
 
 
@@ -442,7 +443,7 @@ StoryListController.columnConfig.details = {
   fullWidth : true,
   visible : false,
   targetCell: StoryController.columnIndices.details,
-  subViewFactory : StoryController.prototype.storyDetailsFactory,
+  subViewFactory :  StoryController.prototype.storyDetailsFactory,
   delayedRender: true
 };
 StoryListController.columnConfig.tasks = {

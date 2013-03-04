@@ -74,6 +74,10 @@ public class User implements NamedObject {
     
     private Set<Task> tasks = new HashSet<Task>();
     
+    private Set<StoryComment> storyComments = new HashSet<StoryComment>(0);
+    
+    private Set<TaskComment> taskComments = new HashSet<TaskComment>(0);
+    
     private ExactEstimate weekEffort = new ExactEstimate(0);
     
     private Collection<Holiday> holidays = new HashSet<Holiday>();
@@ -309,6 +313,24 @@ public class User implements NamedObject {
         return tasks;
     }
     
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "users")
+    public Set<StoryComment> getStoryComments() {
+            return this.storyComments;
+    }
+
+    public void setStoryComments(Set<StoryComment> commentses) {
+            this.storyComments = commentses;
+    }
+        
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "users")
+    public Set<TaskComment> getTaskComments() {
+        return taskComments;
+    }
+
+    public void setTaskComments(Set<TaskComment> taskComments) {
+        this.taskComments = taskComments;
+    }
+
     public void setWeekEffort(ExactEstimate weekEffort) {
         this.weekEffort = weekEffort;
     }

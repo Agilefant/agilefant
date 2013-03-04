@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fi.hut.soberit.agilefant.business.CommentAttachmentsBusiness;
 import fi.hut.soberit.agilefant.business.DailyWorkBusiness;
 import fi.hut.soberit.agilefant.business.HourEntryBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
@@ -14,6 +15,7 @@ import fi.hut.soberit.agilefant.business.RankUnderDelegate;
 import fi.hut.soberit.agilefant.business.RankingBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
 import fi.hut.soberit.agilefant.business.TaskBusiness;
+import fi.hut.soberit.agilefant.business.TaskCommentBusiness;
 import fi.hut.soberit.agilefant.db.TaskDAO;
 import fi.hut.soberit.agilefant.exception.ObjectNotFoundException;
 import fi.hut.soberit.agilefant.exception.OperationNotPermittedException;
@@ -25,6 +27,7 @@ import fi.hut.soberit.agilefant.model.StoryState;
 import fi.hut.soberit.agilefant.model.Task;
 import fi.hut.soberit.agilefant.model.TaskState;
 import fi.hut.soberit.agilefant.model.User;
+import fi.hut.soberit.agilefant.util.CommentType;
 import fi.hut.soberit.agilefant.util.HourEntryHandlingChoice;
 
 @Service("taskBusiness")
@@ -49,6 +52,9 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
 
     @Autowired
     private HourEntryBusiness hourEntryBusiness;
+    
+    @Autowired
+    private TaskCommentBusiness taskCommentBusiness;
 
     private TaskDAO taskDAO;
 
@@ -95,7 +101,7 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
                 this.rankToBottom(task, storyId, iterationId);
             }
         }
-    
+        
         Story parent = task.getStory();
         Story grandFather=null;
         if(currentTaskState == TaskState.NOT_STARTED && task.getState() != TaskState.NOT_STARTED) {
@@ -281,6 +287,7 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
             throw new OperationNotPermittedException(
                     "Task contains spent effort entries.");
         }
+        taskCommentBusiness.deleteAttachmentsInTaskComments(task.getId());
         taskDAO.remove(task.getId());
     }
 

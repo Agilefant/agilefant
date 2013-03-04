@@ -60,8 +60,13 @@
 	   <result name="success" type="httpheader">
 	     <param name="status">200</param>
 	   </result>
+	  </action> 
+	  <action name="retrieveLatestHourEntryDelta" class="hourEntryAction" method="retrieveLatestHourEntryDelta">
+	    <result name="success" type="json">
+	      <param name="target">delta</param>
+	    </result>
 	  </action>
-  
+	  
   </package>
   
 </struts>

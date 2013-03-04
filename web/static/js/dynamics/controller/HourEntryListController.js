@@ -63,7 +63,18 @@ HourEntryListController.prototype.paintHourEntryTable = function() {
   this.hourEntryTableView.render(); 
   this.logEffortController.openRowEdit();
   
-  this.logEffortRow.getCellByName("effortSpent").getEditor().focus();
+  var elEditor = this.logEffortRow.getCellByName("effortSpent").getEditor();
+  var jqueryElEditor = jQuery('.dynamics-editor-element:eq(' + 1 + ')');
+
+ jQuery.getJSON(
+      "ajax/retrieveLatestHourEntryDelta.action",
+      {},
+      function(data,status) {
+        if (data) {
+          elEditor.setEditorValue(data.delta);
+        }
+        jqueryElEditor.select();
+      });
 };
 HourEntryListController.prototype.showLogEffortRow = function() {
 

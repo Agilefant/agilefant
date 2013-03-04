@@ -1271,13 +1271,14 @@ TableEditors.DialogEditor.defaultOptions = {
      * @member TableEditors.DialogEditor
      */
     dialogTitle: "(Insert title here)",
-    
     /**
      * Dialog close
      * Default: function() { }
      * @member TableEditors.DialogEditor
      */
-    dialogClose: function() { }
+    dialogClose: function() { return true; }
+
+    	
 };
 
 /**

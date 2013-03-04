@@ -35,12 +35,18 @@ SpentEffortWidget.prototype.initDialog = function() {
   });
   this.userSpentEffort = new UserSpentEffortWidget(this.userEffortEl,
       window.pageController.getCurrentUser().getId());
+  this.firstUpdateDone = false;
   
 };
 
 SpentEffortWidget.prototype.entriesChanged = function() {
   this.userSpentEffort.reload();
-  // $(this.element[0]).parent().find('Button').focus(); -> Should first focus to ES box and after save to Close-button. This focus direct to Close-button.
+//Focus on close button only after the initial update where the focus is set on the effort spent box
+  if (this.firstUpdateDone == true) {
+    jQuery(this.element[0]).parent().find('Button').focus();
+  } else {	
+    this.firstUpdateDone = true;
+  }
 };
 
 /**

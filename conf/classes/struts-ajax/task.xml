@@ -6,7 +6,7 @@
 <struts>
   
   <package name="ajax-task" namespace="/ajax" extends="ajax">
-    
+      
     <action name="deleteTask" method="delete" class="taskAction">
       <result name="success" type="httpheader">
         <param name="status">200</param>
@@ -76,7 +76,6 @@
       <result name="success" type="json">
       </result>
     </action>
-  
     
   </package>
   

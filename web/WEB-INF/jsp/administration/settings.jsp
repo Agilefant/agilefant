@@ -182,9 +182,37 @@ $(document).ready(function() {
     </table>
     
     <ww:submit value="Save all" cssClass="dynamics-button"></ww:submit>
-    
-    
-    
+    <!-- 
+    	Configuration for file attachment in comments
+    	
+     -->
+     
+     <H3> File Attachment</H3>
+     
+     
+     <table class="settings-table">
+     	<tr>
+     		<td><ww:text name="Location for saving files"></ww:text></td>
+     		<td><ww:textfield  name="locationForSavingAttachment" id="fileSaveLocation" size="35" ></ww:textfield></td>
+     		<c:if test="hasActionErrors()">
+   				<div>
+			      <ww:actionerror/>
+			   </div>
+			</c:if>
+     	</tr>
+     	<tr>
+     		<td><ww:text name="Max.size of all files (MB)"></ww:text></td>
+     		<td><ww:textfield  name="maxSizeOfAllAttachments" id="maxSizeOfAllAttachment" size="4"></ww:textfield></td>
+     	</tr>  
+     	<tr>
+     		<td><ww:text name="Max.number of attachments per comment"></ww:text></td>
+     		<td><ww:textfield  name="maxNumberOfAttachment" size="4" id="maxNumberOfAttachments" ></ww:textfield></td>
+     	</tr>     
+     </table>
+     <ww:submit value="Save All" cssClass="dynamics-button"></ww:submit>
+     <!-- 
+     	End of configuration
+      -->
     <div style="margin: 0; padding: 0; display: none;" id="thresholdDiv">
     
     <h3>Load thresholds</h3>

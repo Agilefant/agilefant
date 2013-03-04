@@ -7,7 +7,7 @@ var StoryController = function StoryController(model, view, backlogController) {
 };
 
 StoryController.columnNames =
-  ["priority", "labelsIcon", "id", "name", "value", "points", "state", "responsibles", "el", "oe", "es", "actions", "labels", "description", "buttons", "details", "tasksData"];
+  ["priority", "labelsIcon", "id", "name", "value", "points", "state", "responsibles", "el", "oe", "es", "actions", "labels", "description","buttons", "details", "tasksData"];
 StoryController.columnIndices = CommonController.createColumnIndices(StoryController.columnNames);
 
 
@@ -212,6 +212,8 @@ StoryController.prototype.moveStory = function() {
     callback: function(id) { me._moveStory(id); },
     title: "Select backlog to move to"
   });
+  var backlogTextField = jQuery('.autocomplete-searchBoxContainer:eq(0) input');
+  backlogTextField.focus();
 };
 
 StoryController.prototype.rankStory = function(view, model, previousModel) {
@@ -248,12 +250,153 @@ StoryController.prototype.storyDetailsFactory = function(view, model) {
   return new StoryInfoWidget(model, this, view);
 };
 
-StoryController.prototype.storyTaskListFactory = function(view, model) {
-  $('<div class="ruler">&nbsp;</div>').appendTo(view.getElement());
-  var elem = $('<div/>').appendTo(view.getElement());
-  this.taskListView = new DynamicTable(this, this.model, StoryController.taskListConfig, elem);
-  return this.taskListView;
+StoryController.prototype.buildCommentBlock = function (commentType, view, model){
+	// variable required for getting comments
+	var commentStoreUrl = null;
+	var commentRetrievUrl = null;
+	var headLineStyle = null;
+	var commentBlockMain ;
+	if(commentType === 'story'){
+		commentRetrievUrl = 'ajax/retrieveStoryComment.action';
+		headLineStyle = ".comment_head_story_";
+		commentBlockMain = $('<div class="common_custom_storyCommentBox_001" />').appendTo(view.getElement());
+	}else if(commentType === 'task'){
+		commentRetrievUrl = 'ajax/retrieveTaskComment.action';
+		headLineStyle = ".comment_head_task_";
+		commentBlockMain = $('<div class="common_custom_taskCommentBox_001" />').appendTo(view.getElement());
+	}		
+	var commentViewMain = commentBlockMain;
+	$('<div class="ruler">&nbsp;</div>').appendTo(commentViewMain);
+
+	
+	// most of the code below are simple and self-explanary. 
+	var commentTogglerButton =  $('<div class="custom_txt02 dynamictable-expand"></div>').appendTo(commentViewMain);
+	$('<b class="custom_fleft"> Comments </b>').appendTo(commentViewMain);
+	
+	var commentPreview = null;
+		if(commentType === 'story'){
+			commentPreview = $('<div class="custom_span_01">').appendTo(commentViewMain);
+		}else{
+		   commentPreview = $('<div class="custom_span_01 task">').appendTo(commentViewMain);
+	    }
+	
+	
+	var commentWrapper = $('<div style="display:none;">').appendTo(commentViewMain);
+	
+	commentTogglerButton.click(jQuery.proxy(function() {
+		if(commentWrapper.is(":visible")){
+			commentWrapper.css( {"display":"none"});
+			commentPreview.show();
+			newCommentPostBlock.hide();
+			$(this).addClass( 'dynamictable-expand' );
+			$(this).removeClass( 'dynamictable-collapse');
+			clickLink.html(' ( Click here to add new comment ) ');
+		}else{
+			commentWrapper.css( {"display":"block","clear":"both"} );
+			commentPreview.hide()
+			$(this).addClass( 'dynamictable-collapse' );
+			$(this).removeClass( 'dynamictable-expand');
+		}	
+	}));
+	var commentHeader = $('<div class="post_new_outer" />');
+	var clickLink = $('<div class="custom_span_01"> ( Click here to add new comment ) </div>').appendTo(commentHeader);
+	clickLink.click(jQuery.proxy(function() {
+		newCommentPostBlock.toggle();
+		postCommentFrame.attr('src',"ajax/doFileUpload.action?commentType="+commentType+"&objectId="+model.id);
+		postCommentFrame.show();
+		if(newCommentPostBlock.is(":hidden")){
+			clickLink.html(' ( Click here to add new comment ) ');
+		}else{
+			clickLink.html(' ( Click here to hide ) ');
+		}
+	}));
+	
+	
+	var header = $('<input type="button"	 class="customrefresh_span" value="Refresh" />').click(jQuery.proxy(function() {
+		commentBlock.load(commentRetrievUrl,retriveParams, function() {		 
+  		  commentPreview.html(StoryController.prototype.getCommentPreviewString($(headLineStyle+model.id).text(),commentType));
+  	  });
+	}));
+	commentHeader.appendTo(commentWrapper);
+	var newCommentPostBlock = $('<div />');
+	var postCommentFrame ;
+	if ($.browser.msie && 	jQuery.browser.version > 7.0 ){
+		postCommentFrame = $('<iFrame src="" width="96%" height="" scrolling="no" style="border:none;"/>');
+	}else{
+		postCommentFrame = $('<iFrame src="" width="96%" height="" scrolling="no" style="border:none;"/>');
+	}
+	postCommentFrame.load(function() {
+		if(!postCommentFrame.attr("src")){
+			newCommentPostBlock.hide();
+		}
+		if(newCommentPostBlock.is(":hidden")){
+			clickLink.html(' ( Click here to add new comment ) ');
+		}else{
+			clickLink.html(' ( Click here to hide ) ');
+		}
+		header.click();
+		
+	});
+	postCommentFrame.attr("id",commentType+"_"+model.id);
+	postCommentFrame.attr("name",commentType+"_"+model.id);
+	postCommentFrame.appendTo(newCommentPostBlock);
+	
+	newCommentPostBlock.hide();
+	header.appendTo(commentWrapper);
+	newCommentPostBlock.appendTo(commentWrapper);
+	
+	var retriveParams = {};
+	retriveParams['objectId'] = model.id;
+  
+	
+	this.element = $('<div />').appendTo(commentWrapper);
+	  var commentBlock = $('<div class="storyComment_custom clear" />').appendTo(commentWrapper);
+	  commentBlock.load(commentRetrievUrl,retriveParams, function() {
+	  commentPreview.html(StoryController.prototype.getCommentPreviewString($(headLineStyle+model.id).text(),commentType));	
+	  });
+return view;
+}
+StoryController.prototype.getCommentPreviewString = function (preview,commentType){
+	
+	if(preview != null && preview.length > 120){
+		  return preview.substring(0,120)+"... ( more )";
+	  } else if(preview == null ||  preview.length == 0){
+		  return "There are no comments for this "+commentType;
+	  }else{
+		  return preview;
+	  }
+}
+
+StoryController.prototype.storyCommentsFactory = function(view, model) {
+		
+	view = StoryController.prototype.buildCommentBlock('story',view,this.model);
+	  var elem = $('<div />').appendTo(view.getElement());
+	  this.taskListView = new DynamicTable(this, this.model, null, elem);
+	  return this.taskListView;
 };
+
+
+StoryController.prototype.storyTaskListFactory = function(view, model) { 
+	  $('<div class="ruler">&nbsp;</div>').appendTo(view.getElement());
+	  var elem = $('<div/>').appendTo(view.getElement());
+	  this.taskListView = new DynamicTable(this, this.model, StoryController.taskListConfig, elem);
+	  return this.taskListView;
+};
+
+StoryController.prototype.taskCommentListFactory = function(view, model) {
+	  view = StoryController.prototype.buildCommentBlock('task',view,this.model);
+  	  var elem = $('').appendTo(view.getElement());
+	  this.taskListView = new DynamicTable(this, this.model, null, elem);
+	  return this.taskListview;
+}
+
+
+StoryController.prototype.taskWithoutStoryCommentListFactory = function(view, model) {
+	  view = StoryController.prototype.buildCommentBlock('task',view, model);
+	  var elem = $('').appendTo(view.getElement());
+	  this.taskListView = new DynamicTable(this, model, null, elem);
+	  return this.taskListview;
+}
 
 /**
  * 
@@ -265,8 +408,8 @@ StoryController.prototype.showTaskColumn = function() {
     cell.show();
   }
   if (cell2) {
-    cell2.show();
-  }
+	    cell2.show();
+	  }
 };
 
 /**
@@ -279,8 +422,8 @@ StoryController.prototype.hideTaskColumn = function() {
     cell.hide();
   }
   if (cell2) {
-    cell2.hide();
-  }
+	    cell2.hide();
+	  }
 };
 
 /**
@@ -331,11 +474,14 @@ StoryController.prototype.createTask = function() {
   var controller = new TaskController(mockModel, null, this);
   var row = this.taskListView.createRow(controller, mockModel, "top");
   controller.view = row;
-  row.autoCreateCells([TaskController.columnIndices.prio, TaskController.columnIndices.actions]);
+  row.autoCreateCells([TaskController.columnIndices.prio, TaskController.columnIndices.comments]);
   row.render();
   controller.openRowEdit();
 };
 
+
+StoryController.prototype.showComments = function() {
+};
 /**
  * 
  */
@@ -356,7 +502,7 @@ StoryController.prototype.descriptionToggleFactory = function(view, model) {
     collapse: StoryController.prototype.hideDescriptionColumn,
     expand: StoryController.prototype.showDescriptionColumn,
     expanded: false,
-    targetCells: [ "details" ]
+    targetCells: ["details" ]
   };
   this.toggleView = new DynamicTableToggleView(options, this, view);
   return this.toggleView;
@@ -448,6 +594,10 @@ StoryController.prototype.openLogEffort = function() {
   var widget = new SpentEffortWidget(this.model);
 };
 
+StoryController.prototype.openComments = function() {
+  var widget = new CommentWidget(this.model);
+};
+
 StoryController.prototype.openQuickLogEffort = function(model, view) {
   this.openLogEffort();
   //view.openEditor(false, null, true);
@@ -495,7 +645,7 @@ StoryController.prototype.searchForTask = function() {
  */
 (function() {
   var config = new DynamicTableConfiguration( {
-    //cssClass: "dynamicTable-sortable-tasklist",
+   // cssClass: "dynamicTable-sortable-tasklist",
     rowControllerFactory : StoryController.prototype.taskControllerFactory,
     dataSource : StoryModel.prototype.getTasks,
     dataType: "task",
@@ -635,18 +785,25 @@ StoryController.prototype.searchForTask = function() {
     subViewFactory: TaskController.prototype.actionColumnFactory
   });
   config.addColumnConfiguration(TaskController.columnIndices.description, {
-    columnName: "description",
-    fullWidth : true,
-    get : TaskModel.prototype.getDescription,
-    decorator: DynamicsDecorators.emptyTaskDescriptionDecorator,
-    cssClass : 'task-data text-editor',
-    visible : false,
-    editable : true,
-    edit : {
-      editor : "Wysiwyg",
-      set : TaskModel.prototype.setDescription
-    }
-  });
+	    columnName: "description",
+	    fullWidth : true,
+	    get : TaskModel.prototype.getDescription,
+	    decorator: DynamicsDecorators.emptyTaskDescriptionDecorator,
+	    cssClass : 'task-data text-editor',
+	    visible : false,
+	    editable : true,
+	    edit : {
+	      editor : "Wysiwyg",
+	      set : TaskModel.prototype.setDescription
+	    }
+	  });
+  config.addColumnConfiguration(TaskController.columnIndices.comments, {
+	  columnName: "comments",
+	  fullWidth : true,
+	  cssClass : 'task-data',
+	  subViewFactory : StoryController.prototype.taskCommentListFactory,
+	  visible : false
+	  });
   config.addColumnConfiguration(TaskController.columnIndices.buttons, {
     columnName: "buttons",
     fullWidth : true,

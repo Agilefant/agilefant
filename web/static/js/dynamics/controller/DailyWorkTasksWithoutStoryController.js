@@ -7,7 +7,7 @@ extendObject(DailyWorkTasksWithoutStoryController, TasksWithoutStoryController);
 
 
 DailyWorkTasksWithoutStoryController.columnNames =
-  [ "prio", "name", "state", "context", "detailedContext", "responsibles", "el", "oe", "es", "actions", "description", "buttons"];
+  [ "prio", "name", "state", "context", "detailedContext", "responsibles", "el", "oe", "es", "actions", "description", "buttons","comments"];
 DailyWorkTasksWithoutStoryController.columnIndices = CommonController.createColumnIndices(DailyWorkTasksWithoutStoryController.columnNames);
 
 
@@ -54,7 +54,7 @@ DailyWorkTasksWithoutStoryController.prototype.createTask = function(forceAssign
   var controller = new TaskController(mockModel, null, this);
   var row = this.getCurrentView().createRow(controller, mockModel, "top");
   controller.view = row;
-  row.autoCreateCells([0, 4]); //hide priority and detailedContext columns
+  row.autoCreateCells([DailyWorkTasksWithoutStoryController.columnIndices.prio, DailyWorkTasksWithoutStoryController.columnIndices.comments]);
   row.render();
   controller.openRowEdit();
   row.getCellByName("actions").hide();
@@ -68,7 +68,7 @@ DailyWorkTasksWithoutStoryController.prototype._addColumnConfigs = function(conf
   config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.state, TasksWithoutStoryController.columnConfig.state);
   
   config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.context, TasksWithoutStoryController.columnConfig.context);
-  config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.detailedContext, WorkQueueController.columnConfig.detailedContext);
+ // config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.detailedContext, WorkQueueController.columnConfig.detailedContext);
   
   config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.responsibles, TasksWithoutStoryController.columnConfig.responsibles);
   config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.el, TasksWithoutStoryController.columnConfig.effortLeft);
@@ -79,6 +79,7 @@ DailyWorkTasksWithoutStoryController.prototype._addColumnConfigs = function(conf
   config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.actions, TasksWithoutStoryController.columnConfig.actions);
   config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.description, TasksWithoutStoryController.columnConfig.description);
   config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.buttons, TasksWithoutStoryController.columnConfig.buttons);
+  config.addColumnConfiguration(DailyWorkTasksWithoutStoryController.columnIndices.comments, TasksWithoutStoryController.columnConfig.comments);
 
 };
 

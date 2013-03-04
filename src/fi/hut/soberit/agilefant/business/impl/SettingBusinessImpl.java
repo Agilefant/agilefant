@@ -1,12 +1,18 @@
 package fi.hut.soberit.agilefant.business.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
 
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +37,12 @@ import fi.hut.soberit.agilefant.model.Setting;
 public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
         SettingBusiness {
     
+    private static final String CONFIG_LOCATION = "configuration.properties";
+    
+    private static boolean propertyLoaded = false;
+    
     //setting keys
+    
     public static final String SETTING_NAME_HOUR_REPORTING = "HourReporting";
     public static final String SETTING_NAME_DAILY_WORK = "DailyWork";
     public static final String SETTING_NAME_TIME_SHEET = "TimeSheet";
@@ -46,6 +57,11 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
     public static final String SETTING_NAME_BRANCH_METRICS = "branchMetricsType";
     public static final String SETTING_NAME_LABELS_IN_STORY_LIST = "labelsInStoryList";
     public static final String SETTING_NAME_WEEKENDS_IN_BURNDOWN = "weekendsInBurndown";
+    public static final String SETTING_NAME_ATTACHMENT_SAVE_LOCATION = "AttachmentLocation";
+    public static final String SETTING_NAME_MAX_NUMBER_OF_ATTACHMENT = "MaxNumberOfAttachment";
+    public static final String SETTING_NAME_MAX_SIZE_OF_ALL_ATTACHMENT = "MaxSizeOfAllAttachment";
+    
+    private static Properties attachmentProperties;
     
     public SettingBusinessImpl() {
         super(Setting.class);
@@ -68,6 +84,7 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
         for(Setting setting : allSettings) {
             this.settingCache.put(setting.getName(), setting);
         }
+        loadProperties();
     }
 
     @Transactional(readOnly = true)
@@ -383,7 +400,167 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
         
         return setting.getValue().equals("true");
     }
+/**
+ * @author rahul
+ * @category Settings 
+ * @Creted for Comment attachment configuration
+ *  * 
+ */
+    @Override
+    public boolean setAttachmentSaveLocation(String location) {
+        boolean attachmentSaveLocationConfiguration = false;
+        if(location != null && !location.isEmpty()){
+            try {
+                attachmentSaveLocationConfiguration = createRequiredDirectory(location);
+            } catch (Exception e) {
+                System.out.println("Unable to create required directories , check permision of directory selected");     
+                attachmentSaveLocationConfiguration = false;
+            }
+            if(attachmentSaveLocationConfiguration){
+                this.storeSetting(SETTING_NAME_ATTACHMENT_SAVE_LOCATION, location);
+            }else{
+                attachmentSaveLocationConfiguration = false;
+            }
+        }
+        return attachmentSaveLocationConfiguration;
+    }
+
+    @Transactional(readOnly = true)
+    public String getAttachmentSaveLocation() {
+        Setting settings = this.retrieveByName(SETTING_NAME_ATTACHMENT_SAVE_LOCATION);
+        if(settings == null){
+            return "Not configured";
+        }
+        return settings.getValue();
+    }
+
+    @Override
+    public void setMaxNumberOfAttachment(int noOfAttachment) {
+        this.storeSetting(SETTING_NAME_MAX_NUMBER_OF_ATTACHMENT, noOfAttachment);        
+    }
+
+    @Transactional(readOnly = true)
+    public int getMaxNumberOfAttachment() {
+        Setting settings = this.retrieveByName(SETTING_NAME_MAX_NUMBER_OF_ATTACHMENT);
+        if (settings == null ){
+            return 0;
+        }
+        return Integer.parseInt(settings.getValue());
+    }
+
+    @Override
+    public void setMaxSizeForAllAttachment(int maxSize) {
+        this.storeSetting(SETTING_NAME_MAX_SIZE_OF_ALL_ATTACHMENT, maxSize);
+        
+    }
+
+    @Transactional(readOnly = true)
+    public int getMaxSizeForAllAttachment() {
+        Setting settings = this.retrieveByName(SETTING_NAME_MAX_SIZE_OF_ALL_ATTACHMENT);
+        if (settings == null ){
+            return 0;
+        }
+        return Integer.parseInt(settings.getValue());
+    }
+
+    private boolean attachmentProperyLoaded(){
+        return propertyLoaded;        
+    }
     
+    private void loadProperties(){
+        Setting setting = this.retrieveByName(SETTING_NAME_ATTACHMENT_SAVE_LOCATION);
+        if(setting == null || setting.getValue() == null || setting.getValue().isEmpty()){
+                InputStream is = getClass().getResourceAsStream("/WEB-INF/"+CONFIG_LOCATION);
+                final String seperator = System.getProperty("file.separator");
+                final String FILE_SAVE_LOCATION = System.getProperty("user.home")+seperator+"agilefant"+seperator+"user_uploads"+seperator;
+                final int MAX_FILE_SIZE = 20;
+                final int MAX_NUM_FILES = 5;
+                
+               attachmentProperties = new Properties();
+               try {
+                    attachmentProperties.load(is);            
+                    setAttachmentSaveLocation(attachmentProperties.getProperty("attachment.save.location"));
+                    setMaxNumberOfAttachment(Integer.parseInt(attachmentProperties.getProperty("attachment.max.files.count")));
+                    setMaxSizeForAllAttachment(Integer.parseInt(attachmentProperties.getProperty("attachment.files.max.size"))); 
+                    System.out.println("Attachment properties loaded from "+CONFIG_LOCATION+ " file");
+                    propertyLoaded = true;
+                } catch (Exception e) {
+                    setAttachmentSaveLocation(FILE_SAVE_LOCATION);
+                    setMaxNumberOfAttachment(MAX_NUM_FILES);
+                    setMaxSizeForAllAttachment(MAX_FILE_SIZE);
+                    System.out.println("Default properties loaded");
+                    propertyLoaded = true;
+                    /*            
+                    attachmentProperties.put("attachment.save.location", FILE_SAVE_LOCATION);
+                    attachmentProperties.put("attachment.files.max.size", MAX_FILE_SIZE);
+                    attachmentProperties.put("attachment.max.files.count", MAX_NUM_FILES);*/
+                }
+        }
+    }
     
+    public boolean createRequiredDirectory(String location) throws Exception{
+        if(location != null && !location.isEmpty()){
+            File parentDirectory = new File(location);
+            try{
+                if(parentDirectory.exists()){
+                    // Parent directory exists make required child directories
+                    if(!childDirectoyCreation(location)){
+                        System.out.println("Failed to create child directories make sure read write permission are give to the parent directory");
+                        return false;
+                    }else{
+                        System.out.println("Child directories created successfully");
+                        return true;
+                    }
+                }else{
+                    // Parent directory not exists trying to create parent directory
+                   if( parentDirectory.mkdirs() ){
+                       if(!childDirectoyCreation(location)){
+                           System.out.println("Failed to create child directories make sure read write permission are give to the parent directory");
+                           return false;
+                       }else{
+                           System.out.println("Child directories created successfully");
+                           return true;
+                       }
+                   }else{
+                       return false;                       
+                   }
+                }
+            }catch (Exception e) {
+                
+            }
+        }else{
+            return false;
+        }
+        return false;
+    }
+    
+    public boolean childDirectoyCreation(String parentLocation){
+        try{
+            // Creating child directories
+            boolean childDirectoryStatus = false;
+            parentLocation += parentLocation.endsWith(System.getProperty("file.separator")) ? "" : System.getProperty("file.separator");
+            File storyCommentDir = new File(parentLocation.trim()+"story");
+            File taskCommentDir = new File(parentLocation.trim()+"task");
+            if(!storyCommentDir.exists()){
+                childDirectoryStatus = storyCommentDir.mkdir();
+                System.out.println("Directory created : "+childDirectoryStatus);
+            }else{
+                childDirectoryStatus = storyCommentDir.canWrite();
+                System.out.println("Directory created : "+childDirectoryStatus);
+            }
+            
+            if(!taskCommentDir.exists()){
+                childDirectoryStatus = taskCommentDir.mkdir();
+                System.out.println("Directory created : "+childDirectoryStatus);
+            }else{
+                childDirectoryStatus = taskCommentDir.canWrite();
+                System.out.println("Directory created : "+childDirectoryStatus);
+            }
+            return childDirectoryStatus;
+        }catch (Exception ioe) {
+            System.out.println("Unhandled exception while creating child directories");
+            return false;
+        }
+    }
     
 }

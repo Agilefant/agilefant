@@ -7,7 +7,7 @@ var TaskController = function TaskController(model, view, parentController) {
 };
 
 TaskController.columnNames =
-  ["prio", "name", "state", "responsibles", "el", "oe", "es", "actions", "description", "buttons"];
+  ["prio", "name", "state", "responsibles", "el", "oe", "es", "actions", "description", "buttons","comments"];
 TaskController.columnIndices = CommonController.createColumnIndices(TaskController.columnNames);
 
 
@@ -94,12 +94,20 @@ TaskController.prototype.showDetails = function() {
   if (cell) {
     cell.show();
   }
+  var commentCell = this.view.getCellByName("comments");
+  if (commentCell) {
+	  commentCell.show();
+  }
 };
 
 TaskController.prototype.hideDetails = function() {
   var cell = this.view.getCellByName("description");
   if (cell) {
     cell.hide();
+  }
+  var commentCell = this.view.getCellByName("comments");
+  if (commentCell) {
+	  commentCell.hide();
   }
 };
 
@@ -168,6 +176,7 @@ TaskController.prototype.clearEffortLeftWhenTaskReady = function(model) {
 
 
 TaskController.prototype.actionColumnFactory = function(view, model) {
+
   var actionItems = [{
     text : "Split",
     callback : TaskController.prototype.createSplitTask
@@ -201,8 +210,7 @@ TaskController.prototype.actionColumnFactory = function(view, model) {
 TaskController.prototype.addToQueueEnabled = function(model, parentView) {
   if (model.getState() === "DONE") {
     return false;
-  }
-  
+  }  
   return ! model.isWorkingOnTask(PageController.getInstance().getCurrentUser());
 };
 

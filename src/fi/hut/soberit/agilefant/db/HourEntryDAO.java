@@ -75,4 +75,9 @@ public interface HourEntryDAO extends GenericDAO<HourEntry> {
     List<HourEntry> getStoryHourEntries(int storyId, int limit);
     
     public List<HourEntry> retrieveByUserAndInterval(User user, Interval interval);
+    
+    long retrieveLatestHourEntryDelta(int userId);
+    
+    //public HourEntry retrieveLatestByUser(User user);
+
 }

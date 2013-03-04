@@ -235,8 +235,7 @@ public class ProductAction implements CRUDAction, Prefetching, ContextAware {
                     return true;
                 }
             }
-        }
-        
+        }        
         return false;
     }
     

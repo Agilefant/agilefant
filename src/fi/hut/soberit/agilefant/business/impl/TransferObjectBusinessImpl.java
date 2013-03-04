@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fi.hut.soberit.agilefant.business.BacklogBusiness;
+import fi.hut.soberit.agilefant.business.StoryCommentBusiness;
 import fi.hut.soberit.agilefant.business.HourEntryBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.business.ProductBusiness;
@@ -22,6 +23,7 @@ import fi.hut.soberit.agilefant.business.TransferObjectBusiness;
 import fi.hut.soberit.agilefant.business.UserBusiness;
 import fi.hut.soberit.agilefant.model.Assignment;
 import fi.hut.soberit.agilefant.model.Backlog;
+import fi.hut.soberit.agilefant.model.StoryComment;
 import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Product;
 import fi.hut.soberit.agilefant.model.Project;
@@ -34,6 +36,7 @@ import fi.hut.soberit.agilefant.model.WhatsNextEntry;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
 import fi.hut.soberit.agilefant.transfer.AssignedWorkTO;
 import fi.hut.soberit.agilefant.transfer.AutocompleteDataNode;
+import fi.hut.soberit.agilefant.transfer.StoryCommentTO;
 import fi.hut.soberit.agilefant.transfer.DailyWorkTaskTO;
 import fi.hut.soberit.agilefant.transfer.IterationTO;
 import fi.hut.soberit.agilefant.transfer.ProjectTO;
@@ -69,6 +72,9 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
     @Autowired
     private StoryBusiness storyBusiness;
     
+    @Autowired
+    private StoryCommentBusiness storyCommentBusiness;
+    
     
     private void fillInEffortSpent(TaskTO taskTO) {
         taskTO.setEffortSpent(hourEntryBusiness.calculateSum(taskTO.getHourEntries()));
@@ -80,6 +86,12 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
         TaskTO taskTO = new TaskTO(task);
         fillInEffortSpent(taskTO);
         return taskTO;
+    }
+    
+    public StoryCommentTO constructCommentTO(StoryComment storyComment){
+        StoryCommentTO storyCommentTO = new StoryCommentTO(storyComment);
+        // required some code here
+        return storyCommentTO;
     }
     
     /** {@inheritDoc} */
@@ -259,8 +271,7 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
             Set<Product> allowedProducts = new HashSet<Product>();
             for(Team team : user.getTeams()){
                 allowedProducts.addAll(team.getProducts());
-            }
-   
+            }   
             //check if we have access 
             if(allowedProducts.contains(prod)){
                 String name = recurseBacklogNameWithParents(blog);
@@ -269,8 +280,7 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
                 autocompleteData.add(node);
                 node.setOriginalObject(blog);
             } 
-        }
-        
+        }        
         return autocompleteData;
     }
     

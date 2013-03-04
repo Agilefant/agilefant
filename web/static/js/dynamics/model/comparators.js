@@ -29,6 +29,17 @@ var DynamicsComparators = {
       };
   },
   storyBacklogNameComparator: function(obj1, obj2) {
-    return DynamicsComparators.doCompare(obj1.getBacklog().getName(), obj2.getBacklog().getName());
+	  return DynamicsComparators.doCompare(obj1.getBacklog().getName(), obj2.getBacklog().getName());
+  },
+  storyIterationNameComparator: function(obj1, obj2) {
+    var name1 = "";
+    var name2 = "";
+    if (obj1.getIteration() != null) {
+      name1 = obj1.getIteration().getName();
+    }
+    if (obj2.getIteration() != null) {
+        name2 = obj2.getIteration().getName();
+    }
+    return DynamicsComparators.doCompare(name1, name2);
   }
 };

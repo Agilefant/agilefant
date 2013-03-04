@@ -1,5 +1,6 @@
 package fi.hut.soberit.agilefant.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,12 +56,14 @@ public class Task implements TimesheetLoggable, NamedObject, Rankable {
     private TaskState state;
     private int rank = 0;
     
+    public Set<TaskComment> taskComments = new HashSet<TaskComment>();
+    
     private ExactEstimate effortLeft;
     private ExactEstimate originalEstimate;
     private Set<User> responsibles = new HashSet<User>();
     private Set<TaskHourEntry> hourEntries = new HashSet<TaskHourEntry>();
     private Set<WhatsNextEntry> whatsNextEntries = new HashSet<WhatsNextEntry>();
-
+    
     public Task() { }
     
     public Task(Task other)
@@ -140,7 +143,7 @@ public class Task implements TimesheetLoggable, NamedObject, Rankable {
     public void setStory(Story story) {
         this.story = story;
     }
-
+    
     @Embedded
     @AttributeOverrides(@AttributeOverride(name = "minorUnits", column = @Column(name = "effortleft")))
     @XmlAttribute
@@ -231,5 +234,15 @@ public class Task implements TimesheetLoggable, NamedObject, Rankable {
     public void setRank(int rank) {
         this.rank = rank;
     }
+    
+/*    @JSON
+    public void setTaskComments(Set<TaskComment> taskComments) {
+        this.taskComments = taskComments;
+    }
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tasks")
+    @JSON
+    public Set<TaskComment> getTaskComments() {
+        return taskComments;
+    }*/
 
 }

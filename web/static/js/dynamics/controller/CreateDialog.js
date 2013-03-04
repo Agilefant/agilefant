@@ -138,7 +138,8 @@ CreateDialog.Product.prototype = new CreateDialogClass();
 CreateDialog.Product.columnIndices = {
     name: 0,
     description: 1,
-    teams: 2
+    teams: 2,
+    warning: 3
 };
 
 CreateDialog.Product.prototype.initFormConfig = function() {
@@ -171,8 +172,8 @@ CreateDialog.Product.prototype.initFormConfig = function() {
   });
   
   if (currentUser.getAdmin()) {
-  	config.addColumnConfiguration(CreateDialog.Product.columnIndices.teams, {
-    	title: "Add all teams to product",
+	config.addColumnConfiguration(CreateDialog.Product.columnIndices.teams, {
+	title: "Grant all teams access to product?",
     	get: currentUser.getAdmin,
     	editable: true,
     	edit: {
@@ -185,6 +186,16 @@ CreateDialog.Product.prototype.initFormConfig = function() {
   	});
   }
   
+  var warningFunction = function() {
+		return "Warning! You will only be able to see the product if you belong to a team that has access to it. You can modify access rights later from the Administration tab.";
+	}
+  config.addColumnConfiguration(CreateDialog.Product.columnIndices.warning, {
+      title: "",
+  	cssClass: "warning-text",
+      editable: false,
+      get: warningFunction,
+    });
+
   this.formConfig = config;
 };
 
@@ -280,7 +291,8 @@ CreateDialog.Iteration.columnIndices = {
   baselineLoad:5,
   assignees:  6,
   description:7,
-  teams: 8
+  teams: 8,
+  warning: 9
 };
 CreateDialog.Iteration.prototype.initFormConfig = function() {
   var currentUser = PageController.getInstance().getCurrentUser();
@@ -324,7 +336,7 @@ CreateDialog.Iteration.prototype.initFormConfig = function() {
       IterationController.columnConfigs.description);
   if (currentUser.getAdmin()) {
   	config.addColumnConfiguration(CreateDialog.Iteration.columnIndices.teams, {
-    	title: "Add all teams to standalone iteration",
+  		title: "Grant all teams access to iteration?",
     	get: currentUser.getAdmin,
     	editable: true,
     	edit: {
@@ -336,7 +348,16 @@ CreateDialog.Iteration.prototype.initFormConfig = function() {
     	}
   	});
   }
-	  	
+  
+  var warningFunction = function() {
+		return "Warning! If you create a standalone iteration, you will only be able to see it if you belong to a team that has access to it. You can modify access rights later from the Administration tab.";
+	}
+  config.addColumnConfiguration(CreateDialog.Iteration.columnIndices.warning, {
+      title: "",
+  	cssClass: "warning-text",
+      editable: false,
+      get: warningFunction,
+    });
   
   this.formConfig = config;
 };
@@ -685,17 +706,19 @@ CreateDialog.Team.prototype.initFormConfig = function() {
     edit : {
       editor : "Autocomplete",
       dialogTitle: "Select users",
-      dialogClose: function() { jQuery('.dynamics-editor-element:eq(' +
-        CreateDialog.Team.columnIndices.users + ')').focus(); },
+      dialogClose: function() { jQuery('.ui-button:eq(' + 1 + ')').focus(); }, // After selecting users focus on ok button
       dataType: "usersAndTeams",
       set : TeamModel.prototype.setUsers
     }
   });
   
   if (currentUser.getAdmin()) {
+	var falseFunction = function() {
+		  return "false";
+	  }
   	config.addColumnConfiguration(CreateDialog.Team.columnIndices.products, {
-    	title: "Add all products to team",
-    	get: currentUser.getAdmin,
+    	title: "Grant the team access to all products?",
+    	get: falseFunction,
     	editable: true,
     	edit: {
       		editor : "Selection",
@@ -706,8 +729,8 @@ CreateDialog.Team.prototype.initFormConfig = function() {
     	}
   	});
   	config.addColumnConfiguration(CreateDialog.Team.columnIndices.iterations, {
-    	title: "Add all standalone iterations to team",
-    	get: currentUser.getAdmin,
+    	title: "Grant the team access to all standalone iterations?",
+    	get: falseFunction,
     	editable: true,
     	edit: {
       		editor : "Selection",
@@ -718,6 +741,7 @@ CreateDialog.Team.prototype.initFormConfig = function() {
     	}
   	});
   }
+
 
   this.formConfig = config;
 };

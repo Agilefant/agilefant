@@ -196,6 +196,11 @@ StoryInfoBubble.prototype.addLinks = function() {
   var links = $('<div style="height: 1.5em;" />').addClass('details-links');
   this.element.find('.close-button').after(links);
 
+  $('<a href="javascript:">comments</a>').click(function() {
+	    me.bubble.destroy();
+	    me.openComments();
+	  }).appendTo(links);
+  
   $('<a href="javascript:">spent effort</a>').click(function() {
     me.bubble.destroy();
     me.openLogEffort();

@@ -32,7 +32,15 @@
       <interceptor name="security" class="securityInterceptor" />
       <interceptor name="prefetch" class="prefetchInterceptor" />
       <interceptor name="settings"	class="settingsInterceptor" />
+      <interceptor name="customMultipartForm" class="customMultipartFormInterceptor" />
+  
       
+       <interceptor-stack name="fileUploadStack">
+                <interceptor-ref name="customMultipartForm"/>
+                <interceptor-ref name="basicStack"/>
+       </interceptor-stack>
+       
+       
       <interceptor-stack name="authenticationStack">
         <interceptor-ref name="exception" />
         <interceptor-ref name="completeStack" />
