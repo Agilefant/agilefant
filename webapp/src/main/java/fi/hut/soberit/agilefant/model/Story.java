@@ -53,6 +53,8 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
     private Iteration iteration;
     private List<Story> children = new ArrayList<Story>();
 
+    private Set<StoryComment> storyComments = new HashSet<StoryComment>(0);
+    
     private Set<Label> labels = new HashSet<Label>();
 
     private Set<User> responsibles = new HashSet<User>();
@@ -350,5 +352,16 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
             newChild.setParent(this);
             this.getChildren().add(newChild);
         }
+    }
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "stories")
+    @XmlElementWrapper
+    @XmlElement(name = "comments")
+    public Set<StoryComment> getStoryComments() {
+            return this.storyComments;
+    }
+
+    public void setStoryComments(Set<StoryComment> storyComments) {
+            this.storyComments = storyComments;
     }
 }

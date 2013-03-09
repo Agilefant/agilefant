@@ -152,6 +152,13 @@ TasksWithoutStoryController.columnConfig.buttons = {
   visible : false,
   subViewFactory : DynamicsButtons.commonButtonFactory
 };
+TasksWithoutStoryController.columnConfig.comments = {
+		  columnName: "comments",
+		  fullWidth : true,
+		  cssClass : 'task-data',
+		  visible : false,
+		  subViewFactory : StoryController.prototype.taskWithoutStoryCommentListFactory
+};
 
 
 
@@ -185,6 +192,10 @@ TasksWithoutStoryController.prototype.taskControllerFactory = function(view, mod
   return taskController;
 };
 
+TasksWithoutStoryController.prototype.createNewTask = function() {
+	TasksWithoutStoryController.prototype.createTask.call(this, true);
+};
+
 TasksWithoutStoryController.prototype.createTask = function(forceAssignCurrentUser) {
   var mockModel = ModelFactory.createObject(ModelFactory.types.task);
   if (this.model && this.model instanceof IterationModel) {
@@ -199,7 +210,7 @@ TasksWithoutStoryController.prototype.createTask = function(forceAssignCurrentUs
   var controller = new TaskController(mockModel, null, this);
   var row = this.getCurrentView().createRow(controller, mockModel, "top");
   controller.view = row;
-  row.autoCreateCells([0]); //hide priority column
+  row.autoCreateCells([10]); //hide comment column
   row.render();
   controller.openRowEdit();
   row.getCellByName("actions").hide();
@@ -261,7 +272,7 @@ TasksWithoutStoryController.prototype._getTableConfig = function() {
     name : "createTask",
     text : "Create task",
     cssClass : "create",
-    callback : TasksWithoutStoryController.prototype.createTask
+    callback : TasksWithoutStoryController.prototype.createNewTask
   });
   
   return config;
@@ -280,4 +291,5 @@ TasksWithoutStoryController.prototype._addColumnConfigs = function(config) {
   config.addColumnConfiguration(TaskController.columnIndices.actions, TasksWithoutStoryController.columnConfig.actions);
   config.addColumnConfiguration(TaskController.columnIndices.description, TasksWithoutStoryController.columnConfig.description);
   config.addColumnConfiguration(TaskController.columnIndices.buttons, TasksWithoutStoryController.columnConfig.buttons);
+  config.addColumnConfiguration(TaskController.columnIndices.comments, TasksWithoutStoryController.columnConfig.comments);
 };

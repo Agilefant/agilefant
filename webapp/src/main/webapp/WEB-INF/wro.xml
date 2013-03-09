@@ -25,6 +25,7 @@
 		<js>/static/js/utils/aef.jstree.plugin.js</js>
 		<js>/static/js/dynamics/controller/PageController.js</js>
 		<js>/static/js/dynamics/controller/MenuController.js</js>
+		<js>/static/js/dynamics/controller/CommentController.js</js>
 	</group>
 
 	<group name="simile.min">
@@ -109,6 +110,8 @@
 		<js>/static/js/dynamics/view/Bubble.js</js>
 		<js>/static/js/dynamics/view/subviews/CellBubble.js</js>
 		<js>/static/js/dynamics/view/MultiEditWidget.js</js>
+		<js>/static/js/dynamics/view/UserCommentWidget.js</js>
+		<js>/static/js/dynamics/view/CommentWidget.js</js>
 
 		<js>/static/js/dynamics/model/CommonModel.js</js>
 		<js>/static/js/dynamics/model/BacklogModel.js</js>
@@ -170,6 +173,7 @@
 		<js>/static/js/dynamics/controller/AccessRowController.js</js>
 		<js>/static/js/dynamics/controller/ROIterationController.js</js>
 		<js>/static/js/dynamics/controller/ROStoryListController.js</js>
+		<js>/static/js/dynamics/controller/CommentController.js</js>
 
 		<js>/static/js/autocomplete/autocompleteSearchBox.js</js>
 		<js>/static/js/autocomplete/autocompleteSelectedBox.js</js>

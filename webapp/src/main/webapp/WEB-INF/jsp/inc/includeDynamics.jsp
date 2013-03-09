@@ -45,8 +45,10 @@
 		<aef:javascript path="dynamics/view/SpentEffortWidget" />
 		<aef:javascript path="dynamics/view/Bubble" />
 		<aef:javascript path="dynamics/view/subviews/CellBubble" />
-		<aef:javascript path="dynamics/view/MultiEditWidget" />
-
+		<aef:javascript path="dynamics/view/MultiEditWidget" />		
+		<aef:javascript path="dynamics/view/UserCommentWidget" />
+		<aef:javascript path="dynamics/view/CommentWidget" />
+		
 		<aef:javascript path="dynamics/model/CommonModel" />
 		<aef:javascript path="dynamics/model/BacklogModel" />
 		<aef:javascript path="dynamics/model/IterationModel" />
@@ -83,10 +85,8 @@
 		<aef:javascript path="dynamics/controller/ProjectRowController" />
 		<aef:javascript path="dynamics/controller/DailyWorkController" />
 		<aef:javascript path="dynamics/controller/TasksWithoutStoryController" />
-		<aef:javascript
-			path="dynamics/controller/DailyWorkStoryListController" />
-		<aef:javascript
-			path="dynamics/controller/DailyWorkTasksWithoutStoryController" />
+		<aef:javascript path="dynamics/controller/DailyWorkStoryListController" />
+		<aef:javascript path="dynamics/controller/DailyWorkTasksWithoutStoryController" />
 		<aef:javascript path="dynamics/controller/WorkQueueController" />
 		<aef:javascript path="dynamics/controller/TaskSplitDialog" />
 		<aef:javascript path="dynamics/controller/UserController" />
@@ -103,14 +103,14 @@
 		<aef:javascript path="dynamics/controller/PortfolioController" />
 		<aef:javascript path="dynamics/controller/PortfolioRowController" />
 		<aef:javascript path="dynamics/controller/MyAssignmentsMenuController" />
-		<aef:javascript
-			path="dynamics/controller/AdministrationMenuController" />
+		<aef:javascript	path="dynamics/controller/AdministrationMenuController" />
 		<aef:javascript path="dynamics/controller/PersonalLoadController" />
 		<aef:javascript path="dynamics/controller/AccessListController" />
 		<aef:javascript path="dynamics/controller/AccessRowController" />
 		<aef:javascript path="dynamics/controller/ROIterationController" />
-		<aef:javascript path="dynamics/controller/ROStoryListController" />
-
+		<aef:javascript path="dynamics/controller/ROStoryListController" />		
+		<aef:javascript path="dynamics/controller/CommentController" />
+		
 		<aef:javascript path="autocomplete/autocompleteSearchBox" />
 		<aef:javascript path="autocomplete/autocompleteSelectedBox" />
 		<aef:javascript path="autocomplete/autocompleteRecent" />
@@ -119,5 +119,6 @@
 		<aef:javascript path="autocomplete/autocompleteDialog" />
 		<aef:javascript path="autocomplete/autocompleteSingleDialog" />
 		<aef:javascript path="autocomplete/autocompleteInline" />
+		
 	</c:otherwise>
 </c:choose>

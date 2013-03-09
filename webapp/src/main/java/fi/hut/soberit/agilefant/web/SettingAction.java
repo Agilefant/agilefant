@@ -26,7 +26,11 @@ public class SettingAction extends ActionSupport {
     private boolean weekendsInBurndown = false;
     private String storyTreeFieldOrder;
     private SettingBusiness.BranchMetricsType branchMetricsType;
-    
+    // File attachment settings configurations
+    private String locationForSavingAttachment;
+    private int maxSizeOfAllAttachments = 0;
+    private int maxNumberOfAttachment = 0;
+        
     @Autowired
     private SettingBusiness settingBusiness;
     
@@ -43,6 +47,9 @@ public class SettingAction extends ActionSupport {
         this.branchMetricsType = this.settingBusiness.getBranchMetricsType();
         this.labelsInStoryList = this.settingBusiness.isLabelsInStoryList();
         this.weekendsInBurndown = this.settingBusiness.isWeekendsInBurndown();
+        this.locationForSavingAttachment = this.settingBusiness.getAttachmentSaveLocation();
+        this.maxSizeOfAllAttachments = this.settingBusiness.getMaxSizeForAllAttachment();
+        this.maxNumberOfAttachment = this.settingBusiness.getMaxNumberOfAttachment();
         return Action.SUCCESS;
     }
     
@@ -63,6 +70,15 @@ public class SettingAction extends ActionSupport {
         settingBusiness.setBranchMetricsType(branchMetricsType);
         settingBusiness.setLabelsInStoryList(labelsInStoryList);
         settingBusiness.setWeekendsInBurndown(weekendsInBurndown);
+        if(!validateAttachmentSettings()){
+            return Action.ERROR;
+        }
+        if(!settingBusiness.setAttachmentSaveLocation(locationForSavingAttachment)){
+           this.addActionError("Error while setting attachment location , Verify location and make sure directory has read write permission"); 
+           return Action.ERROR;
+        }
+        settingBusiness.setMaxSizeForAllAttachment(maxSizeOfAllAttachments);
+        settingBusiness.setMaxNumberOfAttachment(maxNumberOfAttachment);
         return Action.SUCCESS;
     }
     
@@ -82,6 +98,23 @@ public class SettingAction extends ActionSupport {
         if(criticalLow < 0) {
             criticalLow = SettingBusiness.DEFAULT_CRITICAL_LOW;
         }
+    }
+    
+    public boolean validateAttachmentSettings(){
+        boolean vaildation = true;
+        if(maxNumberOfAttachment <= 0 ){
+            this.addActionError(this.getText("setting.comment.attachment.maxFileSize"));
+            vaildation = false;
+        }
+        if(maxSizeOfAllAttachments <= 0){
+            this.addActionError(this.getText("setting.comment.attachment.numberOfAttachments"));
+            vaildation = false;
+        }
+        if(locationForSavingAttachment == null || locationForSavingAttachment.isEmpty()){
+            this.addActionError("Location Cannot be empty");
+            vaildation = false;
+        }
+        return vaildation;
     }
     
     public boolean validateLoadMeterValues() {
@@ -203,6 +236,30 @@ public class SettingAction extends ActionSupport {
 
     public void setWeekendsInBurndown(boolean weekendsInBurndown) {
         this.weekendsInBurndown = weekendsInBurndown;
+    }
+
+    public String getLocationForSavingAttachment() {
+        return locationForSavingAttachment;
+    }
+
+    public void setLocationForSavingAttachment(String locationForSavingAttachment) {
+        this.locationForSavingAttachment = locationForSavingAttachment;
+    }
+
+    public int getMaxSizeOfAllAttachments() {
+        return maxSizeOfAllAttachments;
+    }
+
+    public void setMaxSizeOfAllAttachments(int maxSizeOfAllAttachments) {
+        this.maxSizeOfAllAttachments = maxSizeOfAllAttachments;
+    }
+
+    public int getMaxNumberOfAttachment() {
+        return maxNumberOfAttachment;
+    }
+
+    public void setMaxNumberOfAttachment(int maxNumberOfAttachment) {
+        this.maxNumberOfAttachment = maxNumberOfAttachment;
     }
     
 }

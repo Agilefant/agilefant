@@ -82,7 +82,9 @@ public class StoryBusinessCreateStoryTest extends MockedTestCase {
     private LabelBusiness labelBusiness;
     @Mock
     private StoryTreeIntegrityBusiness storyTreeIntegrityBusiness;
-    
+    @Mock
+    private StoryCommentBusiness storyCommentBusiness;
+
     @Test
     @DirtiesContext
     public void testCreateStory_noResponsibles() {

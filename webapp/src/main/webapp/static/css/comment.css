@@ -1,0 +1,173 @@
+
+/*------------ custom style  ------*/
+		.pc_leftblock{
+				width:12%;
+				text-align:right;
+				
+			}
+			.pc_rightblock{
+				padding-left:30px;
+				
+				
+			}
+			.pc_rightblock H3{
+				margin:5px 0;
+			}
+			.pc_rightblock input {
+				margin-bottom:10px;
+			}
+		
+			.pc_leftblock .pc_username {
+				color:#1e5eed;
+				text-decoration:none;
+				text-align:right;
+				font-size:10pt;
+				font-family: Arial,Helvetica,sans-serif;
+				white-space:nowrap;
+			}
+			.pc_leftblock span {
+				color: #2E6E9E;
+			    display: block;
+			    font-size : 9pt;
+			    font-family : Arial,Helvetica,sans-serif;
+			    padding-top: 1px;
+			    text-align: right;
+			    white-space:nowrap;
+				
+			}
+			.pc_rightblock p {
+				font-size:10pt;
+				margin: 2px 0 5px;
+				font-family: Arial,Helvetica,sans-serif;
+			}
+			.pc_rightblock p a {
+				text-decoration:none;
+				color:#1e5eed;
+			}
+			.custom_style_add01 {
+				border-radius:0;
+				border:none;
+			    max-height: 220px;
+    			overflow:auto;
+			}
+			.table_comment_custom {
+				margin:0;
+				padding:0;
+			}
+			.table_comment_custom td {
+				vertical-align:top;
+				padding-bottom:30px;
+			}
+			.storyComment_custom .table_comment_custom {
+				margin-bottom:10px
+			}
+			/*.storyComment_custom .table_comment_custom td {
+				padding-bottom:10px;
+				padding-top:10px;
+				border-bottom:1px solid gray;
+			}*/
+			.storyComment_custom .table_comment_custom td {
+				padding-bottom:10px;
+				border-bottom:1px solid  #D2D2D2;
+			}
+			.storyComment_custom {
+				margin-left: 1%;
+			    margin-top: 10px;
+			    max-height: 280px;
+			    overflow: auto;
+			    padding-right: 10px;
+			    width: 92%;
+			    overflow: auto;
+			}
+			.storyComment_custom .table_comment_custom .pc_leftblock {
+			    text-align: right;
+			    width: 9%;
+			}
+			.storyComment_custom .table_comment_custom .pc_leftblock .pc_username {
+				color:#3e3e3e;
+				font-weight:Bold;
+			}
+			.storyComment_custom .table_comment_custom .pc_leftblock span {
+				color:gray;
+			}
+			.custom_h2 {
+			 color: #3E3E3E;
+			    font-size: 1em;
+			    line-height: 22px;
+			    padding-left: 2%;
+			    width: 98%;
+			}
+			.custom_txt02 {
+				width:auto;
+				float:left;
+				padding-right:16px;
+			}
+			.custom_span_01 {
+		        color: #666666;
+		    	float: left;
+		    	font-size: 89%;
+		    	line-height: 20px;
+		    	padding-left: 20px;
+			}
+
+			.custom_fleft {
+				float: left;
+				line-height: 20px;
+			    padding: 1px;
+			}
+			.custom_align01  {
+					width:100% !important;
+				
+			}
+			.custom_h2 .dynamictable-expand  {
+				float:left;
+			}
+			.custom_h2 .dynamictable-collapse  {
+				float:left;
+			}
+			.dynamictable-row.dynamicTableDataRow .common_custom_storyCommentBox_001 {
+				margin-left:40px;
+			}
+			
+			.dynamictable-row.dynamicTableDataRow .common_custom_taskCommentBox_001 {
+				margin-left:90px;
+			}
+			.post_new_outer {
+				width:93%;
+			}
+			.post_new_outer h3 {
+				float:left;
+			}
+			.post_new_outer	.customrefresh_span {
+				float:right;
+				margin:14px 0;
+			}
+			.post_cancel_div{
+				padding-right:95px;
+				overflow:hidden;
+				float:right;
+			}
+			.post_cancel_div button{
+				float:right;
+				margin: 10px 0 0 10px !important;
+			}
+			.file_attachment{
+				float:left;
+			}
+			.clear{
+				clear:both;
+			}
+			.customrefresh_span{
+				float:right;
+				margin:0 90px 10px 0;
+			}
+			.custom_delete_button {
+			    color: #810B0B;
+    			font-size: 10px;
+    			line-height: 7px;
+			}
+			.attachments{
+				padding-left: 30px;
+				/* display: none; */
+							
+			}

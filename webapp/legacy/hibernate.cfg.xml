@@ -43,6 +43,9 @@
 		<mapping class="fi.hut.soberit.agilefant.model.AgilefantWidget" />
 		<mapping class="fi.hut.soberit.agilefant.model.WidgetCollection" />
 		<mapping class="fi.hut.soberit.agilefant.model.StoryAccess" />
+		<mapping class="fi.hut.soberit.agilefant.model.StoryComment" />
+		<mapping class="fi.hut.soberit.agilefant.model.TaskComment" />
+		<mapping class="fi.hut.soberit.agilefant.model.CommentAttachments" />
 
 		<!-- <mapping class="fi.hut.soberit.agilefant.model.BusinessTheme" /> <mapping class="fi.hut.soberit.agilefant.model.BacklogThemeBinding" /> -->
 

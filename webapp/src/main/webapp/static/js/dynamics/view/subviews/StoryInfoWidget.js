@@ -58,6 +58,11 @@ StoryInfoWidget.prototype._draw = function() {
       set : StoryModel.prototype.setDescription
     }
   });
+  config.addColumnConfiguration(4, {
+	    title: "",
+	    cssClass :"custom_align01",	  
+	    subViewFactory: StoryController.prototype.storyCommentsFactory	   
+	  });
   this.storyInfo = new DynamicVerticalTable(this, this.model, config, this.container);
   
   this.container.appendTo(this.parentView.getElement());
