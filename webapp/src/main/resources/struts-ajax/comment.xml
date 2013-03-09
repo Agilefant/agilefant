@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<constant name="struts.multipart.maxSize" value="2147483600" />
+	<package name="ajax-comment" namespace="/ajax" extends="ajax">
+	
+	
+	<!--  Fileupload and Download  -->
+	
+<action name="doFileUpload" method="initialize" class="fileUploadAction">
+	<result name="success" type="httpheader">
+		<param name="status">200</param>
+		<param name="patterns">+commentType,+objectId</param>
+	</result>
+	 <result type="dispatcher">/WEB-INF/jsp/inc/commentPostWithAttachment.jsp</result>
+</action>
+
+<action name="downloadFile" method="execute" class="fileUploadAction" >
+	<result name="success" type="stream">
+		  <param name="contentType">contentType</param>
+		  <param name="inputName">fileInputStream</param>
+		  <param name="contentDisposition">contentDisposition</param>
+	</result>
+	<result name="error" type="dispatcher">/WEB-INF/jsp/AttachmentError.jsp</result>
+
+</action>
+		<!--   
+		    <interceptor-ref name="fileUpload">
+		        <param name="allowedTypes">text/plain</param>
+		    </interceptor-ref> 
+		    <interceptor-ref name="validation"/>
+		    <interceptor-ref name="workflow"/> -->
+	   <!--  <result name="success">commentPostWithAttachment.jsp</result> -->
+	
+	<!--  StoryComments action mappings -->
+	
+    <action name="deleteStoryComment" method="delete" class="storyCommentAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+        <param name="patterns">+objectId</param>
+      </result>
+    </action>
+	
+    <action name="storeStoryComment" method="store" class="storyCommentAction" >
+      <result name="success" type="json" >
+        <param name="target">comments</param>
+        <param name="patterns">+storyid,+commentEnterd</param>
+      </result>
+     <result name="error" type="dispatcher">/WEB-INF/jsp/AttachmentError.jsp</result>
+     <result type="dispatcher">/WEB-INF/jsp/inc/commentPostWithAttachment.jsp</result>
+	 </action>
+	 
+	 <action name="createStoryComment" method="store" class="storyCommentAction" >
+      <result name="success" type="json">
+        <param name="target">comment</param>
+        <param name="patterns">+responsibles</param>
+      </result>
+    </action>
+	 
+	 <action name="getStoryCommentHeadline" method="getStoryCommentHeadline" class="storyCommentAction" >
+      <result name="success" type="json">
+        <param name="target">headline</param>
+        <param name="patterns">+objectId</param>
+      </result>
+    </action>
+	 
+	 <action name="retrieveStoryComment" method="retrieve" class="storyCommentAction">
+      <result name="success" type="json" >
+        <param name="target">comments,type</param>
+        <param name="patterns">+objectId</param>
+      </result>
+      <result type="dispatcher">/WEB-INF/jsp/inc/commentWidget.jsp</result>
+    </action>
+    
+	 <!-- TaskComment action mappings   -->
+	 
+    <action name="deleteTaskComment" method="delete" class="taskCommentAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+		
+    <action name="storeTaskComment" method="store" class="taskCommentAction" >
+      <result name="success" type="json">
+        <param name="target">taskComment</param>
+        <param name="patterns">+objectId,+commentEnterd</param>
+      </result>
+      <result name="error" type="dispatcher">/WEB-INF/jsp/AttachmentError.jsp</result>
+      <result type="dispatcher">/WEB-INF/jsp/inc/commentPostWithAttachment.jsp</result>
+	 </action>
+	 
+<!-- 	 <action name="storeTaskComment" method="store" class="taskCommentAction" >
+      <result name="success" type="json">
+        <param name="target">comment</param>
+        <param name="patterns">+responsibles</param>
+      </result>
+    </action> -->
+	 
+	 <action name="retrieveTaskComment" method="retrieve" class="taskCommentAction">
+      <result name="success" type="json" >
+        <param name="target">comments,type</param>
+        <param name="patterns">+objectId</param>
+      </result>
+      <result type="dispatcher">/WEB-INF/jsp/inc/commentWidget.jsp</result> 
+    </action>
+	 
+	 
+	 
+	 
+	</package>
+	
+</struts>

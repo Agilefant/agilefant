@@ -658,6 +658,12 @@ ProjectController.prototype.initializeStoryConfig = function() {
     cssClass : "create",
     callback : ProjectController.prototype.createStory
   });
+  config.addCaptionItem( {
+	    name : "refreshBacklog",
+	    text : "Refresh",
+	    cssClass : "create",
+	    callback : ProjectController.prototype.refreshBacklog
+	  });
   
   config.addColumnConfiguration(0, {
     minWidth : 24,
@@ -835,3 +841,18 @@ ProjectController.prototype.initializeStoryConfig = function() {
 
   this.storyListConfig = config;
 };
+ProjectController.prototype.refreshBacklog = function() {
+	  var me = this;
+	  var selectedTab = this.tabs.tabs("option","selected");
+	  var tmpSel = (selectedTab === 2) ? 0 : 2;
+	  this.tabs.tabs("select", tmpSel);
+
+	  ModelFactory.getInstance()._getData(ModelFactory.initializeForTypes.project,
+	      this.id, function(model) {
+	        me.model = model;
+	        //model.reload()
+	        me.tabs.tabs("select", selectedTab);
+	      });
+	};
+
+

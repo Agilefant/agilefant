@@ -14,6 +14,7 @@ import fi.hut.soberit.agilefant.business.RankUnderDelegate;
 import fi.hut.soberit.agilefant.business.RankingBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
 import fi.hut.soberit.agilefant.business.TaskBusiness;
+import fi.hut.soberit.agilefant.business.TaskCommentBusiness;
 import fi.hut.soberit.agilefant.db.TaskDAO;
 import fi.hut.soberit.agilefant.exception.ObjectNotFoundException;
 import fi.hut.soberit.agilefant.exception.OperationNotPermittedException;
@@ -49,6 +50,10 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
 
     @Autowired
     private HourEntryBusiness hourEntryBusiness;
+    
+    @Autowired
+    private TaskCommentBusiness taskCommentBusiness;
+
 
     private TaskDAO taskDAO;
 
@@ -281,6 +286,11 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
             throw new OperationNotPermittedException(
                     "Task contains spent effort entries.");
         }
+        try{
+        	taskCommentBusiness.deleteAttachmentsInTaskComments(task.getId());
+        }catch (Exception e) {
+			
+		}
         taskDAO.remove(task.getId());
     }
 

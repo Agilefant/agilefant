@@ -201,7 +201,7 @@ div.gear {
 }
 
 
-li.dynamictable-captionaction {
+li.dynamictable-captionaction,  .customrefresh_span {
   background-color: #fff !important;
   background-repeat: repeat-x !important;
   background-image: url('../img/button_fade.png') !important;
@@ -220,7 +220,7 @@ li.dynamictable-captionaction {
   font-size: 10pt;
 }
 
-.dynamictable-captionaction:hover {
+.dynamictable-captionaction:hover, .customrefresh_span:hover {
   float: left !impotant;
   cursor: pointer !important;
   color: black;

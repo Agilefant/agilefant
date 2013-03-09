@@ -53,6 +53,8 @@ public class TaskBusinessTest extends MockedTestCase {
     private TaskDAO taskDAO;
     @TestedBean
     private RankingBusinessImpl rankingBusiness;
+    @Mock
+    private TaskCommentBusiness taskCommentBusiness;
 
     private Iteration iteration;
     private Story story;
