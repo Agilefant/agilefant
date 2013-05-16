@@ -40,8 +40,8 @@
   <!-- <div class="details" id="iterationHistory">
     <div style="text-align:center; vertical-align: middle;">
       <img src="static/img/pleasewait.gif" style="display: inline-block; vertical-align: middle;"/> Loading...
-    </div>-->
-</div>
+    </div>
+</div>-->
 </div>
 
 
