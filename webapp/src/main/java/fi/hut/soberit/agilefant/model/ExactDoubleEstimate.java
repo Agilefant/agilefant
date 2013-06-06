@@ -1,6 +1,8 @@
 package fi.hut.soberit.agilefant.model;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,6 +36,7 @@ public class ExactDoubleEstimate extends Number implements Comparable<ExactDoubl
 
     public Double getMinorUnits() {
         DecimalFormat df = new DecimalFormat("#.0");
+        df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
         return Double.valueOf((df.format(minorUnits)));
     }
     
