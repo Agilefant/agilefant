@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -210,7 +211,8 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
     
     @JSON
     @XmlAttribute
-    public String retrieveHighestPoints() {
+    @Transient
+    public String getHighestPoints() {
     	Integer storyPoints = 0;
     	if (getStoryPoints() != null) {
     		storyPoints = getStoryPoints();
@@ -329,12 +331,20 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
     public Story()
     { }
     
+    public Story(Story otherStory) {
+        copyStory(otherStory, false);
+    }
+    
+    public Story(Story otherStory, boolean moveFinishedTasks) {
+        copyStory(otherStory, moveFinishedTasks);
+    }
+    
     /**
      * Copying Constructor
      * @author bradens
      * @param otherStory
      */
-    public Story(Story otherStory)
+    public void copyStory(Story otherStory, boolean moveFinishedTasks)
     {
         this.setDescription(otherStory.getDescription());
         this.setStoryValue(otherStory.getStoryValue());
@@ -350,12 +360,18 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
         // Copy the complex members: tasks, users, labels, parents
         for (Task t : otherStory.getTasks())
         {
-            // TODO @bradens find way to persist this task in this entity?  for now persisting it in the
-            // StoryBusinessImpl.
-            t.setStory(this); // To make sure we set the tasks to the new story.
-            Task newTask = new Task(t);
-            t.setStory(otherStory); // set it back
-            this.getTasks().add(newTask);
+            if (moveFinishedTasks) {
+                if (t.getState() != TaskState.DONE && t.getState() != TaskState.IMPLEMENTED) {
+                    t.setStory(this); // To make sure we set the tasks to the new story.
+                }
+            } else {
+                // TODO @bradens find way to persist this task in this entity?  for now persisting it in the
+                // StoryBusinessImpl.
+                t.setStory(this); // To make sure we set the tasks to the new story.
+                Task newTask = new Task(t);
+                t.setStory(otherStory); // set it back
+                this.getTasks().add(newTask);
+            }
         } 
         this.getResponsibles().addAll(otherStory.getResponsibles());
         for (StoryHourEntry entry : this.getHourEntries())

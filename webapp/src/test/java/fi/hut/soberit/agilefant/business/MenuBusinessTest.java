@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.easymock.EasyMock;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +50,8 @@ public class MenuBusinessTest {
     
     TransferObjectBusiness transferObjectBusiness;
     
+    UserBusiness userBusiness;
+    
     Set<Product> products;
     
     @Before
@@ -72,6 +75,9 @@ public class MenuBusinessTest {
         
         storyDAO = createStrictMock(StoryDAO.class);
         menuBusiness.setStoryDAO(storyDAO);
+        
+        userBusiness = createStrictMock(UserBusiness.class);
+        menuBusiness.setUserBusiness(userBusiness);
     }
 
     @Before
@@ -115,11 +121,11 @@ public class MenuBusinessTest {
         proj1.getChildren().add(iter3);
     }
     private void replayAll() {
-        replay(iterationDAO, projectDAO, storyDAO, productBusiness, transferObjectBusiness, iterationBusiness);
+        replay(iterationDAO, projectDAO, storyDAO, productBusiness, transferObjectBusiness, iterationBusiness, userBusiness);
     }
 
     private void verifyAll() {
-        verify(iterationDAO, projectDAO, storyDAO, productBusiness, transferObjectBusiness, iterationBusiness);
+        verify(iterationDAO, projectDAO, storyDAO, productBusiness, transferObjectBusiness, iterationBusiness, userBusiness);
     }
     
     @Test
@@ -136,6 +142,7 @@ public class MenuBusinessTest {
         user.setTeams(teams);
         team.setProducts(products);
         
+        expect(userBusiness.retrieve(user.getId())).andReturn(user);
         expect(productBusiness.retrieveAllOrderByName()).andReturn(
                 products);
 

@@ -93,6 +93,8 @@ public interface StoryBusiness extends GenericBusiness<Story> {
     public void moveStoryAndChildren(Story story, Backlog backlog);
 
     public Story copyStorySibling(Integer storyID, Story story);
+    
+    public Story extractUnfinishedStorySibling(Integer storyID, Story story);
 
     /**
      * If the story is in progress (state is anything but not_started or deferred) then set parent stories as started.

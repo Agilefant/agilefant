@@ -34,6 +34,26 @@ img {
   font-size: 2em;
 }
 
+#updateMessage {
+  margin-top: 0.2em;
+  float: right;
+  height: 1.5em;
+  overflow: visible;
+  margin-right: 0.5em;
+}
+
+#updateMessage a {
+  text-decoration: underline;
+  margin: 0 0.1em;  
+}
+
+#updateMessageBox {
+    display:none;
+    position:absolute;
+    border:1px solid #AAAAAA;
+    padding: 7px;
+}
+
 #logoutDiv {
   margin-top: 0.2em;
   float: right;

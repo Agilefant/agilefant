@@ -1,4 +1,5 @@
 <%@ include file="../inc/_taglibs.jsp"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
 
 <struct:htmlWrapper navi="settings">
 
@@ -18,20 +19,24 @@
   </div> 
   
   <div class="warning-note">
-    You can create a zipped SQL dump of the database your Agilefant
-	instance uses to save it on your computer. The database dump contains
-	a history of all the changes made, so it can be used e.g. for research
-	and learning purposes, such as exploring the evolution of a particular
-	product backlog over time. You can also use this to e.g. create manual
-	backups of your database.
+    You can create a zipped dump of the database your Agilefant
+	instance uses to save it on your computer. You can also
+        use this to e.g. create manual backups of your database.
   </div>
   
   <form action="generateDbExport.action">
   	<input type="submit" value="Export database" class="dynamics-button" />
-  </form>  
+  </form>
+  <!--
   <form action="generateAnonymousDbExport.action">
   	<input type="submit" value="Export anonymous database" class="dynamics-button" />
-  </form> 
+  </form>
+  -->
+  
+  <s:form action="resultAction" namespace="/" method="POST" enctype="multipart/form-data">
+  <s:file name="fileUpload" label="Select a zip file to upload" size="40" />
+  <s:submit value="Import database" name="submit" />
+  </s:form>
   
 </div>
 </div> 

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PropertyComparator;
@@ -18,6 +19,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import fi.hut.soberit.agilefant.business.DailyWorkBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
 import fi.hut.soberit.agilefant.business.TaskBusiness;
+import fi.hut.soberit.agilefant.business.TeamBusiness;
 import fi.hut.soberit.agilefant.business.TransferObjectBusiness;
 import fi.hut.soberit.agilefant.business.UserBusiness;
 import fi.hut.soberit.agilefant.model.Story;
@@ -48,6 +50,9 @@ public class DailyWorkAction extends ActionSupport {
 
     @Autowired
     private TransferObjectBusiness transferObjectBusiness;
+    
+    @Autowired
+    private TeamBusiness teamBusiness;
 
     private int  userId;
     private User user; 
@@ -70,6 +75,15 @@ public class DailyWorkAction extends ActionSupport {
     private Story story;
 
 
+    private boolean containsUser(Collection<User> users, int userId) {
+    	for(User user : users) {
+    		if(user.getId()==userId) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     @SuppressWarnings("unchecked")
     @Override
     public String execute() {
@@ -80,38 +94,32 @@ public class DailyWorkAction extends ActionSupport {
          * Non-admin user trying to see daily work of someone not in his/her team -> userId = 0
          */
         User loggedUser = getLoggedInUser();
-        Boolean isAdmin = loggedUser.isAdmin();
-        Collection<User> teamUsers = new HashSet<User>();
+        
+        if(this.userId==0) {
+        	this.userId = loggedUser.getId();
+        }
 
-        if (!isAdmin) {
-            int newUserId = 0;
-            teamUsers.add(loggedUser);
-            Collection<Team> teams = loggedUser.getTeams();
-            for (Team team: teams) {
-                teamUsers.addAll(team.getUsers());
-                Collection<User> users = team.getUsers();
-                if (newUserId != userId) {
-                    for (User user: users) {
-                        if (user.getId() == userId) {
-                            newUserId = userId;
-                        }
-                    }
-                }
-            }
-            userId = newUserId;
+        if(loggedUser.isAdmin()) {
+            enabledUsers.addAll(userBusiness.getEnabledUsers());        	
+        } else {
+        	// verify that logged in user shares a team with the supplied user
+            Collection<User> teamUsers = this.teamBusiness.getUsersInSameTeams(loggedUser.getId());
+        	if(!this.containsUser(teamUsers, userId)) {
+        		int storedUserId = getStoredDailyWorkUserId();
+        		if(this.containsUser(teamUsers, storedUserId)) {
+                    this.userId = storedUserId;        			
+        		} else {
+        			this.userId = loggedUser.getId();
+        		}
+        	}
+        	
+        	// update list of users used in the dropdown
+            enabledUsers.addAll(teamUsers);        	
         }
         
-        if (userId == 0) {
-            userId = getStoredDailyWorkUserId();
-        }
-        user = getDefaultUser();
-        if (isAdmin) {
-            enabledUsers.addAll(userBusiness.getEnabledUsers());
-        } else {
-            enabledUsers.addAll(teamUsers);
-        }
+        user = this.userBusiness.retrieve(userId);
+
         Collections.sort(enabledUsers, new PropertyComparator("fullName", true, true));
-      
         
         return Action.SUCCESS;
     }

@@ -35,6 +35,7 @@ import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Product;
 import fi.hut.soberit.agilefant.model.Project;
 import fi.hut.soberit.agilefant.model.Story;
+import fi.hut.soberit.agilefant.model.StoryHourEntry;
 import fi.hut.soberit.agilefant.model.StoryRank;
 import fi.hut.soberit.agilefant.model.StoryState;
 import fi.hut.soberit.agilefant.model.Task;
@@ -404,6 +405,39 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             t.setHourEntries(new HashSet<TaskHourEntry>());
             taskBusiness.store(t);
         }
+        if (hasBacklog) {
+            newStory.setBacklog(backlog);
+        }
+        newStory.setIteration(iteration);
+        create(newStory);
+        labelBusiness.createStoryLabelsSet(newStory.getLabels(), newStory.getId());
+        this.storyHierarchyBusiness.moveAfter(newStory, story);
+        rankStoryUnder(newStory, story,backlog );
+        return this.transferObjectBusiness.constructStoryTO(newStory);
+    }
+    
+    public Story extractUnfinishedStorySibling(Integer storyId, Story story)
+    {
+        story = this.retrieve(storyId);
+        Backlog backlog = null;
+        Boolean hasBacklog = story.getBacklog() != null ;
+        if (hasBacklog) {
+            backlog = this.backlogBusiness.retrieve(story.getBacklog().getId());
+            if (backlog == null) {
+                throw new ObjectNotFoundException("backlog.notFound");
+            }
+        }
+        Iteration iteration = story.getIteration();
+        Story newStory = new Story(story, true);
+        newStory.setName("[The part that is not yet done - rename this story accordingly!] " + newStory.getName());
+        story.setName("[The part that got done - rename this story accordingly!] " + story.getName());
+        if (newStory.getName().length() > 255) {
+          newStory.setName(newStory.getName().substring(0, 255));
+        }
+        if (story.getName().length() > 255) {
+          story.setName(story.getName().substring(0, 255));
+        }
+
         if (hasBacklog) {
             newStory.setBacklog(backlog);
         }

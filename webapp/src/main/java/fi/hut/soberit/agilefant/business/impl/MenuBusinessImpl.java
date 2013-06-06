@@ -15,6 +15,7 @@ import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.business.MenuBusiness;
 import fi.hut.soberit.agilefant.business.ProductBusiness;
 import fi.hut.soberit.agilefant.business.TransferObjectBusiness;
+import fi.hut.soberit.agilefant.business.UserBusiness;
 import fi.hut.soberit.agilefant.db.IterationDAO;
 import fi.hut.soberit.agilefant.db.ProjectDAO;
 import fi.hut.soberit.agilefant.db.StoryDAO;
@@ -55,9 +56,14 @@ public class MenuBusinessImpl implements MenuBusiness {
 
     @Autowired
     private TransferObjectBusiness transferObjectBusiness;
+    
+    @Autowired
+    private UserBusiness userBusiness;
 
     @SuppressWarnings("unchecked")
     public List<MenuDataNode> constructBacklogMenuData(User user) {
+    	user = this.userBusiness.retrieve(user.getId());
+    	
         List<MenuDataNode> nodes = new ArrayList<MenuDataNode>();
         List<Product> products = new ArrayList<Product>(productBusiness
                 .retrieveAllOrderByName());
@@ -161,6 +167,10 @@ public class MenuBusinessImpl implements MenuBusiness {
     
     public void setStoryDAO(StoryDAO storyDAO) {
         this.storyDAO = storyDAO;
+    }
+    
+    public void setUserBusiness(UserBusiness userBusiness) {
+    	this.userBusiness = userBusiness;
     }
     
 }

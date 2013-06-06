@@ -138,6 +138,50 @@ StoryModel.prototype._copyStory = function(story)
 }
 
 /**
+ * Extracts the ready/done tasks of the given story as a sibling of the current. 
+ */
+StoryModel.prototype._extractUnfinishedStory = function(story)
+{
+  var me = this;
+  var idClosure = function() { return story.id; };	// Create closure to access the story
+  var data = {};
+  var url = "ajax/extractUnfinishedStorySibling.action";
+  data.storyId = story.id;
+  document.body.style.cursor = "wait";
+  var userId = PageController.getInstance().getCurrentUser().getId();
+  var storyRank = story.getMyStoriesRank();
+  jQuery.ajax({
+    type: "POST",
+    url: url,
+    async: true,
+    cache: false,
+    data: data,
+    dataType: "json",
+    success: function(newData, status) {    	
+      var object = ModelFactory.updateObject(newData);
+      possibleIteration = story.getIteration();
+      if(newData && newData.id && possibleIteration) {
+        possibleIteration.addStory(object);
+        object.callListeners(new DynamicsEvents.AddEvent(object));
+      }
+      object.rankUnder(story.id, object.getParent());
+  	  
+      if (storyRank != null && storyRank < 10000) {
+    	  object.rankInMyStories(story.id, userId);
+      }
+      MessageDisplay.Ok("Story created successfully");
+      document.body.style.cursor = "default";
+      if (me.relations.iteration) {
+    	  me.relations.iteration.reload();
+      }
+    },
+    error: function(xhr, status, error) {
+      MessageDisplay.Error("Error saving story", xhr);
+    }
+  });
+}
+
+/**
  * Internal function to send the data to server.
  */
 StoryModel.prototype._saveData = function(id, changedData) {

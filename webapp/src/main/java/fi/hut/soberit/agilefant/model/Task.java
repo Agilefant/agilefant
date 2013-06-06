@@ -228,7 +228,7 @@ public class Task implements TimesheetLoggable, NamedObject, Rankable {
         return rank;
     }
     
-    public void setRank(int rank) {
+    public void setRank(Integer rank) {
         this.rank = rank;
     }
 

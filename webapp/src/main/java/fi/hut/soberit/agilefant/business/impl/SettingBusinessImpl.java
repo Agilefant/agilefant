@@ -57,9 +57,9 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
 
     @Autowired
     private SettingDAO settingDAO;
+
     @Autowired
     private PlatformTransactionManager transactionManager;
-    private Map<String,Setting> settingCache = new HashMap<String, Setting>();
 
     public void setSettingDAO(SettingDAO settingDAO) {
         this.genericDAO = settingDAO;
@@ -70,24 +70,9 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
         this.transactionManager = transactionManager;
     }
 
-    @PostConstruct
-    public void loadSettingCache() {
-        this.settingCache.clear();
-        TransactionTemplate tx = new TransactionTemplate(transactionManager);
-        tx.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus ts) {
-                Collection<Setting> allSettings = settingDAO.getAll();
-                for(Setting setting : allSettings) {
-                    settingCache.put(setting.getName(), setting);
-                }
-            }
-        });
-    }
-
     @Transactional(readOnly = true)
     public Setting retrieveByName(String name) {
-        return this.settingCache.get(name);
+        return this.settingDAO.getByName(name);
     }
     
     public void storeSetting(String settingName, boolean value) {
@@ -109,7 +94,11 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
             setting.setValue(value);
             this.settingDAO.store(setting);
         } 
-        this.settingCache.put(settingName, setting);
+    }
+    
+    @Transactional
+    public void setValue(String settingName, String value) {
+        this.storeSetting(settingName, value);
     }
     
     @Transactional(readOnly = true)
@@ -398,7 +387,5 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
         
         return setting.getValue().equals("true");
     }
-    
-    
     
 }

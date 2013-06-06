@@ -3,6 +3,7 @@ package fi.hut.soberit.agilefant.business.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -320,8 +321,34 @@ public class DailyWorkBusinessImpl implements DailyWorkBusiness {
         }
         
         Collections.sort(stories, new PropertyComparator("rank", true, true));
-        Collections.sort(stories, new PropertyComparator("iteration.name", true, true));
-        Collections.sort(stories, new PropertyComparator("backlog.name", true, true));
+        Collections.sort(stories, new Comparator<StoryTO>() {
+            @Override
+            public int compare(StoryTO o1, StoryTO o2) {
+                if (o1.getIteration() == null && o2.getIteration() == null) {
+                    return 0;
+                } else if (o1.getIteration() == null) {
+                    return -1;
+                } else if (o2.getIteration() == null) {
+                    return 1;
+                } else {
+                    return o1.getIteration().getName().compareToIgnoreCase(o2.getIteration().getName());
+                }
+            }
+        });
+        Collections.sort(stories, new Comparator<StoryTO>() {
+            @Override
+            public int compare(StoryTO o1, StoryTO o2) {
+                if (o1.getBacklog() == null && o2.getBacklog() == null) {
+                    return 0;
+                } else if (o1.getBacklog() == null) {
+                    return -1;
+                } else if (o2.getBacklog() == null) {
+                    return 1;
+                } else {
+                    return o1.getBacklog().getName().compareToIgnoreCase(o2.getBacklog().getName());
+                }
+            }
+        });
         
         int i = 0;
         for (StoryTO s : stories) {

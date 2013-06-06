@@ -56,18 +56,11 @@
 			org.springframework.orm.hibernate4.support.OpenSessionInViewFilter
 		</filter-class>
 	</filter>
-	
-	<filter>
-		<filter-name>readonlyFilter</filter-name>
-		<filter-class>
-			org.springframework.web.filter.DelegatingFilterProxy
-		</filter-class>
-	</filter>
-		
+			
 	<filter>
 		<filter-name>struts</filter-name>
 		<filter-class>
-			org.apache.struts2.dispatcher.FilterDispatcher
+			org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter
 		</filter-class>
 	</filter>
 	
@@ -91,11 +84,6 @@
   </filter-mapping>
 
   <!-- the order matters - spring security must come first -->
-  <filter-mapping>
-    <filter-name>readonlyFilter</filter-name>
-    <url-pattern>/token/*</url-pattern>
-  </filter-mapping>
-  
   <filter-mapping>
     <filter-name>springSecurity</filter-name>
     <url-pattern>/*</url-pattern>

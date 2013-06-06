@@ -1,6 +1,7 @@
 package fi.hut.soberit.agilefant.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,8 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fi.hut.soberit.agilefant.annotations.PrefetchId;
 import fi.hut.soberit.agilefant.business.TeamBusiness;
+import fi.hut.soberit.agilefant.business.TeamBusiness.Call;
+import fi.hut.soberit.agilefant.business.UserBusiness;
 import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
@@ -45,7 +48,9 @@ public class TeamAction extends ActionSupport implements CRUDAction, Prefetching
 
     @Autowired
     private TeamBusiness teamBusiness;
-
+    
+    @Autowired
+    private UserBusiness userBusiness;
 
     /**
      * Create a new team.
@@ -79,17 +84,27 @@ public class TeamAction extends ActionSupport implements CRUDAction, Prefetching
         Boolean isAdmin = loggedUser.isAdmin();
         
         if (isAdmin) {
-            teamList.addAll(teamBusiness.retrieveAll());
+            teamList.addAll(this.teamBusiness.withUsers(new Call<Collection<Team>>() {
+            	public Collection<Team> call() {
+            		return teamBusiness.retrieveAll();
+            	}
+            }));
         } else {
-            teamList.addAll(loggedUser.getTeams());
+            teamList.addAll(this.teamBusiness.withUsers(new Call<Collection<Team>>() {
+            	public Collection<Team> call() {
+            		return userBusiness.retrieve(getLoggedInUser().getId()).getTeams();
+            	}
+            }));
         }
         return Action.SUCCESS;
     }
     
-    public String retrieveMyTeams() {
-        
-        User loggedUser = getLoggedInUser();
-        teamList.addAll(loggedUser.getTeams());
+    public String retrieveMyTeams() {        
+        teamList.addAll(this.teamBusiness.withUsers(new Call<Collection<Team>>() {
+        	public Collection<Team> call() {
+        		return userBusiness.retrieve(getLoggedInUser().getId()).getTeams();
+        	}
+        }));
         return Action.SUCCESS;
     }
 

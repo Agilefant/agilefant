@@ -310,6 +310,7 @@ public class TransferObjectBusinessTest {
         iterationUnderProduct.setParent(product);
         iterationUnderProduct.setName("Iter 2");
         
+        expect(userBusiness.retrieve(0)).andReturn(SecurityUtil.getLoggedUser());
         expect(backlogBusiness.retrieveAll())
             .andReturn(Arrays.asList(product, project, iterationUnderProject, iterationUnderProduct));
         
@@ -355,6 +356,8 @@ public class TransferObjectBusinessTest {
         project.setParent(product);
         project.setName("Project");
         
+        expect(userBusiness.retrieve(0)).andReturn(SecurityUtil.getLoggedUser());
+
         expect(backlogBusiness.retrieveAll()).andReturn(Arrays.asList(product, project, product2));
 
         expect(backlogBusiness.retrieve(7)).andReturn(project);
@@ -405,6 +408,7 @@ public class TransferObjectBusinessTest {
         project.setParent(product);
         project.setName("Project");
         
+        expect(userBusiness.retrieve(0)).andReturn(SecurityUtil.getLoggedUser());
         expect(projectBusiness.retrieveAll()).andReturn(Arrays.asList(project));
         
         replayAll();
@@ -493,6 +497,7 @@ public class TransferObjectBusinessTest {
         products.add((Product)product2);
         team.setProducts(products);
         
+        expect(userBusiness.retrieve(0)).andReturn(SecurityUtil.getLoggedUser()).anyTimes();
         expect(productBusiness.retrieveAll()).andReturn(Arrays.asList(product1, product2));
         replayAll();
         List<AutocompleteDataNode> nodes = transferObjectBusiness

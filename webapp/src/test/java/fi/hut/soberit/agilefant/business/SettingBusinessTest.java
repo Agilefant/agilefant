@@ -63,21 +63,12 @@ public class SettingBusinessTest {
     }
     
     @Test
-    public void testLoadSettingCache() {
-        Setting setting2 = new Setting();
-        setting2.setName("faa");
-        Collection<Setting> allSettings = Arrays.asList(setting, setting2);
-        expect(settingDAO.getAll()).andReturn(allSettings);
-        replay(settingDAO);
-        testable.loadSettingCache();
-        assertNotNull(testable.retrieveByName("foo"));
-        assertNotNull(testable.retrieveByName("faa"));
-        verify(settingDAO);
-    }
-    
-    @Test
     public void testStoreSetting_int() {
+    	expect(settingDAO.getByName("int")).andReturn(null);
         expect(settingDAO.create(EasyMock.isA(Setting.class))).andReturn((Integer)1);
+        Setting created = new Setting();
+        created.setValue("15");
+        expect(settingDAO.getByName("int")).andReturn(created);
         replay(settingDAO);
         testable.storeSetting("int", 15);
         assertEquals("15", testable.retrieveByName("int").getValue());
@@ -86,7 +77,11 @@ public class SettingBusinessTest {
     
     @Test
     public void testStoreSetting_boolean() {
+    	expect(settingDAO.getByName("bool")).andReturn(null);
         expect(settingDAO.create(EasyMock.isA(Setting.class))).andReturn((Integer)2);
+        Setting created = new Setting();
+        created.setValue("true");
+        expect(settingDAO.getByName("bool")).andReturn(created);
         replay(settingDAO);
         testable.storeSetting("bool", true);
         assertEquals("true", testable.retrieveByName("bool").getValue());
@@ -95,10 +90,9 @@ public class SettingBusinessTest {
     
     @Test 
     public void testStoreSetting() {
+        expect(settingDAO.getByName("foo")).andReturn(setting);
         settingDAO.store(setting);
-        expect(settingDAO.getAll()).andReturn(Arrays.asList(setting));
         replay(settingDAO);
-        testable.loadSettingCache();
         testable.storeSetting("foo", "new");
         assertEquals("new", setting.getValue());
         verify(settingDAO);
@@ -114,10 +108,9 @@ public class SettingBusinessTest {
         parameterSetting.setName(SettingBusinessImpl.SETTING_NAME_HOUR_REPORTING);
         parameterSetting.setValue("true");
         
-        expect(settingDAO.getAll()).andReturn(Arrays.asList(setting));
+        expect(settingDAO.getByName(SettingBusinessImpl.SETTING_NAME_HOUR_REPORTING)).andReturn(setting);
         settingDAO.store(eqSetting(parameterSetting));
         replay(settingDAO);
-        testable.loadSettingCache();
         testable.setHourReporting(true);
         verify(settingDAO);
     }
@@ -129,6 +122,7 @@ public class SettingBusinessTest {
         parameterSetting.setName(SettingBusinessImpl.SETTING_NAME_HOUR_REPORTING);
         parameterSetting.setValue("true");
         
+        expect(settingDAO.getByName(SettingBusinessImpl.SETTING_NAME_HOUR_REPORTING)).andReturn(null);
         expect(settingDAO.create(eqSetting(parameterSetting))).andReturn(1);
         replay(settingDAO);
         testable.setHourReporting(true);
@@ -142,10 +136,9 @@ public class SettingBusinessTest {
         parameterSetting.setName(SettingBusinessImpl.SETTING_NAME_HOUR_REPORTING);
         parameterSetting.setValue("true");
         
-        expect(settingDAO.getAll()).andReturn(new ArrayList<Setting>());
+        expect(settingDAO.getByName(SettingBusinessImpl.SETTING_NAME_HOUR_REPORTING)).andReturn(null);
         expect(settingDAO.create(eqSetting(parameterSetting))).andReturn(1);
         replay(settingDAO);
-        testable.loadSettingCache();
         testable.setHourReporting(true);
         verify(settingDAO);
     }
@@ -161,11 +154,10 @@ public class SettingBusinessTest {
         parameterSetting.setName(SettingBusinessImpl.SETTING_NAME_STORY_TREE_FIELD_ORDER);
         parameterSetting.setValue("state,storyPoints,labels,name,backlog");
         
-        expect(settingDAO.getAll()).andReturn(Arrays.asList(previousSetting));
+        expect(settingDAO.getByName(SettingBusinessImpl.SETTING_NAME_STORY_TREE_FIELD_ORDER)).andReturn(previousSetting);
         settingDAO.store(eqSetting(parameterSetting));
         
         replay(settingDAO);
-        testable.loadSettingCache();
         testable.setStoryTreeFieldOrder("state,storyPoints,labels,name,backlog");
         verify(settingDAO);
     }
@@ -187,11 +179,10 @@ public class SettingBusinessTest {
         parameterSetting.setName(SettingBusinessImpl.SETTING_NAME_BRANCH_METRICS);
         parameterSetting.setValue("leaf");
         
-        expect(settingDAO.getAll()).andReturn(new ArrayList<Setting>());
+        expect(settingDAO.getByName(SettingBusinessImpl.SETTING_NAME_BRANCH_METRICS)).andReturn(null);
         expect(settingDAO.create(eqSetting(parameterSetting))).andReturn(1);
         
         replay(settingDAO);
-        testable.loadSettingCache();
         testable.setBranchMetricsType(BranchMetricsType.leaf);
         verify(settingDAO);
     }
@@ -207,11 +198,10 @@ public class SettingBusinessTest {
         parameterSetting.setName(SettingBusinessImpl.SETTING_NAME_BRANCH_METRICS);
         parameterSetting.setValue("off");
         
-        expect(settingDAO.getAll()).andReturn(Arrays.asList(setting));
+        expect(settingDAO.getByName(SettingBusinessImpl.SETTING_NAME_BRANCH_METRICS)).andReturn(setting);
         settingDAO.store(eqSetting(parameterSetting));
         
         replay(settingDAO);
-        testable.loadSettingCache();
         testable.setBranchMetricsType(BranchMetricsType.off);
         verify(settingDAO);
     }
@@ -222,20 +212,18 @@ public class SettingBusinessTest {
         setting.setName(SettingBusinessImpl.SETTING_NAME_BRANCH_METRICS);
         setting.setValue(SettingBusiness.BranchMetricsType.estimate.toString());
         
-        expect(settingDAO.getAll()).andReturn(Arrays.asList(setting));
+        expect(settingDAO.getByName(SettingBusinessImpl.SETTING_NAME_BRANCH_METRICS)).andReturn(setting);
         
         replay(settingDAO);
-        testable.loadSettingCache();
         assertEquals(BranchMetricsType.estimate, testable.getBranchMetricsType());
         verify(settingDAO);
     }
     
     @Test
     public void testGetBranchMetricsType_noSuchSettings() {
-        expect(settingDAO.getAll()).andReturn(new ArrayList<Setting>());
+        expect(settingDAO.getByName(SettingBusinessImpl.SETTING_NAME_BRANCH_METRICS)).andReturn(null);
         
         replay(settingDAO);
-        testable.loadSettingCache();
         assertEquals(SettingBusiness.DEFAULT_BRANCH_METRICS, testable.getBranchMetricsType());
         verify(settingDAO);
     }

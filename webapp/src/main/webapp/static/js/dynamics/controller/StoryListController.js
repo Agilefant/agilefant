@@ -105,6 +105,12 @@ StoryListController.prototype.copyStorySibling = function(originalStory) {
   mockModel._copyStory(originalStory);
 };
 
+StoryListController.prototype.extractUnfinishedStorySibling = function(originalStory) { 
+  var mockModel = ModelFactory.createObject(ModelFactory.types.story);
+  mockModel.setIteration(this.model);
+  mockModel._extractUnfinishedStory(originalStory);
+};
+
 /**
  * Show all tasks lists.
  */

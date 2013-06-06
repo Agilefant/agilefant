@@ -137,6 +137,11 @@ StoryController.prototype.copyStorySibling = function(storyObj) {
   this.parentController.copyStorySibling(storyObj);
 };
 
+StoryController.prototype.extractUnfinishedStorySibling = function(storyObj) {
+  this.parentController.extractUnfinishedStorySibling(storyObj);
+  //this.model.reload();
+};
+
 /**
  * Remove story associated with controllers row and the row itself.
  */
@@ -393,6 +398,11 @@ StoryController.prototype._getStoryActionItems = function(isProject) {
 	  actionItems.push({
 	    text: "Copy",
 	    callback : StoryController.prototype.copyStorySibling
+	  });
+	  actionItems.push({
+	    text: "Extract unfinished",
+	    tooltip: "Creates a new story and moved the unfinished tasks (status other than Ready or Done) to it",
+	    callback : StoryController.prototype.extractUnfinishedStorySibling
 	  });
   }
   if (Configuration.isTimesheetsEnabled()) {

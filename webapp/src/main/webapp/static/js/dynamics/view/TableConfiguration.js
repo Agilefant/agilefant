@@ -139,6 +139,7 @@ DynamicTableCaptionItemConfiguration = function(options) {
   this.options = {
       text: '',
       name: '',
+      tooltip: null,
       callback: function() {},
       visible: true,
       connectWith: null,
@@ -149,6 +150,10 @@ DynamicTableCaptionItemConfiguration = function(options) {
 
 DynamicTableCaptionItemConfiguration.prototype.getText = function() {
   return this.options.text;
+};
+
+DynamicTableCaptionItemConfiguration.prototype.getTooltip = function() {
+  return this.options.tooltip;
 };
 
 DynamicTableCaptionItemConfiguration.prototype.getCallback = function() {

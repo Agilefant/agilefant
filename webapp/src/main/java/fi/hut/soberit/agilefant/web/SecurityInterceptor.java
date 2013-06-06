@@ -1,9 +1,6 @@
 package fi.hut.soberit.agilefant.web;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,23 +11,23 @@ import org.springframework.stereotype.Component;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 
+import fi.hut.soberit.agilefant.business.AuthorizationBusiness;
 import fi.hut.soberit.agilefant.business.BacklogBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
 import fi.hut.soberit.agilefant.business.TaskBusiness;
 import fi.hut.soberit.agilefant.business.UserBusiness;
-import fi.hut.soberit.agilefant.model.Iteration;
-import fi.hut.soberit.agilefant.model.Product;
 import fi.hut.soberit.agilefant.model.Story;
 import fi.hut.soberit.agilefant.model.Task;
-import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
 
 @Component("securityInterceptor")
 public class SecurityInterceptor implements Interceptor {
 
-    @Autowired
+	private static final long serialVersionUID = -7924331771689956188L;
+
+	@Autowired
     private BacklogBusiness backlogBusiness;
     
     @Autowired
@@ -44,6 +41,9 @@ public class SecurityInterceptor implements Interceptor {
     
     @Autowired
     private UserBusiness userBusiness;
+    
+    @Autowired
+    private AuthorizationBusiness authorizationBusiness;
     
     @Override
     public void destroy() {
@@ -143,7 +143,7 @@ public class SecurityInterceptor implements Interceptor {
                 boolean attemptTeam = params.containsKey("teamsChanged");
                 if(!attemptTeam){
                     if (id != -1)
-                        access = checkAccess(id, user);
+                        access = this.authorizationBusiness.isBacklogAccessible(id, user);
                     else
                         // Operations without ids must be allowed
                         access = true;
@@ -155,49 +155,6 @@ public class SecurityInterceptor implements Interceptor {
             return invocation.invoke();
         else
             return "noauth";
-    }
-    
-    // check from the backlogId if the associated product is accessible for the current user    
-    private boolean checkAccess(int backlogId, User user){
-        
-        Collection<Team> teams = user.getTeams();
-        
-        Product product = (backlogBusiness.getParentProduct(backlogBusiness.retrieve(backlogId)));
-        if(product == null){
-            //standalone iteration
-            Iteration iteration = iterationBusiness.retrieve(backlogId);
-            if(iteration.isStandAlone()){
-                for (Iterator<Team> iter = teams.iterator(); iter.hasNext();){
-                    Team team = (Team) iter.next();
-                    
-                    Set<Iteration> iterations = team.getIterations();
-                    
-                    for (Iterator<Iteration> iterationIterator = iterations.iterator(); iterationIterator.hasNext();) {
-                        Iteration teamIteration = (Iteration) iterationIterator.next();
-                        if (teamIteration.getId() == iteration.getId()) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-
-        for (Iterator<Team> iter = teams.iterator(); iter.hasNext();){
-            Team team = (Team) iter.next();
-            
-            Set<Product> products = team.getProducts();
-            
-            for (Iterator<Product> productIterator = products.iterator(); productIterator.hasNext();) {
-                Product teamProduct = (Product) productIterator.next();
-                
-                if (teamProduct.getId() == product.getId()) {
-                    return true;
-                }
-            }
-        }
-        
-        return false;
     }
 }
 

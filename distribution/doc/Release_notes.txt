@@ -1,6 +1,6 @@
-Agilefant 3.2
+Agilefant 3.3
 Release notes
-2013-04-17
+2013-05-31
 --
 
 Please spend a couple of minutes to register your organization at
@@ -10,6 +10,25 @@ This helps us keep a full-featured Agilefant free-of-charge forever!
 +--------------------+
 |     CHANGESET      |
 +--------------------+
+
+Changes from 3.2
+2013-05-31
+Enhancements:
++ Splitting unfinished stories in iterations made easier (Edit->Extract unfinished)
++ A small red star displays if there's a newer Agilefant version available for download
++ Export database changed from an SQL dump into a JSON dump; it no longer contains a history of all changes made
++ You can now import a JSON dump database on the Admin tab; the new items do not overwrite pre-existing data
+
+A more verbose description of the new features can be read from:
+http://agilefant.freeforums.org/post1857.html
+
+Bug fixes:
++ DOM now updated when disabling / enabling users
++ Couldn't create stories into iterations from Create new->Story menu (previously, the search only included products and projects)
++ Added connection validation to prevent MySQL timeouts
++ Fixed a bug that in some cases produced huge errors to agilefant.log
++ Creating the readonly user required for sharing iterations as readonly now automatic when starting Agilefant on an empty database
++ Refactoring
 
 Changes from 3.1.1 to 3.2
 2013-04-17

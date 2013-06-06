@@ -249,7 +249,7 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
             Collection<? extends Backlog> allBacklogs) {
         List<AutocompleteDataNode> autocompleteData = new ArrayList<AutocompleteDataNode>();
         
-        User user = SecurityUtil.getLoggedUser();
+        User user = this.userBusiness.retrieve(SecurityUtil.getLoggedUser().getId());
         for (Backlog blog : allBacklogs) { 
             Product prod = null;
             if(blog instanceof Project){

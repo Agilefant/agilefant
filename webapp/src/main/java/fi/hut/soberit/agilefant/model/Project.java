@@ -66,7 +66,7 @@ public class Project extends Backlog implements Schedulable, Rankable {
 
     private DateTime startDate;
 
-    private int rank = 0;
+    private Integer rank = 0;
 
     private Status status = Status.GREEN;
 
@@ -108,7 +108,7 @@ public class Project extends Backlog implements Schedulable, Rankable {
         return rank;
     }
 
-    public void setRank(int rank) {
+    public void setRank(Integer rank) {
         this.rank = rank;
     }
 

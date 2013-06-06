@@ -468,7 +468,7 @@ CreateDialog.Story.prototype.initFormConfig = function() {
     editable : true,
     edit : {
       editor : "InlineAutocomplete",
-      dataType: "backlogs",
+      dataType: "backlogsAndIterations",
       decorator: DynamicsDecorators.propertyDecoratorFactory(BacklogModel.prototype.getName),
       set: StoryModel.prototype.setBacklog
     }

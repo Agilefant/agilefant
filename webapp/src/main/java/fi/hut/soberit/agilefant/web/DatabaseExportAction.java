@@ -2,9 +2,10 @@ package fi.hut.soberit.agilefant.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
-
-import javax.sql.DataSource;
+import java.util.zip.ZipInputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -13,9 +14,10 @@ import org.springframework.stereotype.Component;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 
-import fi.hut.soberit.agilefant.db.export.Atablesmodifier;
-import fi.hut.soberit.agilefant.db.export.DbBackupper;
-import fi.hut.soberit.agilefant.util.DbConnectionInfo;
+import fi.hut.soberit.agilefant.business.ExportImportBusiness;
+import fi.hut.soberit.agilefant.business.ExportImportBusiness.OrganizationDumpTO;
+import fi.hut.soberit.agilefant.db.export.XmlBackupper;
+import fi.hut.soberit.agilefant.exportimport.ExportImport;
 
 @Component("dbExportAction")
 @Scope("prototype")
@@ -23,41 +25,58 @@ public class DatabaseExportAction extends ActionSupport {
 
     private static final long serialVersionUID = -1639488740106383276L;
 
-    private DbBackupper takeDbBackup;
+    private XmlBackupper takeDbBackup;
     private ByteArrayOutputStream databaseStream;
     @Autowired
-    private DataSource dataSource;
+    private ExportImportBusiness exportImportBusiness;
     @Autowired
-    private DbConnectionInfo connectionInfo;
+    private ExportImport exportImport;
+    
+    private File fileUpload;
+
+    public File getFileUpload() {
+        return fileUpload;
+    }
+
+    public void setFileUpload(File fileUpload) {
+        this.fileUpload = fileUpload;
+    }
+
+    public String execute() throws Exception{
+        return SUCCESS;
+    }
+    
+    public String display() {
+        return NONE;
+    }
 
     public String edit() {
-        this.takeDbBackup = new DbBackupper();
+        this.takeDbBackup = new XmlBackupper();
 
         return Action.SUCCESS;
     }
 
     public String generateDatabaseExport() {
         try {
-            this.takeDbBackup = new DbBackupper();
-            this.databaseStream = takeDbBackup.generateDBDumpStream(dataSource, connectionInfo);
+            this.takeDbBackup = new XmlBackupper();
+            this.databaseStream = takeDbBackup.generateDBDumpStream(exportImportBusiness, exportImport);
+            
             return Action.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
             return Action.ERROR;
         }
     }
-
-    public String generateAnonymousDatabaseExport() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    
+    public String databaseImport() {
         try {
-            this.takeDbBackup = new DbBackupper();
-            Atablesmodifier anonymousTableModifier = new Atablesmodifier(dataSource, connectionInfo);
-            anonymousTableModifier.dublicaTables();
-            anonymousTableModifier.anonymizeTables();
-
-            this.databaseStream = takeDbBackup.generateAnonymousDBDumpStream(dataSource, connectionInfo, anonymousTableModifier.getOriginalTables());
-            anonymousTableModifier.deletetables();
+            InputStream inputStream = new FileInputStream(fileUpload);
+            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+            zipInputStream.getNextEntry();
+            OrganizationDumpTO organizationTO = exportImport.fromJson(zipInputStream);
+            exportImportBusiness.importOrganization(organizationTO);
             return Action.SUCCESS;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Action.ERROR;
         }

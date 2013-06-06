@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ImportResource;
 import fi.hut.soberit.agilefant.util.DbConnectionInfo;
 
 @Configuration
-@Import({ BusinessConfiguration.class, DaoConfiguration.class, RestConfiguration.class, TransactionConfiguration.class, WebConfiguration.class })
+@Import({ BusinessConfiguration.class, DaoConfiguration.class, RestConfiguration.class, TransactionConfiguration.class, WebConfiguration.class, ExportImportConfiguration.class })
 @ImportResource({ "/WEB-INF/applicationContext-core.xml", "/WEB-INF/applicationContext-email.xml", "/WEB-INF/applicationContext-notifications.xml",
         "/WEB-INF/applicationContext-security.xml" })
 public class MasterConfiguration {

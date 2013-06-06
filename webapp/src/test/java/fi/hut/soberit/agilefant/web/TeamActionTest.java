@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +20,8 @@ import fi.hut.soberit.agilefant.exception.ObjectNotFoundException;
 import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
+
+import fi.hut.soberit.agilefant.business.TeamBusiness.Call;
 
 public class TeamActionTest {
     
@@ -74,7 +77,7 @@ public class TeamActionTest {
     @Test
     public void testRetrieveAll() {
         Collection<Team> teamList = Arrays.asList(team1, team2);
-        expect(teamBusiness.retrieveAll()).andReturn(teamList);
+        expect(teamBusiness.withUsers((Call)EasyMock.anyObject())).andReturn(teamList);
         replayAll();
         
         assertEquals(Action.SUCCESS, teamAction.retrieveAll());

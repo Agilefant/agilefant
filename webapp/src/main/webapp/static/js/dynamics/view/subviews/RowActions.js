@@ -45,7 +45,11 @@ DynamicTableRowActions.prototype.open = function() {
   };
   this.menu.css(menuCss);
   $.each(this.items, function(index, item) {
-    var it = $('<li />').text(item.text).appendTo(me.menu);
+	var title = "";
+	if (item.tooltip != null) {
+		title = 'title="' + item.tooltip + '"';
+	}
+    var it = $('<li ' + title + '"/>').text(item.text).appendTo(me.menu);
     
     if (me._isEnabled(item)) {
       it.click(function() {

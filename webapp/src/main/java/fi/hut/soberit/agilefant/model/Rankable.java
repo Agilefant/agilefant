@@ -10,5 +10,5 @@ public interface Rankable {
     /**
      * Set the Rankable's new rank.
      */
-    public void setRank(int rank);
+    public void setRank(Integer rank);
 }

@@ -10,6 +10,7 @@ import static org.junit.Assert.assertSame;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.easymock.EasyMock;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.Period;
@@ -43,13 +44,16 @@ public class PortfolioBusinessTest {
     private SettingBusiness settingBusiness;
     @Mock
     private ProjectDAO projectDAO;
-
+    @Mock
+    private AuthorizationBusiness authorizationBusiness;
+    
+    
     protected void verifyAll() {
-        verify(projectDAO, settingBusiness);
+        verify(projectDAO, settingBusiness, authorizationBusiness);
     }
 
     protected void replayAll() {
-        replay(projectDAO, settingBusiness);
+        replay(projectDAO, settingBusiness, authorizationBusiness);
     }
 
     // PortfolioBusiness should
@@ -74,6 +78,7 @@ public class PortfolioBusinessTest {
         LocalDate endDate = today.plus(timeSpan);
 
         Project rankedProject = new Project();
+        rankedProject.setId(666);
         User user = new User();
         user.setAdmin(true);
         SecurityUtil.setLoggedUser(user);
@@ -86,6 +91,7 @@ public class PortfolioBusinessTest {
 
         List<Project> unrankedProjects = new ArrayList<Project>();
         Project unrankedProject = new Project();
+        unrankedProject.setId(999);
         unrankedProject.getAssignments().add(assignment);
         unrankedProjects.add(unrankedProject);
 
@@ -94,6 +100,8 @@ public class PortfolioBusinessTest {
                 rankedProjects);
         expect(projectDAO.getUnrankedProjects(today, endDate)).andReturn(
                 unrankedProjects);
+        expect(authorizationBusiness.isBacklogAccessible(EasyMock.eq(rankedProject.getId()), EasyMock.anyObject(User.class))).andReturn(true).anyTimes();
+        expect(authorizationBusiness.isBacklogAccessible(EasyMock.eq(unrankedProject.getId()), EasyMock.anyObject(User.class))).andReturn(true).anyTimes();
         replayAll();
 
         PortfolioTO result = portfolioBusiness.getPortfolioData();

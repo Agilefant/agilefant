@@ -109,6 +109,17 @@ public class StoryAction extends ActionSupport implements CRUDAction, Prefetchin
         story = storyBusiness.copyStorySibling(storyId, story);
         return Action.SUCCESS;
     }
+    
+    /**
+     * Creates a new copy of a given story and
+     * moves the unfinished tasks to the new story
+     * 
+     * @return Successful action.
+     */
+    public String extractUnfinishedStorySibling() {
+        story = storyBusiness.extractUnfinishedStorySibling(storyId, story);
+        return Action.SUCCESS;
+    }
 
     public String delete() {
         storyBusiness.deleteAndUpdateHistory(storyId, taskHandlingChoice, storyHourEntryHandlingChoice, taskHourEntryHandlingChoice, childHandlingChoice);

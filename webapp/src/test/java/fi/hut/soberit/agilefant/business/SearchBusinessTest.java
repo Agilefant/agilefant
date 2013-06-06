@@ -53,6 +53,8 @@ public class SearchBusinessTest extends MockedTestCase {
     private TaskDAO taskDAO;
     @Mock
     private UserDAO userDAO;
+    @Mock
+    private AuthorizationBusiness authorizationBusiness;
     
     private Team team;
     
@@ -74,6 +76,7 @@ public class SearchBusinessTest extends MockedTestCase {
         Story story = new Story();
         story.setIteration(iteration);
         story.setBacklog(project);
+        expect(authorizationBusiness.isBacklogAccessible(0, SecurityUtil.getLoggedUser())).andReturn(true).anyTimes();
         expect(backlogDAO.searchByName(search)).andReturn(Arrays.asList((Backlog)(iteration)));
         expect(storyDAO.searchByName(search)).andReturn(Arrays.asList(story));
         expect(storyDAO.searchByID(search)).andReturn(Arrays.asList(story));
@@ -104,6 +107,7 @@ public class SearchBusinessTest extends MockedTestCase {
         products.add((Product)product);
         team.setProducts(products);
         
+        expect(authorizationBusiness.isBacklogAccessible(0, SecurityUtil.getLoggedUser())).andReturn(true).anyTimes();
         expect(backlogDAO.searchByName(search)).andReturn(new ArrayList<Backlog>());
         expect(storyDAO.searchByName(search)).andReturn(new ArrayList<Story>());
         expect(storyDAO.searchByID(search)).andReturn(new ArrayList<Story>());
@@ -135,6 +139,7 @@ public class SearchBusinessTest extends MockedTestCase {
         products.add((Product)product);
         team.setProducts(products);
 
+        expect(authorizationBusiness.isBacklogAccessible(0, SecurityUtil.getLoggedUser())).andReturn(true).anyTimes();
         expect(storyDAO.get(123)).andReturn(story);
         replayAll();
         assertEquals(story, searchBusiness.searchByReference(term));
@@ -170,6 +175,7 @@ public class SearchBusinessTest extends MockedTestCase {
         products.add((Product)product);
         team.setProducts(products);
         
+        expect(authorizationBusiness.isBacklogAccessible(0, SecurityUtil.getLoggedUser())).andReturn(true).anyTimes();
         expect(backlogDAO.get(123)).andReturn(iteration);
         replayAll();
         assertEquals(iteration, searchBusiness.searchByReference(term));
@@ -259,6 +265,7 @@ public class SearchBusinessTest extends MockedTestCase {
         team.setProducts(products);
         List<Backlog> res = Arrays.asList((Backlog)(iteration));
         
+        expect(authorizationBusiness.isBacklogAccessible(0, SecurityUtil.getLoggedUser())).andReturn(true).anyTimes();
         expect(backlogDAO.searchByName(term, Iteration.class)).andReturn(res);
         replayAll();
         List<SearchResultRow> actual = searchBusiness.searchIterations(term);
@@ -282,6 +289,7 @@ public class SearchBusinessTest extends MockedTestCase {
         
         List<Backlog> res = Arrays.asList((Backlog)(project));
         
+        expect(authorizationBusiness.isBacklogAccessible(0, SecurityUtil.getLoggedUser())).andReturn(true).anyTimes();
         expect(backlogDAO.searchByName(term, Project.class)).andReturn(res);
         replayAll();
         List<SearchResultRow> actual = searchBusiness.searchProjects(term);
@@ -314,6 +322,7 @@ public class SearchBusinessTest extends MockedTestCase {
         team.setProducts(products);
         
         List<Story> res = Arrays.asList(story);
+        expect(authorizationBusiness.isBacklogAccessible(0, SecurityUtil.getLoggedUser())).andReturn(true).anyTimes();
         expect(storyDAO.searchByName(term)).andReturn(res);
         replayAll();
         List<SearchResultRow> actual = searchBusiness.searchStories(term);

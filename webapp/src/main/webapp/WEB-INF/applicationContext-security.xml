@@ -17,11 +17,11 @@
 		<security:filter-chain-map request-matcher="ant">
 			<security:filter-chain filters="remoteServicesFilter"
 				pattern="/rs/**" />
-			<security:filter-chain filters="readonlyFilter"
+			<security:filter-chain filters="exceptionTranslationFilter,tokenFilter"
 				pattern="/token/*" />
-			<security:filter-chain filters="readonlyFilter"
+			<security:filter-chain filters="anonymousAuthentication,exceptionTranslationFilter,readonlyFilter"
 				pattern="/ROIteration.action" />
-			<security:filter-chain filters="readonlyFilter"
+			<security:filter-chain filters="anonymousAuthentication,ajaxExceptionTranslationFilter,readonlyFilter"
 				pattern="/ajax/RO*" />
 			<security:filter-chain
 				filters="securityContextPersistence,securityContextHolderAwareRequestFilter,rememberMeAuthentication,anonymousAuthentication,ajaxExceptionTranslationFilter,filterInvocationInterceptor"
@@ -35,6 +35,7 @@
 	<bean id="remoteServicesFilter" class="fi.hut.soberit.agilefant.security.RemoteServicesFilter" />
 	
 	<bean id="readonlyFilter" class="fi.hut.soberit.agilefant.readonly.ReadonlyFilter" />
+	<bean id="tokenFilter" class="fi.hut.soberit.agilefant.readonly.TokenFilter" />
 
 	<bean id="securityContextPersistence"
 		class="org.springframework.security.web.context.SecurityContextPersistenceFilter" />

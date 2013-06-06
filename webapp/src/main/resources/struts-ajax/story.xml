@@ -37,6 +37,13 @@
       </result>
     </action>
     
+    <action name="extractUnfinishedStorySibling" method="extractUnfinishedStorySibling" class="storyAction">
+      <result type="json">
+        <param name="target">story</param>
+        <param name="patterns">+responsibles, +rank, +tasks.responsibles, +children, -children.backlog.description, +parent, +labels,-labels.creator,-labels.timestamp</param>
+      </result>
+    </action>
+    
     <action name="treeCreateRootStory" method="create" class="storyAction">
       <result type="freemarker">/WEB-INF/ftl/storyTreePart.ftl</result>
     </action>

@@ -56,7 +56,7 @@ $(document).ready(function() {
     <p>These settings only affect the account of <strong>${user.fullName}</strong></p>
   </div>
   
-  <ww:form action="storeUser" method="post">
+  <ww:form action="storeUserAndRedirect" method="post">
     <ww:hidden name="userId"  />
     <table class="settings-table" style="margin: 0.3em;">
     
