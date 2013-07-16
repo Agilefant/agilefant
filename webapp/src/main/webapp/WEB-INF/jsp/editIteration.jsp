@@ -33,7 +33,7 @@
 </div>
 <div class="details" id="backlogAssignees_cont">
     <div class="details" id="backlogAssignees"></div>
-    Iteration availability denotes how unassigned load should bee divided within this iteration. If all assignees have the same iteration availability they will receive the same amount of unassigned load.
+    Iteration availability denotes how unassigned load should be divided within this iteration. If all assignees have the same iteration availability they will receive the same amount of unassigned load.
     <br/>
     Personal adjustment adjusts the iteration baseline load for each user.
   </div>
