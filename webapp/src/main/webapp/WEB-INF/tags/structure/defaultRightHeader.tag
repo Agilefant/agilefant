@@ -27,7 +27,7 @@
   var updateMessageCookie = jQuery.cookie("updatemessage");
 
   var compareVersions = function(latestVersion, updateMessage) {
-    if (myVersion != latestVersion && myVersion != "CONNECTIONFAILURE") {
+    if (myVersion != latestVersion && latestVersion != "CONNECTIONFAILURE") {
       jQuery("#updateMessage").append('<img id="updateImage" src="static/img/star_red.png"></img>');
       jQuery("#updateMessage").append('<div id="updateMessageBox">' + updateMessage + '</div>');
       jQuery("#updateMessage").append('<div style="float:right">&nbsp|</div>');
