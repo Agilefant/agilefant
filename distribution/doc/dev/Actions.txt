@@ -1,8 +1,0 @@
-TODO comments ekantola, kheleniu, jmrantal
-
-  -How (for what) are the files in \src\...\agilefant\web\ (XXXAction.java) used?
-  -Who calls, and what parts of the system are called from here.
-  -Relating libraries?
-  
-  CRUDAction contains basic Actions such as create and delete, which are widely applicable.
-  

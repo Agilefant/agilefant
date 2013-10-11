@@ -1,5 +1,0 @@
-TODO comments kheleniu jmrantal
-
-  Files in \web\tag\:
-	What are the Tags for.
-	Who uses them for what?

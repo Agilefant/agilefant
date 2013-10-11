@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-backlogs" namespace="/ajax" extends="ajax">
+    
+        <!-- Backlog actions -->
+    
+    <action name="retrieveRankedStories" class="storyListAction"
+      method="rankedStoriesByContext">
+      <result name="success" type="json">
+        <param name="target">stories</param>
+        <param name="patterns">+id, +rank, +class, -*</param>
+      </result>
+    </action>
+    <action name="retrieveBacklog" method="retrieve" class="backlogAction">
+      <result name="success" type="json">
+        <param name="target">backlog</param>
+        <param name="patterns"></param>
+      </result>
+    </action>
+    
+    <action name="retrieveStories" method="retrieveStories" class="backlogAction">
+      <result name="success" type="json">
+        <param name="target">stories</param>
+      </result>
+    </action>
+    
+    <action name="retrieveSubBacklogs" method="retrieveSubBacklogs" class="backlogAction">
+      <result name="success" type="json">
+        <param name="target">backlogs</param>
+      </result>
+    </action>
+    
+    <action name="addAssignees" method="addAssignees" class="backlogAction">
+      <result name="success" type="json">
+        <param name="target">backlog</param>
+        <param name="patterns">+assignments, +assignments.user.id</param>
+      </result>
+    </action>
+    
+    <!-- /Backlog actions -->
+    
+    
+    
+    <!-- Product actions -->
+    <action name="createProduct" method="create" class="productAction">
+      <result type="dispatcher">/WEB-INF/jsp/forms/createProduct.jsp</result>
+    </action>
+    
+    <action name="retrieveProduct" method="retrieve" class="productAction">
+      <result name="success" type="json">
+        <param name="target">product</param>
+        <param name="patterns">-stories, -projects, -children</param>
+      </result>
+    </action>
+    
+   <action name="retrieveProductProjects" method="retrieveProjects" class="productAction">
+      <result name="success" type="json">
+        <param name="target">childBacklogs</param>
+        <param name="patterns">-stories, -children, +assignees.id, +assignees.class, +assignees.initials, -assignees.*</param>
+      </result>
+    </action>
+    
+    <action name="productBacklogView" method="retrieveLeafStories" class="productAction">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/fragments/productBacklogView.jsp</result>
+    </action>
+    
+    <action name="retrieveAllProducts" method="retrieveAll" class="productAction">
+      <result name="success" type="json">
+        <param name="target">products</param>
+        <param name="patterns">+teams</param>
+      </result>
+    </action>
+    
+    <action name="retrieveAllProductsWithStandalone" method="retrieveAllTimeSheets" class="productAction">
+      <result name="success" type="json">
+        <param name="target">products</param>
+        <param name="patterns">+teams</param>
+      </result>
+    </action>
+    
+    <action name="storeProduct" method="store" class="productAction">
+      <interceptor-ref name="prefetchStack"/>
+      <result name="success" type="json">
+        <param name="target">product</param>
+        <param name="patterns">
+          +teams
+        </param>
+      </result>
+    </action>
+    
+    <action name="storeNewProduct" method="store" class="productAction">
+      <result name="success" type="json">
+        <param name="target">product</param>
+      </result>
+    </action>
+    
+    <action name="deleteProduct" method="delete" class="productAction">
+    <result name="success" type="httpheader">
+      <param name="status">200</param>
+    </result>
+  </action>
+  
+  <action name="deleteProductForm">
+      <result type="dispatcher">/WEB-INF/jsp/forms/deleteProductForm.jsp</result>
+    </action>
+    <!-- /Product actions -->
+    
+
+    
+    <!-- Project actions -->
+    <action name="createProject" method="create" class="projectAction">
+      <result type="dispatcher">/WEB-INF/jsp/forms/createProject.jsp</result>
+    </action>
+    
+    <action name="rankProjectAndMoveUnder" method="rankProject" class="projectAction">
+      <result name="success" type="json">
+        <param name="target">project</param>
+      </result>
+    </action>
+
+    <action name="rankProjectAndMoveOver" method="rankOverProject" class="projectAction">
+      <result name="success" type="json">
+        <param name="target">project</param>
+      </result>
+    </action>
+
+  <action name="unrankProject" method="unrankProject" class="projectAction">
+      <result name="success" type="json">
+        <param name="target">project</param>
+      </result>
+    </action>
+    
+    <action name="storeProject" method="store" class="projectAction">    
+      <interceptor-ref name="prefetchStack"/>
+      <result name="success" type="json">
+        <param name="target">project</param>
+        <param name="patterns">+assignees.id, +assignees.class, +assignees.initials, -assignees.*</param>
+      </result>
+    </action>
+
+  <action name="deleteProject" method="delete" class="projectAction">
+    <result name="success" type="httpheader">
+      <param name="status">200</param>
+    </result>
+  </action>
+    
+   <action name="storeNewProject" method="store" class="projectAction">    
+      <result name="success" type="json">
+        <param name="target">project</param>
+        <param name="patterns">+assignees.id, +assignees.class, +assignees.initials, -assignees.*</param>
+      </result>
+    </action>
+    
+    <action name="projectData" class="projectAction" method="projectData">
+      <result name="success" type="json">
+        <param name="target">project</param>
+        <param name="patterns">+assignees.id, +assignees.initials, +assignees.class, -assignees.*, +children.id, +children.class, +children.name, -children.*</param>
+      </result>
+    </action>
+    
+    <action name="projectLeafStories" class="storyListAction" method="projectLeafStories">
+      <result name="success" type="json">
+        <param name="target">stories</param>
+        <param name="patterns">+responsibles.class, +responsibles.id, +responsibles.initials, -responsibles.*, +backlog.name, +backlog.class, +backlog.id, -backlog.*, +parent.id, +parent.name, +parent.class, -parent.*, -tasks, +labels.displayName, +labels.class, +labels.id, -labels.*</param>
+      </result>
+    </action>
+    
+    <action name="projectIterations" class="projectAction" method="iterationList">
+      <result name="success" type="json">
+        <param name="target">iterations</param>
+        <param name="patterns">-tasks, -stories, +assignees.id, +assignees.class, +assignees.initials, -assignees.*</param>
+      </result>
+    </action>    
+    
+    <action name="projectMetrics" class="projectAction" method="projectMetrics">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/inc/projectMetrics.jsp</result>
+    </action>
+    
+    <action name="rankProject" class="projectAction" method="moveToRanked">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="deleteProjectForm">
+      <result type="dispatcher">/WEB-INF/jsp/forms/deleteProjectForm.jsp</result>
+    </action>
+ 
+    <!-- /Project actions -->
+    
+
+    
+    <!-- Iteration actions -->
+    <action name="createIteration" method="create" class="iterationAction">
+      <result type="dispatcher">/WEB-INF/jsp/forms/createIteration.jsp</result>
+    </action>
+
+    <action name="storeNewIteration" method="store" class="iterationAction">
+      <result name="success" type="json">
+        <param name="target">iteration</param>
+        <param name="patterns">+assignees.id, +assignees.class, +assignees.initials, -assignees.*</param>
+      </result>
+    </action>
+    
+    <action name="storeIteration" method="store" class="iterationAction">
+      <interceptor-ref name="prefetchStack"/>
+      <result name="success" type="json">
+        <param name="target">iteration</param>
+        <param name="patterns">+assignees.id, +assignees.initials, +assignees.class, -assignees.*</param>
+      </result>
+    </action>
+    
+    <action name="retrieveIteration" class="iterationAction" method="retrieve">
+      <result name="success" type="json">
+        <param name="target">iteration</param>
+      </result>
+    </action>
+    
+    <action name="retrieveAllSAIterations" method="retrieveAllSA" class="iterationAction">
+      <result name="success" type="json">
+        <param name="target">iterations</param>
+        <param name="patterns">+teams</param>
+      </result>
+    </action>
+    
+    <action name="iterationData" class="iterationAction" method="fetchIterationData">
+      <result name="success" type="json">
+        <param name="target">iteration</param>
+        <param name="patterns">-parent, -stories, -*.hourEntries, 
+          +rankedStories, +rankedStories.tasks, 
+          +rankedStories.parent.id, +rankedStories.parent.class, +rankedStories.parent.name, -rankedStories.parent.*, 
+          +rankedStories.labels, -rankedStories.labels.creator, -rankedStories.backlog,
+          +rankedStories.responsibles.id, +rankedStories.responsibles.initials, +rankedStories.responsibles.class, -rankedStories.responsibles.*, 
+          +rankedStories.tasks.responsibles.id, +rankedStories.tasks.responsibles.initials, +rankedStories.tasks.responsibles.class, -rankedStories.tasks.responsibles.*, 
+          +rankedStories.tasks.workingOnTask.user.id, +rankedStories.tasks.workingOnTask.user.initials, +rankedStories.tasks.workingOnTask.user.class, -rankedStories.tasks.workingOnTask.user.*, 
+          +tasks.responsibles.id, +tasks.responsibles.initials, +tasks.responsibles.class, -tasks.responsibles.*, 
+          +tasks.workingOnTask.user.id, +tasks.workingOnTask.user.initials, +tasks.workingOnTask.user.class, -tasks.workingOnTask.user.*, 
+          +tasks, +assignees.id, +assignees.initials, +assignees.class, -assignees.*</param>
+      </result>
+    </action>
+    
+    <action name="ROIterationData" class="ROIterationAction" method="fetchROIterationData">
+      <result name="success" type="json">
+        <param name="target">iteration</param>
+        <param name="patterns">-root, -parent, -stories, -*.hourEntries, -backlogSize, -baselineLoad, -scheduleStatus, -standAlone, -tasks,
+          +rankedStories, +rankedStories.tasks, 
+          +rankedStories.parent.id, +rankedStories.parent.class, +rankedStories.parent.name, -rankedStories.parent.*, 
+          +rankedStories.labels, -rankedStories.labels.creator, -rankedStories.backlog,
+          +rankedStories.responsibles.id, +rankedStories.responsibles.initials, +rankedStories.responsibles.class, -rankedStories.responsibles.*, 
+          +rankedStories.tasks.responsibles.id, +rankedStories.tasks.responsibles.initials, +rankedStories.tasks.responsibles.class, -rankedStories.tasks.responsibles.*, 
+          +rankedStories.tasks.workingOnTask.user.id, +rankedStories.tasks.workingOnTask.user.initials, +rankedStories.tasks.workingOnTask.user.class, -rankedStories.tasks.workingOnTask.user.*, 
+          +tasks.responsibles.id, +tasks.responsibles.initials, +tasks.responsibles.class, -tasks.responsibles.*, 
+          +tasks.workingOnTask.user.id, +tasks.workingOnTask.user.initials, +tasks.workingOnTask.user.class, -tasks.workingOnTask.user.*, 
+          +tasks, -assignees</param>
+      </result>
+    </action>
+    
+    <action name="iterationRowMetrics" class="iterationAction" method="iterationRowMetrics">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/inc/iterationRowMetrics.jsp</result>
+    </action>
+    
+    <action name="iterationMetrics" class="iterationAction" method="iterationMetrics">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/inc/iterationMetrics.jsp</result>
+    </action>
+    
+    <action name="ROIterationMetricsByToken" class="iterationAction" method="iterationMetricsByToken">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/inc/iterationMetrics.jsp</result>
+    </action>
+  
+    <action name="createReadonlyToken" class="iterationAction" method="createReadonlyToken">
+      <result name="success" type="json">
+        <param name="target">iteration</param>
+        <param name="patterns">+readonlyToken</param>
+      </result>
+    </action>
+    
+    <action name="clearReadonlyToken" class="iterationAction" method="clearReadonlyToken">
+      <result name="success" type="json">
+        <param name="target">iteration</param>
+        <param name="patterns">+readonlyToken</param>
+      </result>
+    </action>
+  
+    <action name="iterationAssignments" class="iterationAction" method="iterationAssignments">
+      <result name="success" type="json">
+        <param name="target">assignments</param>
+        <param name="patterns">+user.initials</param>
+      </result>
+    </action>
+    
+    <action name="deleteIterationForm">
+      <result type="dispatcher">/WEB-INF/jsp/forms/deleteIterationForm.jsp</result>
+    </action>
+    
+    <action name="shareIterationForm" class="iterationAction" method="setReadonlyTokenForJsp">
+      <result type="dispatcher">/WEB-INF/jsp/forms/shareIterationForm.jsp</result>
+    </action>
+    
+    <action name="unshareIterationForm">
+      <result type="dispatcher">/WEB-INF/jsp/forms/unshareIterationForm.jsp</result>
+    </action>
+    
+    <action name="deleteIteration" method="delete" class="iterationAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="iterationHistory" class="iterationHistoryAction">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/fragments/iterationMingledHistory.jsp</result>
+    </action>
+    
+    <action name="ROIterationHistoryByToken" class="iterationHistoryAction" method="executeByToken">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/fragments/iterationMingledHistory.jsp</result>
+    </action>
+    
+    <!-- /Iteration actions -->  
+  
+  </package>
+  
+</struts>

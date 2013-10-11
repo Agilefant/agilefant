@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+  <package name="ajax-widgets" namespace="/ajax/widgets" extends="ajax">
+  
+    <!-- CRUD -->
+  
+    <action name="createWidget" class="widgetAction" method="create">
+			<result name="success" type="redirectAction">
+				<param name="actionName">${widget.type}.action</param>
+				<param name="objectId">${widget.objectId}</param>
+				<param name="widgetId">${widget.id}</param>
+			</result>
+		</action>
+		
+		<action name="deleteWidget" class="widgetAction" method="delete">
+		  <result name="success" type="httpheader">
+		    <param name="status">200</param>
+		  </result>
+		</action>
+
+    <action name="moveWidget" class="widgetAction" method="move">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+
+    
+    <!-- /CRUD -->
+    
+    
+    <!-- Widgets -->
+    
+    <action name="iterationMetrics" class="iterationMetricsWidget" method="execute">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/widgets/iterationMetricsWidget.jsp</result>
+    </action>
+    
+    <action name="userLoad" class="userLoadWidget" method="execute">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/widgets/userLoadWidget.jsp</result>
+    </action>
+    
+    <action name="story" class="storyWidget" method="execute">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/widgets/storyWidget.jsp</result>
+    </action>
+
+    <action name="projectMetrics" class="projectMetricsWidget" method="execute">
+      <result name="success" type="dispatcher">/WEB-INF/jsp/widgets/projectMetricsWidget.jsp</result>
+    </action>
+
+    <!-- /Widgets -->  
+  </package>
+  
+</struts>

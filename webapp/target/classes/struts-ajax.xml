@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<!-- 
+  This file is used mainly for ajax exception mappings and interceptor
+  configuration.
+  
+  The individual configurations can be found under the struts folder.
+ -->
+
+
+<struts>
+
+  <!-- Include the configuration files -->
+  <include file="struts-ajax/**.xml" />
+   
+  <package name="ajax" namespace="/ajax" extends="default">
+    
+    <result-types>
+      <!-- JSON result type -->
+      <result-type name="json" default="true" class="code.google.struts2jsonresult.JSONResult">
+        <param name="prettyPrint">true</param>
+        <param name="out.noCache">true</param>
+      </result-type>
+    </result-types>
+    
+    <!-- Interceptors -->
+    <interceptors>
+      <interceptor name="refreshUser" class="refreshUserInterceptor" />
+      <interceptor name="security" class="securityInterceptor" />
+      <interceptor name="prefetch" class="prefetchInterceptor" />
+      <interceptor name="settings"	class="settingsInterceptor" />
+      <interceptor name="customMultipartForm" class="customMultipartFormInterceptor" />
+ 
+     
+      <interceptor-stack name="fileUploadStack">
+               <interceptor-ref name="customMultipartForm"/>
+               <interceptor-ref name="basicStack"/>
+      </interceptor-stack>
+       
+      
+      
+      <interceptor-stack name="authenticationStack">
+        <interceptor-ref name="exception" />
+        <interceptor-ref name="completeStack" />
+        <interceptor-ref name="refreshUser" />
+        <interceptor-ref name="security" />
+        <interceptor-ref name="settings" />
+       <interceptor-ref name="validation">
+          <param name="validateAnnotatedMethodOnly">true</param>
+      </interceptor-ref>        
+      </interceptor-stack>
+      
+      <interceptor-stack name="prefetchStack">
+        <interceptor-ref name="security" />
+        <interceptor-ref name="exception" />
+        <interceptor-ref name="prefetch" />
+        <interceptor-ref name="completeStack" />
+        <interceptor-ref name="refreshUser" />
+        <interceptor-ref name="settings" />
+        <interceptor-ref name="validation">
+          <param name="validateAnnotatedMethodOnly">true</param>
+        </interceptor-ref>
+      </interceptor-stack>
+      
+      <interceptor-stack name="preparedStack">
+        <interceptor-ref name="exception" />
+        <interceptor-ref name="params" />
+        <interceptor-ref name="prepare" />
+        <interceptor-ref name="completeStack" />
+        <interceptor-ref name="refreshUser" />
+        <interceptor-ref name="security" />
+        <interceptor-ref name="settings" />
+        <interceptor-ref name="validation">
+          <param name="validateAnnotatedMethodOnly">true</param>
+      </interceptor-ref>
+      </interceptor-stack>
+    </interceptors>
+    
+    <default-interceptor-ref name="authenticationStack" />
+
+    <global-results>
+      <result name="input" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="target">fieldErrors</param>
+      </result>
+     <!-- <result name="ajaxException" type="chain">
+        <param name="actionName">ajaxExceptionHandler</param>
+      </result>-->
+    </global-results>
+
+    <!-- AJAX exceptions -->
+    <!-- <global-exception-mappings>
+      <exception-mapping result="ajaxException"
+        exception="fi.hut.soberit.agilefant.exception.ObjectNotFoundException" />
+      <exception-mapping result="ajaxException"
+        exception="java.lang.IllegalArgumentException" />
+      <exception-mapping result="ajaxException"
+        exception="java.lang.RuntimeException" />         
+    </global-exception-mappings>-->
+    
+   <!-- <action name="ajaxExceptionHandler" class="ajaxExceptionHandler" method="handle">
+      <result name="objectNotFound" type="json">
+        <param name="out.statusCode">404</param>
+        <param name="patterns">+errorMessage, +trace, -*</param>
+      </result>
+      <result name="conflict" type="json">
+        <param name="out.statusCode">409</param>
+        <param name="patterns">+errorMessage, +trace, -*</param>
+      </result>
+      <result name="input" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="patterns">+errorMessage, +trace, -*</param>
+      </result>
+      <result name="genericException" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="patterns">+errorMessage, +trace, -*</param>
+      </result>
+    </action>-->
+
+  </package>
+  
+</struts>

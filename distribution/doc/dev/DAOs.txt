@@ -1,6 +1,0 @@
-TODO comments kheleniu, tiaijala
-  How the files in \db\ (XXXDAO.java) are used?
-  Who calls, and what parts of the system is called from here).
-  Relating libraries?
-
-  DAO = Data Access Object

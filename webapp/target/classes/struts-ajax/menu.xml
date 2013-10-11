@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-menu" namespace="/ajax" extends="ajax">
+
+    <action name="menuData" method="constructBacklogMenuData" class="menuAction">
+      <result type="json">
+        <param name="target">menuData</param>
+        <param name="patterns">-class, -*.class, -*.*.class</param>
+      </result>
+    </action>
+    
+    <action name="updateOpenMenus" method="updateOpenMenus" class="menuAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="myAssignmentsMenuData" method="constructAssignmentData" class="menuAction">
+        <result type="json">
+          <param name="target">assignmentData</param>
+          <param name="patterns">-class, -*.class, -*.*.class</param>
+        </result>
+    </action>
+  
+  </package>
+  
+</struts>

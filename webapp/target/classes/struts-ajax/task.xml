@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-task" namespace="/ajax" extends="ajax">
+    
+    <action name="deleteTask" method="delete" class="taskAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="storeTask" method="store" class="taskAction" >
+      <interceptor-ref name="prefetchStack" />
+      <result name="success" type="json">
+        <param name="target">task</param>
+        <param name="patterns">+responsibles</param>
+      </result>
+      <result name="success_withStory" type="json">
+        <param name="target">task</param>
+        <param name="patterns">+responsibles, +story, -story.backlog, -story.parent</param>
+      </result>
+    </action>
+    
+    <action name="createTask" method="store" class="taskAction" >
+      <result name="success" type="json">
+        <param name="target">task</param>
+        <param name="patterns">+responsibles</param>
+      </result>
+      <result name="success_withStory" type="json">
+        <param name="target">task</param>
+        <param name="patterns">+responsibles, +story, -story.backlog</param>
+      </result>
+    </action>
+    
+    <action name="retrieveTask" method="retrieve" class="taskAction">
+      <result name="success" type="json">
+        <param name="target">task</param>
+      </result>
+    </action>
+    
+    <action name="moveTask" method="move" class="taskAction">
+      <result name="success" type="json">
+        <param name="target">task</param>
+        <param name="patterns">
+          +iteration
+        </param>
+      </result>
+    </action>
+   
+    <action name="rankTaskAndMoveUnder" method="rankUnder" class="taskAction">
+      <result name="success" type="json">
+        <param name="target">task</param>
+      </result>
+    </action>
+    
+    <action name="resetOriginalEstimate" method="resetOriginalEstimate" class="taskAction">
+      <result name="success" type="json">
+        <param name="target">task</param>
+      </result>
+    </action>
+    
+    <action name="deleteTaskForm" method="deleteTaskForm" class="taskAction">
+      <result type="dispatcher">/WEB-INF/jsp/forms/deleteTaskForm.jsp</result>
+    </action>
+    
+    <action name="getTaskContext" class="taskAction" method="getTaskContext">
+      <result type="dispatcher">/WEB-INF/jsp/inc/taskHierarchy.jsp</result>
+    </action>
+    
+    <action name="splitTask" method="split" class="taskSplitAction">
+      <interceptor-ref name="prefetchStack" />
+      <result name="success" type="json">
+      </result>
+    </action>
+  
+    
+  </package>
+  
+</struts>

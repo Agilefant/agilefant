@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fi.soberit.agilefant</groupId>
 		<artifactId>agilefant-parent</artifactId>
-		<version>3.1.2-SNAPSHOT</version>
+		<version>3.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>agilefant-distribution</artifactId>

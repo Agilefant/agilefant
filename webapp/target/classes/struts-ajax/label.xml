@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-label" namespace="/ajax" extends="ajax">
+    
+    <action name="addStoryLabels" method="addStoryLabels" class="labelAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="deleteLabel" method="delete" class="labelAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="lookupLabels" method="lookupLabels" class="labelAction">
+      <result name="success" type="json">
+        <param name="target">labels</param>
+        <param name="patterns">-creator,-timestamp</param>
+      </result>
+    </action>
+  
+  </package>
+  
+</struts>

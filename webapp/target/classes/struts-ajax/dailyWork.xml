@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-dailyWork" namespace="/ajax" extends="ajax">
+    
+    <action name="dailyWorkData" class="dailyWorkAction" method="retrieve">
+      <result name="success" type="json">
+        <param name="patterns">
+            +*.class,
+            +stories.backlog.id, +stories.backlog.name, -stories.backlog.*,
+            +stories.tasks, +stories.labels, +stories.parent.name, +stories.parent.id, -stories.parent.*,
+            +queuedTasks, +queuedTasks.responsibles, +queuedTasks.story.id,
+            +queuedTasks.story.name, +queuedTasks.story.backlog.id, +queuedTasks.story.backlog.name, -queuedTasks.story.backlog.*, -queuedTasks.story.*, 
+            +queuedTasks.iteration.id, +queuedTasks.iteration.name, -queuedTasks.iteration*,
+            +tasksWithoutStory.iteration.id, +tasksWithoutStory.iteration.name, -tasksWithoutStory.iteration.*,
+            +*.workingOnTask, +*.workingOnTask.id, -*.workingOnTask.*,
+            +*.responsibles, +*.responsibles.id, +*.responsibles.initials, -*.responsibles.*,
+            +*.backlog.id, +*.backlog.name, -*.backlog.*,
+            +*.parent.id, +*.parent.name, -*.parent.*
+        </param>
+      </result>
+    </action>
+    
+    
+    <action name="workQueue" class="dailyWorkAction" method="retrieveWorkQueue">
+       <result name="success" type="json">
+          <param name="target">queuedTasks</param>
+          <param name="patterns">
+              +*.class,
+              +responsibles, +story.id,
+              +story.name, -story.*, +story.backlog.id, +story.backlog.name, -story.backlog.*,
+              +iteration.id, +iteration.name, -iteration.*,
+              +*.workingOnTask, +*.workingOnTask.id, -*.workingOnTask.*,
+              +*.responsibles, +*.responsibles.id, +*.responsibles.initials, -*.responsibles.*
+        </param>
+       </result>
+      </action>
+  
+    <action name="dailyWorkStories" class="dailyWorkAction" method="retrieveAssignedStories">
+      <result name="success" type="json">
+        <param name="target">stories</param>
+        <param name="patterns">
+            +*.class,
+            +backlog.id, +backlog.name, -backlog.*,
+            +tasks, +labels, +parent.name, +parent.id, -parent.*,
+            +*.workingOnTask, +*.workingOnTask.id, -*.workingOnTask.*,
+            +*.responsibles, +*.responsibles.id, +*.responsibles.initials, -*.responsibles.*
+        </param>        
+      </result>
+    </action>
+  
+    <action name="dailyWorkTasks" class="dailyWorkAction" method="retrieveAssignedTasks">
+      <result name="success" type="json">
+        <param name="target">tasksWithoutStory</param>
+        <param name="patterns">
+            +*.class,
+            +tasksWithoutStory.iteration,
+            +*.workingOnTask, +*.workingOnTask.id, -*.workingOnTask.*,
+            +*.responsibles, +*.responsibles.id, +*.responsibles.initials, -*.responsibles.*
+            +*.parent.id, +*.parent.name, -*.parent.*, -*.parent.responsibles,
+            +*.iteration.id, +*.iteration.name, -*.iteration.*
+        </param>        
+      </result>
+    </action>
+  
+    <action name="addToWorkQueue" method="addToWorkQueue" class="dailyWorkAction">
+      <result name="success" type="json">
+        <param name="target">task</param>
+        <param name="patterns">+*.responsibles, +*.workingOnTask</param>
+      </result>
+    </action>
+
+    <action name="deleteFromWorkQueue" method="deleteFromWorkQueue" class="dailyWorkAction">
+      <result name="success" type="json">
+        <param name="target">task</param>
+        <param name="patterns">+*.responsibles, +*.workingOnTask</param>
+      </result>
+    </action>
+
+    <action name="rankDailyTaskAndMoveUnder" method="rankQueueTaskAndMoveUnder" class="dailyWorkAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+     <action name="rankMyStoryAndMoveUnder" method="rankMyStoryAndMoveUnder" class="dailyWorkAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    
+    
+    
+    
+    <!-- User load actions -->
+    <action name="defaultUserLoad" method="retrieveUserLoad" class="userLoadAction">
+      <result name="success" type="json">
+        <param name="target">userLoadData</param>
+      </result>
+    </action>
+    
+    <action name="userLoadLimits" method="dailyLoadLimits" class="userLoadAction">
+      <result name="success" type="json">
+        <param name="target">loadLimits</param>
+      </result>
+    </action>
+    <!-- /User load actions -->
+  
+  </package>
+  
+</struts>

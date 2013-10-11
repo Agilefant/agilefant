@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-users" namespace="/ajax" extends="ajax">
+
+    <!-- User actions -->
+    <action name="retrieveUser" method="retrieve" class="userAction">
+      <result name="success" type="json">
+        <param name="target">user</param>
+        <param name="patterns">+teams</param>
+      </result>
+    </action>
+    
+    <action name="storeUser" method="store" class="userAction">
+      <interceptor-ref name="prefetchStack" />
+      <result name="success" type="json">
+        <param name="target">user</param>
+        <param name="patterns">+teams</param>
+      </result>
+    </action>
+    
+    <action name="storeNewUser" method="store" class="userAction">
+      <result name="success" type="json">
+        <param name="target">user</param>
+      </result>
+    </action>
+    
+    <action name="retrieveAllUsers" method="retrieveAll" class="userAction">
+      <result name="success" type="json">
+        <param name="target">users</param>
+      </result>
+    </action>
+    
+    <action name="isLoginNameUnique" method="checkLoginName" class="userAction">
+      <result name="success" type="json">
+        <param name="target">valid</param>
+      </result>
+    </action>
+    <!-- /User actions -->
+  
+  </package>
+  
+</struts>

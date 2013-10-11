@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-teams" namespace="/ajax" extends="ajax">
+
+    <action name="createTeam" method="create" class="teamAction">
+      <result type="dispatcher">/WEB-INF/jsp/forms/createTeam.jsp</result>
+    </action>
+    
+    <action name="storeNewTeam" method="store" class="teamAction">   
+      <result name="success" type="json">
+        <param name="target">team</param>
+      </result>
+    </action>
+    
+    <action name="deleteTeam" method="delete" class="teamAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="storeTeam" method="store" class="teamAction">  
+      <interceptor-ref name="prefetchStack" />
+      <result name="success" type="json">
+        <param name="target">team</param>
+        <param name="patterns">
+          +users
+        </param>
+      </result>
+    </action>
+       
+    <action name="retrieveAllTeams" method="retrieveAll" class="teamAction">
+      <result name="success" type="json">
+        <param name="target">teamList</param>
+        <param name="patterns">+users</param>
+      </result>
+    </action>  
+    
+    <action name="retrieveMyTeams" method="retrieveMyTeams" class="teamAction">
+      <result name="success" type="json">
+        <param name="target">teamList</param>
+        <param name="patterns">+users</param>
+      </result>
+    </action>
+    
+    <action name="deleteTeamForm" method="deleteTeamForm" class="teamAction">
+      <result type="dispatcher">/WEB-INF/jsp/forms/deleteTeamForm.jsp</result>
+    </action>
+  
+  </package>
+  
+</struts>

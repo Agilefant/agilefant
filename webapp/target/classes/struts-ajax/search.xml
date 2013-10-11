@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-search" namespace="/ajax" extends="ajax">
+    
+    <action name="search" method="execute" class="searchAction">
+      <result name="success" type="json">
+        <param name="target">results</param>
+        <param name="patterns">+originalObject.id,+label,+value, +originalObject.class,-*</param>
+      </result>
+    </action>
+    
+    <action name="iterations" method="searchIterations" class="searchAction">
+      <result name="success" type="json">
+        <param name="target">results</param>
+        <param name="patterns">+originalObject.id,+label,+value, +originalObject.class,-*</param>
+      </result>
+    </action>
+
+    <action name="projects" method="searchProjects" class="searchAction">
+      <result name="success" type="json">
+        <param name="target">results</param>
+        <param name="patterns">+originalObject.id,+label,+value, +originalObject.class,-*</param>
+      </result>
+    </action>
+
+    <action name="stories" method="searchStories" class="searchAction">
+      <result name="success" type="json">
+        <param name="target">results</param>
+        <param name="patterns">+originalObject.id,+label,+value, +originalObject.class,-*</param>
+      </result>
+    </action>
+    
+    <action name="tasks" method="searchTasks" class="searchAction">
+      <result name="success" type="json">
+        <param name="target">results</param>
+        <param name="patterns">+originalObject.id,+label,+value, +originalObject.class,-*</param>
+      </result>
+    </action>
+
+    <action name="users" method="searchUsers" class="searchAction">
+      <result name="success" type="json">
+        <param name="target">results</param>
+        <param name="patterns">+originalObject.id,+label,+value, +originalObject.class,-*</param>
+      </result>
+    </action>
+  
+  </package>
+  
+</struts>

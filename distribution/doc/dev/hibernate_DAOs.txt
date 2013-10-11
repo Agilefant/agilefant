@@ -1,6 +1,0 @@
-TODO comments kheleniu, tiaijala
-  How the files in \db\hibernate\event (XXXDAOHibernate.java) are used?
-  Who calls them, and what parts of the system is called from here?
-  Relating ibraries?
-
-  DAO = Data Access Object

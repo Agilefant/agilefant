@@ -25,19 +25,11 @@
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
-			<source>doc/Summary_about_used_libraries.txt</source>
-			<outputDirectory>/</outputDirectory>
-		</file>
-		<file>
 			<source>doc/Install.txt</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 	</files>
 	<fileSets>
-		<fileSet>
-			<directory>doc/upgrade</directory>
-			<outputDirectory>/upgrade</outputDirectory>
-		</fileSet>
 		<fileSet>
 			<directory>doc/sql/upgrader</directory>
 			<outputDirectory>/upgrade</outputDirectory>

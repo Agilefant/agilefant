@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-story" namespace="/ajax" extends="ajax">
+    
+    <action name="createStoryForm" method="execute" class="storyAction">
+          <result type="dispatcher">/WEB-INF/jsp/forms/createStory.jsp</result>
+    </action>
+    
+    <action name="createStory" method="create" class="storyAction">
+      <result type="json">
+        <param name="target">story</param>
+        <param name="patterns">+responsibles, +labels</param>
+      </result>
+    </action>
+    
+    <action name="createStoryUnder" method="createStoryUnder" class="storyAction">
+      <result type="json">
+        <param name="target">story</param>
+      </result>
+    </action>
+    
+    <action name="createStorySibling" method="createStorySibling" class="storyAction">
+      <result type="json">
+        <param name="target">story</param>
+      </result>
+    </action>
+    
+    <action name="copyStorySibling" method="copyStorySibling" class="storyAction">
+      <result type="json">
+        <param name="target">story</param>
+        <param name="patterns">+responsibles, +rank, +tasks.responsibles, +children, -children.backlog.description, +parent, +labels,-labels.creator,-labels.timestamp</param>
+      </result>
+    </action>
+    
+    <action name="extractUnfinishedStorySibling" method="extractUnfinishedStorySibling" class="storyAction">
+      <result type="json">
+        <param name="target">story</param>
+        <param name="patterns">+responsibles, +rank, +tasks.responsibles, +children, -children.backlog.description, +parent, +labels,-labels.creator,-labels.timestamp</param>
+      </result>
+    </action>
+    
+    <action name="treeCreateRootStory" method="create" class="storyAction">
+      <result type="freemarker">/WEB-INF/ftl/storyTreePart.ftl</result>
+    </action>
+        
+    <action name="treeCreateStoryUnder" method="createStoryUnder" class="storyAction">
+      <result type="freemarker">/WEB-INF/ftl/storyTreePart.ftl</result>
+    </action>
+    
+   <action name="treeCreateStorySibling" method="createStorySibling" class="storyAction">
+      <result type="freemarker">/WEB-INF/ftl/storyTreePart.ftl</result>
+    </action>
+    
+    <action name="storeStory" method="store" class="storyAction">
+      <interceptor-ref name="prefetchStack"/>
+      <result name="success" type="json">
+        <param name="target">story</param>
+        <param name="patterns">+responsibles, -rank</param>
+      </result>
+      <result name="success_withTasks" type="json">
+        <param name="target">story</param>
+        <param name="patterns">+responsibles, -rank, +tasks</param>
+      </result>
+    </action>
+    
+    <action name="retrieveStory" method="retrieve" class="storyAction">
+       <result type="json">
+        <param name="target">story</param>
+        <param name="patterns">+responsibles, -rank, +tasks, +children, -children.backlog.description, +parent, +labels,-labels.creator,-labels.timestamp</param>
+       </result>
+    </action>
+    
+    <action name="treeRetrieveStory" method="retrieve" class="storyAction">
+      <result type="freemarker">/WEB-INF/ftl/storyTreePart.ftl</result>
+    </action>
+    
+    <action name="retrieveStoryMetrics" method="retrieve" class="storyAction">
+       <result type="json">
+        <param name="target">story</param>
+        <param name="patterns">-rank, +metrics.*, +id, +class, -*</param>
+       </result>
+    </action>
+    
+    <action name="retrieveBranchMetrics" class="storyHierarchyAction" method="retrieveBranchMetrics">
+      <result type="dispatcher">/WEB-INF/jsp/fragments/branchMetrics.jsp</result>
+    </action>
+        
+    <action name="deleteStory" method="delete" class="storyAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="moveMultipleUnder" method="moveMultipleUnder" class="storyHierarchyAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+      <result name="error" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="target">integrityErrors</param>
+      </result>
+    </action>
+    
+    <action name="moveMultipleBefore" method="moveMultipleBefore" class="storyHierarchyAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+      <result name="error" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="target">integrityErrors</param>
+      </result>
+    </action>
+    
+    <action name="moveMultipleAfter" method="moveMultipleAfter" class="storyHierarchyAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+      <result name="error" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="target">integrityErrors</param>
+      </result>
+    </action>
+    
+    <action name="moveStoryUnder" method="moveStoryUnder" class="storyHierarchyAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+      <result name="error" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="target">integrityErrors</param>
+      </result>
+    </action>
+    
+        
+    <action name="moveStoryBefore" method="moveStoryBefore" class="storyHierarchyAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+      <result name="error" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="target">integrityErrors</param>
+      </result>
+    </action>
+    
+        
+    <action name="moveStoryAfter" method="moveStoryAfter" class="storyHierarchyAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+      <result name="error" type="json">
+        <param name="out.statusCode">500</param>
+        <param name="target">integrityErrors</param>
+      </result>
+    </action>
+    
+    <action name="moveStory" method="moveStoryAway" class="storyAction">
+      <result name="success" type="json">
+        <param name="target">story</param>
+      </result>
+    </action>
+    
+    <action name="safeMoveSingleStory" method="safeMoveSingleStory" class="storyAction">
+      <result name="success" type="json">
+        <param name="target">story</param>
+      </result>
+    </action>
+    
+    <action name="moveStoryAndChildren" method="moveStoryAndChildren" class="storyAction">
+      <result name="success" type="json">
+        <param name="target">story</param>
+      </result>
+    </action>
+    
+    <action name="rankStoryOver" method="rankStoryOver" class="storyAction">
+      <result name="success" type="json">
+        <param name="target">story</param>
+        <param name="patterns">-backlog, -parent</param>
+      </result>
+    </action>
+    
+    <action name="rankStoryUnder" method="rankStoryUnder" class="storyAction">
+      <result name="success" type="json">
+        <param name="target">story</param>
+        <param name="patterns">-backlog, -parent</param>
+      </result>
+    </action>
+    
+    <action name="rankStoryToTop" method="rankStoryToTop" class="storyAction">
+      <result name="success" type="json">
+        <param name="target">story</param>
+        <param name="patterns">-backlog, -parent</param>
+      </result>
+    </action>
+    
+    <action name="rankStoryToBottom" method="rankStoryToBottom" class="storyAction">
+      <result name="success" type="json">
+        <param name="target">story</param>
+        <param name="patterns">-backlog, -parent</param>
+      </result>
+    </action>
+
+    <action name="deleteStoryForm" method="deleteStoryForm" class="storyAction">
+      <result type="dispatcher">/WEB-INF/jsp/forms/deleteStoryForm.jsp</result>
+    </action>
+    
+    <action name="editMultipleStories" method="updateMultipleStories" class="multipleStoryAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+   <action name="storyViewed" method="addAccessEntry" class="storyAccessAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+    
+    <action name="storyAccessData" method="calculateAccesses" class="storyAccessAction">
+      <result name="success" type="json">
+        <param name="target">entries</param>
+        <param name="patterns">+story.name, +story.id,-story.*,-user</param>
+      </result>
+    </action>
+    <action name="storyEditAccessData" method="calculateEditAccesses" class="storyAccessAction">
+      <result name="success" type="json">
+        <param name="target">entries</param>
+        <param name="patterns">+story.name, +story.id,-story.*,-user</param>
+      </result>
+    </action>  
+  </package>
+  
+</struts>

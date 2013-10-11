@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-assignment" namespace="/ajax" extends="ajax">
+    
+    <action name="modifyAssigment" method="modify" class="assignmentAction">
+      <interceptor-ref name="prefetchStack" />
+      <result name="success" type="json">
+        <param name="target">assignment</param>
+      </result>
+    </action>
+    
+    <action name="deleteAssignment" method="delete" class="assignmentAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
+  
+  </package>
+  
+</struts>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-storyTree" namespace="/ajax" extends="ajax">  
+    <!-- Story hierarchy -->
+	  <action name="getStoryHierarchy" class="storyHierarchyAction" method="recurseHierarchyAsList">
+	    <result type="dispatcher">/WEB-INF/jsp/inc/storyHierarchy.jsp</result>
+	  </action>
+	  
+	  <action name="getProjectStoryTree" class="storyHierarchyAction" method="retrieveProjectRootStories">
+	    <result type="freemarker">/WEB-INF/ftl/storyTree.ftl</result>
+	  </action>
+	
+	  <action name="getProductStoryTree" class="storyHierarchyAction" method="retrieveProductRootStories">
+	    <result type="freemarker">/WEB-INF/ftl/storyTree.ftl</result>
+	  </action>
+	  <!-- /Story hierarchy -->
+	  
+	  <!-- Story tree integrity -->
+	  <action name="checkChangeBacklog" class="storyTreeIntegrityAction" method="checkChangeBacklog">
+	   <result name="success" type="dispatcher">/WEB-INF/jsp/forms/checkStoryMove.jsp</result>
+	   <result name="fatalConstraint" type="dispatcher">/WEB-INF/jsp/forms/checkStoryMove.jsp</result>
+	  </action>
+
+	  <action name="checkChangeParentStory" class="storyTreeIntegrityAction" method="checkChangeParentStory">
+	   <result name="success" type="dispatcher">/WEB-INF/jsp/forms/checkStoryParentChange.jsp</result>
+	  </action>
+	  
+	  <action name="getSuggestionContent" class="storyTreeIntegrityAction">
+	    <result name="success" type="dispatcher">/WEB-INF/jsp/forms/moveOptions/moveOption_moveStoryOnly.jsp</result>
+	  </action>
+	  <!-- /Story tree integrity -->  
+  
+  </package>
+  
+</struts>

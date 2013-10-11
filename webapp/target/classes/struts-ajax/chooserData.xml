@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  
+  <package name="ajax-chooserdata" namespace="/ajax" extends="ajax">
+    
+    <action name="userChooserData" class="autocompleteAction" method="userTeamData">
+	    <result name="success" type="json">
+	      <param name="target">autocompleteData</param>
+	      <param name="patterns">-class</param>
+	    </result>
+	  </action>
+	  <action name="teamChooserData" class="autocompleteAction" method="teamData">
+	    <result name="success" type="json">
+	      <param name="target">autocompleteData</param>
+	      <param name="patterns">-class</param>
+	    </result>
+	  </action>
+    <action name="backlogChooserData" class="autocompleteAction" method="backlogData">
+      <result name="success" type="json">
+        <param name="target">autocompleteData</param>
+        <param name="patterns">-class</param>
+      </result>
+    </action>
+    <action name="backlogAndIterationChooserData" class="autocompleteAction" method="backlogAndIterationData">
+      <result name="success" type="json">
+        <param name="target">autocompleteData</param>
+        <param name="patterns">-class</param>
+      </result>
+    </action>
+	  <action name="productChooserData" class="autocompleteAction" method="productData">
+	    <result name="success" type="json">
+	      <param name="target">autocompleteData</param>
+	      <param name="patterns">-class</param>
+	    </result>
+	  </action>
+	  <action name="projectChooserData" class="autocompleteAction" method="projectData">
+	    <result name="success" type="json">
+	      <param name="target">autocompleteData</param>
+	      <param name="patterns">-class</param>
+	    </result>
+	  </action>
+	  <action name="currentIterationChooserData" class="autocompleteAction"
+	    method="currentIterationData">
+	    <result name="success" type="json">
+	      <param name="target">autocompleteData</param>
+	      <param name="patterns">-class</param>
+	    </result>
+	  </action>
+
+  </package>
+  
+</struts>
