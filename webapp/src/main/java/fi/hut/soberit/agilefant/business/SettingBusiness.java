@@ -168,6 +168,11 @@ public interface SettingBusiness extends GenericBusiness<Setting> {
      * Toggle the displaying of weekends in burndown.
      */
     void setWeekendsInBurndown(boolean mode);
+    
+    /**
+     * Set any value (used in import).
+     */
+    void setValue(String settingName, String value);
     /**
      * Set Location for saving comment attachments
      */

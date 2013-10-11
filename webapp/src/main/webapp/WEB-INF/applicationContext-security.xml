@@ -14,20 +14,20 @@
           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 	<bean id="springSecurity" class="org.springframework.security.web.FilterChainProxy">
-		<security:filter-chain-map path-type="ant">
+		<security:filter-chain-map request-matcher="ant">
 			<security:filter-chain filters="remoteServicesFilter"
 				pattern="/rs/**" />
-			<security:filter-chain filters="readonlyFilter"
+			<security:filter-chain filters="exceptionTranslationFilter,tokenFilter"
 				pattern="/token/*" />
-			<security:filter-chain filters="readonlyFilter"
+			<security:filter-chain filters="anonymousAuthentication,setupUserFilter,exceptionTranslationFilter,readonlyFilter"
 				pattern="/ROIteration.action" />
-			<security:filter-chain filters="readonlyFilter"
+			<security:filter-chain filters="anonymousAuthentication,setupUserFilter,ajaxExceptionTranslationFilter,readonlyFilter"
 				pattern="/ajax/RO*" />
 			<security:filter-chain
-				filters="securityContextPersistence,securityContextHolderAwareRequestFilter,rememberMeAuthentication,anonymousAuthentication,ajaxExceptionTranslationFilter,filterInvocationInterceptor"
+				filters="securityContextPersistence,securityContextHolderAwareRequestFilter,rememberMeAuthentication,anonymousAuthentication,setupUserFilter,ajaxExceptionTranslationFilter,filterInvocationInterceptor"
 				pattern="/ajax/**" />
 			<security:filter-chain
-				filters="securityContextPersistence,logoutFilter,usernamePasswordAuthentication,securityContextHolderAwareRequestFilter,rememberMeAuthentication,anonymousAuthentication,exceptionTranslationFilter,filterInvocationInterceptor"
+				filters="securityContextPersistence,logoutFilter,usernamePasswordAuthentication,securityContextHolderAwareRequestFilter,rememberMeAuthentication,anonymousAuthentication,setupUserFilter,exceptionTranslationFilter,filterInvocationInterceptor"
 				pattern="/**" />
 		</security:filter-chain-map>
 	</bean>
@@ -35,6 +35,8 @@
 	<bean id="remoteServicesFilter" class="fi.hut.soberit.agilefant.security.RemoteServicesFilter" />
 	
 	<bean id="readonlyFilter" class="fi.hut.soberit.agilefant.readonly.ReadonlyFilter" />
+	<bean id="tokenFilter" class="fi.hut.soberit.agilefant.readonly.TokenFilter" />
+	<bean id="setupUserFilter" class="fi.hut.soberit.agilefant.security.SetupUserFilter" />
 
 	<bean id="securityContextPersistence"
 		class="org.springframework.security.web.context.SecurityContextPersistenceFilter" />

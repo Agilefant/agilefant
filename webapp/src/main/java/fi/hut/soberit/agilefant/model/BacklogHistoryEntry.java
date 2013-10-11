@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -80,7 +81,7 @@ public class BacklogHistoryEntry {
         this.branchMax = branchMax;
     }
     
-    @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime", parameters = @Parameter(name = "databaseZone", value = "jvm"))
     public DateTime getTimestamp() {
         return timestamp;
     }

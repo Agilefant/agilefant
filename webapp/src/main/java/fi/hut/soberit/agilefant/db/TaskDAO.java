@@ -63,6 +63,22 @@ public interface TaskDAO extends GenericDAO<Task> {
      *            Search interval for the container iteration.
      */
     public List<Task> getAllIterationAndStoryTasks(User user, Interval interval);
+    
+    /**
+     * Lookup tasks that are assigned to the given user and are either directly
+     * attached to an iteration, or whose story is attached to any 
+     * backlog (iteration, project or product).
+     * Selects only tasks from iterations that overlap with the given interval,
+     * or whose story timeframe overlaps with the given interval. Only
+     * returns tasks that are not done, deferred, or whose story is not
+     * deferred.
+     * 
+     * @param user
+     *            Assignee or one of the assignees for the searched tasks.
+     * @param interval
+     *            Search interval for the container backlog.
+     */
+    public List<Task> getAllTasks(User user, Interval interval);
 
     
     /**

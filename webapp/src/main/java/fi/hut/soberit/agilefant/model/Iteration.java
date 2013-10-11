@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -79,7 +80,7 @@ public class Iteration extends Backlog implements Schedulable, TaskContainer {
     private Collection<Team> teams = new HashSet<Team>();
 
     @JSON
-    @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime", parameters = @Parameter(name = "databaseZone", value = "jvm"))
     @XmlAttribute
     @XmlJavaTypeAdapter(XmlDateTimeAdapter.class)
     public DateTime getEndDate() {
@@ -92,7 +93,7 @@ public class Iteration extends Backlog implements Schedulable, TaskContainer {
 
     
     @JSON
-    @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime", parameters = @Parameter(name = "databaseZone", value = "jvm"))
     @XmlAttribute
     @XmlJavaTypeAdapter(XmlDateTimeAdapter.class)
     public DateTime getStartDate() {

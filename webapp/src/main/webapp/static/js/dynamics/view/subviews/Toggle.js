@@ -62,7 +62,7 @@ DynamicTableToggleView.prototype.getHTML = function() {
     }
     return false;
   }, this);
-  return '<div id="'+this.getId()+'" class="' + cssClass + '" title="' + titleText + '" onclick="'+DelegateFactory.create(handle)+'"></div>';
+  return '<div id="'+this.getId()+'" class="' + cssClass + '" title="' + titleText + '" onclick="'+DelegateFactory.create(handle)+'"><a href="javascript:void(0);"></a></div>';
 };
 DynamicTableToggleView.prototype.showCollapsed = function() {
   this.button.attr("title", "Expand").removeClass("dynamictable-collapse")

@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -62,7 +63,7 @@ public class StoryAccess {
     }
     
     @JSON
-    @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime", parameters = @Parameter(name = "databaseZone", value = "jvm"))
     @XmlAttribute
     @XmlJavaTypeAdapter(XmlDateTimeAdapter.class)
     public DateTime getDate() {

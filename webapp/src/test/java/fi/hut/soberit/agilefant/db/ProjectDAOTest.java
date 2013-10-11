@@ -103,7 +103,7 @@ public class ProjectDAOTest extends AbstractHibernateTests {
         executeSql("classpath:fi/hut/soberit/agilefant/db/ProjectDAOTest-portfolio-data.sql");
         Project project = projectDAO.getMaxRankedProject();
         assertNotNull(project);
-        assertEquals(6, project.getRank());       
+        assertEquals(6, project.getRank().intValue());       
     }
     
     @Test

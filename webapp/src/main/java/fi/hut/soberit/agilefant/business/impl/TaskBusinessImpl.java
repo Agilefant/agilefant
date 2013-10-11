@@ -14,7 +14,6 @@ import fi.hut.soberit.agilefant.business.RankUnderDelegate;
 import fi.hut.soberit.agilefant.business.RankingBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
 import fi.hut.soberit.agilefant.business.TaskBusiness;
-import fi.hut.soberit.agilefant.business.TaskCommentBusiness;
 import fi.hut.soberit.agilefant.db.TaskDAO;
 import fi.hut.soberit.agilefant.exception.ObjectNotFoundException;
 import fi.hut.soberit.agilefant.exception.OperationNotPermittedException;
@@ -50,10 +49,6 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
 
     @Autowired
     private HourEntryBusiness hourEntryBusiness;
-    
-    @Autowired
-    private TaskCommentBusiness taskCommentBusiness;
-
 
     private TaskDAO taskDAO;
 
@@ -185,7 +180,6 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
         checkArgumentsForMoving(task, iterationId, storyId);
 
         Integer sourceIterationId = getTaskIterationId(task);
-
         assignParentForTask(task, iterationId, storyId);
         this.store(task);
 
@@ -286,11 +280,6 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
             throw new OperationNotPermittedException(
                     "Task contains spent effort entries.");
         }
-        try{
-        	taskCommentBusiness.deleteAttachmentsInTaskComments(task.getId());
-        }catch (Exception e) {
-			
-		}
         taskDAO.remove(task.getId());
     }
 
@@ -359,7 +348,6 @@ public class TaskBusinessImpl extends GenericBusinessImpl<Task> implements
     @Transactional
     public Task rankAndMove(Task task, Task upperTask, Integer parentStoryId,
             Integer parentIterationId) throws IllegalArgumentException {
-
         assignParentForTask(task, parentIterationId, parentStoryId);
         rankToBottom(task, parentStoryId, parentIterationId);
         rankUnderTask(task, upperTask);

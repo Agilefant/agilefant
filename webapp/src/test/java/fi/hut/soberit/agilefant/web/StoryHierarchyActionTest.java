@@ -203,11 +203,14 @@ public class StoryHierarchyActionTest extends MockedTestCase {
     @Test
     @DirtiesContext
     public void testRetrieveProductRootStories() {
-        List<Story> stories = new ArrayList<Story>(Arrays.asList(new Story()));
+        Story story = new Story();
+        List<Story> stories = new ArrayList<Story>(Arrays.asList(story));
         
         storyHierarchyAction.setProductId(123);
         expect(storyHierarchyBusiness.retrieveProductRootStories(EasyMock.eq(123), EasyMock.isA(StoryFilters.class)))
-            .andReturn(stories);
+        .andReturn(stories);
+        expect(storyBusiness.retrieve(story.getId()))
+        .andReturn(story);
         
         replayAll();
         assertEquals(Action.SUCCESS, storyHierarchyAction.retrieveProductRootStories());

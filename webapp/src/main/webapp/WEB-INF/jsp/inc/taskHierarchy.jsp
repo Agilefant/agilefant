@@ -14,7 +14,7 @@
 <div class="storyTreeContainer bubbleHierarchyContainer">
   <div class="tree">
     <ul>
-      <aef:storyTreeNode node="${parentStory}" forceOpen="true"/>
+      <aef:storyTreeNode node="${parentStory}" displayLinksToStories="true" forceOpen="true"/>
     </ul>
   </div>
 </div>

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PropertyComparator;
@@ -16,9 +17,12 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fi.hut.soberit.agilefant.business.DailyWorkBusiness;
+import fi.hut.soberit.agilefant.business.StoryBusiness;
 import fi.hut.soberit.agilefant.business.TaskBusiness;
+import fi.hut.soberit.agilefant.business.TeamBusiness;
 import fi.hut.soberit.agilefant.business.TransferObjectBusiness;
 import fi.hut.soberit.agilefant.business.UserBusiness;
+import fi.hut.soberit.agilefant.model.Story;
 import fi.hut.soberit.agilefant.model.Task;
 import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
@@ -40,9 +44,15 @@ public class DailyWorkAction extends ActionSupport {
 
     @Autowired
     private TaskBusiness taskBusiness;
+    
+    @Autowired
+    private StoryBusiness storyBusiness;
 
     @Autowired
     private TransferObjectBusiness transferObjectBusiness;
+    
+    @Autowired
+    private TeamBusiness teamBusiness;
 
     private int  userId;
     private User user; 
@@ -55,7 +65,24 @@ public class DailyWorkAction extends ActionSupport {
     private int  taskId;
     private int  rankUnderId;
     private Task task;
+    
+    private int storyId;
 
+
+    private int storyRankUnderId;
+
+
+    private Story story;
+
+
+    private boolean containsUser(Collection<User> users, int userId) {
+    	for(User user : users) {
+    		if(user.getId()==userId) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
     
     @SuppressWarnings("unchecked")
     @Override
@@ -67,38 +94,32 @@ public class DailyWorkAction extends ActionSupport {
          * Non-admin user trying to see daily work of someone not in his/her team -> userId = 0
          */
         User loggedUser = getLoggedInUser();
-        Boolean isAdmin = loggedUser.isAdmin();
-        Collection<User> teamUsers = new HashSet<User>();
+        
+        if(this.userId==0) {
+        	this.userId = loggedUser.getId();
+        }
 
-        if (!isAdmin) {
-            int newUserId = 0;
-            teamUsers.add(loggedUser);
-            Collection<Team> teams = loggedUser.getTeams();
-            for (Team team: teams) {
-                teamUsers.addAll(team.getUsers());
-                Collection<User> users = team.getUsers();
-                if (newUserId != userId) {
-                    for (User user: users) {
-                        if (user.getId() == userId) {
-                            newUserId = userId;
-                        }
-                    }
-                }
-            }
-            userId = newUserId;
+        if(loggedUser.isAdmin()) {
+            enabledUsers.addAll(userBusiness.getEnabledUsers());        	
+        } else {
+        	// verify that logged in user shares a team with the supplied user
+            Collection<User> teamUsers = this.teamBusiness.getUsersInSameTeams(loggedUser.getId());
+        	if(!this.containsUser(teamUsers, userId)) {
+        		int storedUserId = getStoredDailyWorkUserId();
+        		if(this.containsUser(teamUsers, storedUserId)) {
+                    this.userId = storedUserId;        			
+        		} else {
+        			this.userId = loggedUser.getId();
+        		}
+        	}
+        	
+        	// update list of users used in the dropdown
+            enabledUsers.addAll(teamUsers);        	
         }
         
-        if (userId == 0) {
-            userId = getStoredDailyWorkUserId();
-        }
-        user = getDefaultUser();
-        if (isAdmin) {
-            enabledUsers.addAll(userBusiness.getEnabledUsers());
-        } else {
-            enabledUsers.addAll(teamUsers);
-        }
+        user = this.userBusiness.retrieve(userId);
+
         Collections.sort(enabledUsers, new PropertyComparator("fullName", true, true));
-      
         
         return Action.SUCCESS;
     }
@@ -110,10 +131,27 @@ public class DailyWorkAction extends ActionSupport {
         user = this.userBusiness.retrieve(userId);
         queuedTasks = dailyWorkBusiness.getQueuedTasksForUser(user);
         AssignedWorkTO assignedWork = dailyWorkBusiness.getAssignedWorkFor(user);
-        this.stories = assignedWork.getStories();
         this.tasksWithoutStory = assignedWork.getTasksWithoutStory();
         
+        retrieveStories(assignedWork);
+        
         return Action.SUCCESS;
+    }
+    
+    private void retrieveStories(AssignedWorkTO assignedWork) {
+        Collection<StoryTO> rankedStories = dailyWorkBusiness.getQueuedStoriesForUser(user);
+        Collection<StoryTO> unrankedStories = assignedWork.getStories();
+        this.stories = new ArrayList<StoryTO>();
+        int unrankedNumber = 10000;
+        for (StoryTO storyTO: unrankedStories) {
+            Integer rank = getStoryRank(storyTO, rankedStories);
+            if (rank == null) {
+                rank = unrankedNumber;
+                unrankedNumber++;
+            }
+            storyTO.setWorkQueueRank(rank);
+            this.stories.add(storyTO);
+        }
     }
     
     public String retrieveWorkQueue() {
@@ -126,9 +164,18 @@ public class DailyWorkAction extends ActionSupport {
     public String retrieveAssignedStories() {
         user = this.userBusiness.retrieve(userId);
         AssignedWorkTO assignedWork = dailyWorkBusiness.getAssignedWorkFor(user);
-        this.stories = assignedWork.getStories();
+        retrieveStories(assignedWork);
         
         return Action.SUCCESS;
+    }
+    
+    private Integer getStoryRank(StoryTO storyTO, Collection<StoryTO> rankedStories) {
+        for (StoryTO rankedStory: rankedStories) {
+            if (rankedStory.getId() == storyTO.getId()) {
+                return rankedStory.getWorkQueueRank();
+            }
+        }
+        return null;
     }
     
     public String retrieveAssignedTasks() {
@@ -166,6 +213,47 @@ public class DailyWorkAction extends ActionSupport {
         dailyWorkBusiness.rankUnderTaskOnWhatsNext(user, task, taskBusiness.retrieveIfExists(rankUnderId));
         
         return Action.SUCCESS;
+    }
+    
+    public String rankMyStoryAndMoveUnder() {
+        User user = getDefaultUser();
+        Story story = storyBusiness.retrieve(storyId);
+
+        Story storyRankUnder = storyBusiness.retrieveIfExists(storyRankUnderId);
+        if (storyRankUnder != null) {
+            AssignedWorkTO assignedWork = dailyWorkBusiness.getAssignedWorkFor(user);
+            Collection<StoryTO> rankedStories = dailyWorkBusiness.getQueuedStoriesForUser(user);
+            Collection<StoryTO> unrankedStories = assignedWork.getStories();
+            Integer storyRankUnderIdRank = null;
+            for (StoryTO storyTO: unrankedStories) {
+                if (storyTO.getId() == storyRankUnderId) {
+                    storyRankUnderIdRank = getStoryRank(storyTO, rankedStories);
+                }
+            }
+            if (storyRankUnderIdRank == null) {
+                for (StoryTO storyTO: unrankedStories) {
+                    Integer rank = getStoryRank(storyTO, rankedStories);
+                    if (rank == null && storyTO.getId() != storyId) {
+                        addToWhatsNext(storyTO.getId());
+                    }
+                    
+                    if (storyTO.getId() == storyRankUnderId) {
+                        break;
+                    }
+                }
+            }
+        }
+        
+        dailyWorkBusiness.rankUnderStoryOnWhatsNext(user, story, storyBusiness.retrieveIfExists(storyRankUnderId));
+        
+        return Action.SUCCESS;
+    }
+    
+    private void addToWhatsNext(int id) {
+        User user = getDefaultUser();
+        Story story = storyBusiness.retrieve(id);
+        
+        dailyWorkBusiness.addToWhatsNext(user, story);
     }
     
     protected User getDefaultUser() {
@@ -237,6 +325,22 @@ public class DailyWorkAction extends ActionSupport {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+    
+    public void setStoryId(int storyId) {
+        this.storyId = storyId;
+    }
+    
+    public void setStoryRankUnderId(int storyRankUnderId) {
+        this.storyRankUnderId = storyRankUnderId;
+    }
+    
+    public Story getStory() {
+        return story;
+    }
+    
+    public void setStory(Story story) {
+        this.story = story;
     }
 
     public void setUserBusiness(UserBusiness userBusiness) {

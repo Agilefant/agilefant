@@ -23,7 +23,7 @@ public class StoryRankDAOHibernate extends GenericDAOHibernate<StoryRank>
     }
 
     public StoryRank retrieveByBacklogAndStory(Backlog backlog, Story story) {
-        Criteria crit = sessionFactory.getCurrentSession().createCriteria(
+        Criteria crit = this.createCriteria(
                 StoryRank.class);
         crit.add(Restrictions.eq("backlog", backlog));
         crit.add(Restrictions.eq("story", story));
@@ -31,7 +31,7 @@ public class StoryRankDAOHibernate extends GenericDAOHibernate<StoryRank>
     }
 
     public List<StoryRank> retrieveRanksByBacklog(Backlog backlog) {
-        Criteria crit = sessionFactory.getCurrentSession().createCriteria(
+        Criteria crit = this.createCriteria(
                 StoryRank.class);
         crit.add(Restrictions.eq("backlog", backlog));
         crit.addOrder(Order.asc("rank"));
@@ -42,12 +42,26 @@ public class StoryRankDAOHibernate extends GenericDAOHibernate<StoryRank>
         if(stories.isEmpty()) {
             return new ArrayList<StoryRank>();
         }
-        Criteria filter = getCurrentSession().createCriteria(StoryRank.class);
+        Criteria filter = this.createCriteria(StoryRank.class);
         filter.add(Restrictions.in("story", stories));
         
         // Iteration crit
         Criteria iterFilter = filter.createCriteria("backlog");
         iterFilter.add(Restrictions.eq("class", "Iteration"));
+        
+        return asCollection(filter);
+    }
+    
+    public Collection<StoryRank> getProjectRanksForStories(Collection<Story> stories) {
+        if(stories.isEmpty()) {
+            return new ArrayList<StoryRank>();
+        }
+        Criteria filter = this.createCriteria(StoryRank.class);
+        filter.add(Restrictions.in("story", stories));
+        
+        // Project crit
+        Criteria projectFilter = filter.createCriteria("backlog");
+        projectFilter.add(Restrictions.eq("class", "Project"));
         
         return asCollection(filter);
     }

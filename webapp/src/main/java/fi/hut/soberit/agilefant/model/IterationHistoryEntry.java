@@ -74,7 +74,7 @@ public class IterationHistoryEntry {
         this.deltaOriginalEstimate = deltaOriginalEstimate;
     }
 
-    @Type(type = "org.joda.time.contrib.hibernate.PersistentLocalDate")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     @Column(nullable = false)
     public LocalDate getTimestamp() {
         return timestamp;

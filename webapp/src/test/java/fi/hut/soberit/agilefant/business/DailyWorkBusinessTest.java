@@ -130,7 +130,7 @@ public class DailyWorkBusinessTest {
         Capture<Interval> interval = new Capture<Interval>();
         Capture<Interval> interval2 = new Capture<Interval>();
         
-        expect(taskDAO.getAllIterationAndStoryTasks(EasyMock.eq(user), 
+        expect(taskDAO.getAllTasks(EasyMock.eq(user), 
                 EasyMock.and(EasyMock.capture(interval), EasyMock.isA(Interval.class)))).andReturn(tasks);
         expect(storyDAO.getAllIterationStoriesByResponsibleAndInterval(EasyMock.eq(user), 
                 EasyMock.and(EasyMock.capture(interval2), EasyMock.isA(Interval.class)))).andReturn(stories);
@@ -139,6 +139,7 @@ public class DailyWorkBusinessTest {
         expect(transferObjectBusiness.constructAssignedWorkTO(tasks, stories)).andReturn(assignedWork);
 
         expect(storyRankDAO.getIterationRanksForStories(EasyMock.isA(Collection.class))).andReturn(new ArrayList<StoryRank>());
+        expect(storyRankDAO.getProjectRanksForStories(EasyMock.isA(Collection.class))).andReturn(new ArrayList<StoryRank>());
         
         replayAll();
         AssignedWorkTO returned = testable.getAssignedWorkFor(user);

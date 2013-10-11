@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 
@@ -24,9 +25,9 @@ import org.hibernate.usertype.UserType;
  * <p>
  * <code>
  * &#064;TypeDef(<br>
- *		name="name_of_type",<br>
- *	    typeClass = your.filter.class,<br>
- *	    parameters = { &#064;Parameter(name="subtypes", value="next.filter another.filter actual.user.type.used") }<br>
+ * 		name="name_of_type",<br>
+ * 	    typeClass = your.filter.class,<br>
+ * 	    parameters = { &#064;Parameter(name="subtypes", value="next.filter another.filter actual.user.type.used") }<br>
  * )</code>
  * </p>
  * <p>
@@ -57,7 +58,7 @@ public abstract class UserTypeFilter implements UserType, ParameterizedType {
     /**
      * Receives the parameters.
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public void setParameterValues(Properties parameters) {
         String subTypes = parameters.getProperty("subtypes");
 
@@ -86,17 +87,15 @@ public abstract class UserTypeFilter implements UserType, ParameterizedType {
 
         try {
             // get a Class instance for the type
-            Class clazz = Class.forName(currentType);
+            Class<?> clazz = Class.forName(currentType);
 
             // create an instance of that class
             Object classInstance = clazz.newInstance();
 
             if (!(classInstance instanceof UserType))
-                throw new HibernateException(
-                        "got a subtype class of invalid type: should be subclass of UserType");
+                throw new HibernateException("got a subtype class of invalid type: should be subclass of UserType");
 
             subUserType = (UserType) classInstance;
-
             // if the SubType is parametrized
             if (classInstance instanceof ParameterizedType) {
 
@@ -129,7 +128,7 @@ public abstract class UserTypeFilter implements UserType, ParameterizedType {
      * UserType hierarchy, ie. from the database.
      * 
      * @param ob
-     *                value to modify
+     *            value to modify
      * @return modified value
      */
     protected Object filterUp(Object ob) {
@@ -142,7 +141,7 @@ public abstract class UserTypeFilter implements UserType, ParameterizedType {
      * UserType hierarchy, ie. to the database.
      * 
      * @param ob
-     *                value to modify
+     *            value to modify
      * @return modified value
      */
     protected Object filterDown(Object ob) {
@@ -157,61 +156,64 @@ public abstract class UserTypeFilter implements UserType, ParameterizedType {
     // the subUserType is filtered with filterUp.
     // ///////////
 
+    @Override
     public int[] sqlTypes() {
         return subUserType.sqlTypes();
     }
 
-    @SuppressWarnings("unchecked")
-    public Class returnedClass() {
+    @Override
+    public Class<?> returnedClass() {
         return subUserType.returnedClass();
     }
 
+    @Override
     public boolean isMutable() {
         return subUserType.isMutable();
     }
 
+    @Override
     public Object deepCopy(Object value) {
         Object ob = subUserType.deepCopy(filterDown(value));
         return filterUp(ob);
     }
 
+    @Override
     public boolean equals(Object x, Object y) {
         return subUserType.equals(filterDown(x), filterDown(y));
     }
 
-    public Object replace(Object original, Object target, Object owner)
-            throws HibernateException {
-        Object ob = subUserType.replace(filterDown(original),
-                filterDown(target), owner);
+    @Override
+    public Object replace(Object original, Object target, Object owner) throws HibernateException {
+        Object ob = subUserType.replace(filterDown(original), filterDown(target), owner);
         return filterUp(ob);
     }
 
-    public Object nullSafeGet(ResultSet resultSet, String[] names, Object owner)
-            throws HibernateException, SQLException {
-
-        Object ob = subUserType.nullSafeGet(resultSet, names, owner);
+    @Override
+    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+        Object ob = subUserType.nullSafeGet(rs, names, session, owner);
 
         return filterUp(ob);
     }
 
-    public void nullSafeSet(PreparedStatement statement, Object value, int index)
-            throws HibernateException, SQLException {
-
+    @Override
+    public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
         Object filteredValue = filterDown(value);
 
-        subUserType.nullSafeSet(statement, filteredValue, index);
+        subUserType.nullSafeSet(statement, filteredValue, index, session);
     }
 
+    @Override
     public int hashCode(Object x) throws HibernateException {
         return subUserType.hashCode(filterDown(x));
     }
 
+    @Override
     public Serializable disassemble(Object value) throws HibernateException {
         return subUserType.disassemble(filterDown(value));
     }
 
-    public Object assemble(Serializable cached, Object owner)
-            throws HibernateException {
+    @Override
+    public Object assemble(Serializable cached, Object owner) throws HibernateException {
         Object ob = subUserType.assemble(cached, owner);
         return filterUp(ob);
     }

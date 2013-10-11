@@ -53,7 +53,7 @@ public class HourEntryAction extends ActionSupport implements CRUDAction, Prefet
     public String retrieveLatestHourEntryDelta() {
         this.delta = new HourEntryDelta();
         long deltaMinutes = hourEntryBusiness.retrieveLatestHourEntryDelta(SecurityUtil.getLoggedUserId());
-        if (deltaMinutes > 0) {
+        if (deltaMinutes > 0 && deltaMinutes <= 480) {
             this.delta.setDelta(deltaMinutes);
         }
         return Action.SUCCESS;

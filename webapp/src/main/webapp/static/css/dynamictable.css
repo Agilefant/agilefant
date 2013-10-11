@@ -521,6 +521,22 @@ button.dynamics-button:focus, button.dynamics-button:hover {
   background: #e9eeff;
   border-color: rgb(180, 180, 204);  
 }
+
+.iteration-story-unranked-table .dynamictable-row {
+  background: #ffffff;
+  border-color: rgb(180, 180, 204);  
+}
+
+.dailywork-story-table-row {
+  background: #e9eeff;
+  border-color: rgb(180, 180, 204);  
+}
+
+.dailywork-story-table-row-parent {
+  background: #e9eeff !important;
+  border-color: rgb(180, 180, 204);  
+}
+
 .story-task-container .dynamictable {
   border: none;  
 }

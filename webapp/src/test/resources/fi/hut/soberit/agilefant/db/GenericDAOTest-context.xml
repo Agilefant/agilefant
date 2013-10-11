@@ -10,7 +10,7 @@
 	<bean class="fi.hut.soberit.agilefant.test.SampleDAOHibernate" />
 
 	<bean name="transactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="dataSource" />
 	</bean>
@@ -24,7 +24,7 @@
 	</bean>
 
 	<bean name="sessionFactory"
-		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan" value="fi.hut.soberit.agilefant.test" />
 		<property name="hibernateProperties">
@@ -32,7 +32,6 @@
 				<entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
 				<entry key="hibernate.jdbc.batch_size" value="0" />
 				<entry key="hibernate.hbm2ddl.auto" value="create-drop" />
-				<entry key="hibernate.show_sql" value="true" />
 			</map>
 		</property>
 	</bean>

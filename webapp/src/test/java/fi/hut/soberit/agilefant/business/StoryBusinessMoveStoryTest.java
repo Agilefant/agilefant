@@ -75,8 +75,6 @@ public class StoryBusinessMoveStoryTest extends MockedTestCase {
     private LabelBusiness labelBusiness;
     @Mock
     private IterationBusiness iterationBusiness;
-    @Mock
-    private StoryCommentBusiness storyCommentBusiness;
 
     private Story story;
     private Iteration firstIteration;

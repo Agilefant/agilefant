@@ -1,5 +1,6 @@
 package fi.hut.soberit.agilefant.transfer;
 
+import fi.hut.soberit.agilefant.model.ExactDoubleEstimate;
 import fi.hut.soberit.agilefant.model.ExactEstimate;
 
 public class IterationMetrics {
@@ -26,7 +27,7 @@ public class IterationMetrics {
     
     
     private boolean backlogOngoing = true;
-    private ExactEstimate dailyVelocity = new ExactEstimate(0);
+    private ExactDoubleEstimate dailyVelocity = new ExactDoubleEstimate(0);
     
     private int daysLeftPercentage = 0;
     private int doneStoryPointsPercentage = 0;
@@ -115,10 +116,10 @@ public class IterationMetrics {
         return percentSpentEffort;
     }
 
-    public ExactEstimate getDailyVelocity() {
+    public ExactDoubleEstimate getDailyVelocity() {
         return dailyVelocity;
     }
-    public void setDailyVelocity(ExactEstimate dailyVelocity) {
+    public void setDailyVelocity(ExactDoubleEstimate dailyVelocity) {
         this.dailyVelocity = dailyVelocity;
     }
 

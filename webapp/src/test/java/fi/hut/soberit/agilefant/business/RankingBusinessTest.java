@@ -118,8 +118,8 @@ public class RankingBusinessTest {
         
         rankingBusiness.shiftRanks(dir, Arrays.asList(rankable1, rankable2));
         
-        assertEquals(expectedFirst, rankable1.getRank());
-        assertEquals(expectedSecond, rankable2.getRank());
+        assertEquals(expectedFirst, rankable1.getRank().intValue());
+        assertEquals(expectedSecond, rankable2.getRank().intValue());
     }
     
     @Test
@@ -178,7 +178,7 @@ public class RankingBusinessTest {
         
         rankingBusiness.rankToBottom(rankable1, rankable2);
         
-        assertEquals(5, rankable1.getRank());
+        assertEquals(5, rankable1.getRank().intValue());
     }
 
     @Test
@@ -187,7 +187,7 @@ public class RankingBusinessTest {
         
         rankingBusiness.rankToBottom(rankable1, null);
         
-        assertEquals(0, rankable1.getRank());
+        assertEquals(0, rankable1.getRank().intValue());
     }
 
     @Test
@@ -207,6 +207,6 @@ public class RankingBusinessTest {
             }
         });
         
-        assertEquals(3, rankable1.getRank());
+        assertEquals(3, rankable1.getRank().intValue());
     }
 }

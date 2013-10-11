@@ -23,6 +23,7 @@ import fi.hut.soberit.agilefant.db.TaskDAO;
 import fi.hut.soberit.agilefant.model.ExactEstimate;
 import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Story;
+import fi.hut.soberit.agilefant.model.StoryState;
 import fi.hut.soberit.agilefant.model.Task;
 import fi.hut.soberit.agilefant.model.TaskState;
 import fi.hut.soberit.agilefant.model.User;
@@ -38,7 +39,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
 
     public List<Task> getIterationTasksWithEffortLeft(User user,
             Interval interval) {
-        Criteria crit = getCurrentSession().createCriteria(Task.class);
+        Criteria crit = this.createCriteria(Task.class);
         crit.createCriteria("responsibles")
                 .add(Restrictions.idEq(user.getId()));
         Criteria iteration = crit.createCriteria("iteration");
@@ -51,7 +52,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
     }
 
     public List<Task> getStoryTasksWithEffortLeft(User user, Interval interval) {
-        Criteria crit = getCurrentSession().createCriteria(Task.class);
+        Criteria crit = this.createCriteria(Task.class);
         crit.createCriteria("responsibles")
                 .add(Restrictions.idEq(user.getId()));
        
@@ -67,7 +68,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
         if(taskIds == null || taskIds.size() == 0) {
             return Collections.emptyMap();
         }
-        Criteria crit = getCurrentSession().createCriteria(Task.class);
+        Criteria crit = this.createCriteria(Task.class);
         crit.add(Restrictions.in("id", taskIds));
         crit.createAlias("responsibles", "responsible");
         ProjectionList sums = Projections.projectionList();
@@ -86,7 +87,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
 
     public List<Task> getStoryAssignedTasksWithEffortLeft(User user,
             Interval interval) {
-        Criteria crit = getCurrentSession().createCriteria(Task.class);
+        Criteria crit = this.createCriteria(Task.class);
         crit.add(Restrictions.isEmpty("responsibles"));
         Criteria story = crit.createCriteria("story");
         story.createCriteria("responsibles").add(Restrictions.idEq(user.getId()));
@@ -98,7 +99,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
     public List<Task> getAllIterationAndStoryTasks(User user, Interval interval) {
         List<Task> tasks = new ArrayList<Task>();
         
-        Criteria crit = getCurrentSession().createCriteria(Task.class);
+        Criteria crit = this.createCriteria(Task.class);
         crit.createCriteria("responsibles")
             .add(Restrictions.idEq(user.getId()));
         
@@ -112,7 +113,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
         List<Task> dummy = asList(crit); 
         tasks.addAll(dummy);
         
-        crit = getCurrentSession().createCriteria(Task.class);
+        crit = this.createCriteria(Task.class);
         crit.createCriteria("responsibles")
             .add(Restrictions.idEq(user.getId()));
         crit.add(Restrictions.ne("state", TaskState.DONE));
@@ -127,11 +128,61 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
 
         return tasks;
     }
+    
+    public List<Task> getAllTasks(User user, Interval interval) {
+        List<Task> tasks = new ArrayList<Task>();
+        
+        Criteria crit = this.createCriteria(Task.class);
+        crit.createCriteria("responsibles")
+            .add(Restrictions.idEq(user.getId()));
+        
+        Criteria iteration = crit.createCriteria("iteration");
+        iteration.setFetchMode("parent", FetchMode.SELECT);
+        IterationDAOHelpers.addIterationIntervalLimit(iteration, interval);
+        crit.add(Restrictions.isNull("story"));
+        crit.add(Restrictions.ne("state", TaskState.DONE));
+        crit.setFetchMode("creator", FetchMode.SELECT);
+
+        List<Task> dummy = asList(crit); 
+        tasks.addAll(dummy);
+        
+        crit = this.createCriteria(Task.class);
+        crit.createCriteria("responsibles")
+            .add(Restrictions.idEq(user.getId()));
+        crit.add(Restrictions.ne("state", TaskState.DONE));
+
+        Criteria storyIteration = crit.createCriteria("story");
+        storyIteration.setFetchMode("parent",FetchMode.SELECT);
+        storyIteration = storyIteration.createCriteria("iteration");
+        IterationDAOHelpers.addIterationIntervalLimit(storyIteration, interval);
+        crit.setFetchMode("creator", FetchMode.SELECT);
+        
+        dummy = asList(crit);
+        tasks.addAll(dummy);
+        
+        crit = this.createCriteria(Task.class);
+        crit.createCriteria("responsibles")
+            .add(Restrictions.idEq(user.getId()));
+        crit.add(Restrictions.ne("state", TaskState.DONE));
+        crit.add(Restrictions.isNull("iteration"));
+
+        Criteria storyBacklog = crit.createCriteria("story");
+        storyBacklog.add(Restrictions.isNull("iteration"));
+        storyBacklog.setFetchMode("parent",FetchMode.SELECT);
+        storyBacklog = storyBacklog.createCriteria("backlog");
+        IterationDAOHelpers.addBacklogIntervalLimit(storyBacklog, interval);
+        crit.setFetchMode("creator", FetchMode.SELECT);
+        
+        dummy = asList(crit);
+        tasks.addAll(dummy);
+
+        return tasks;
+    }
 
     public List<UnassignedLoadTO> getUnassignedStoryTasksWithEffortLeft(User user,
             Interval interval) {
         
-        Criteria iteration = getCurrentSession().createCriteria(Iteration.class,"iter");
+        Criteria iteration = this.createCriteria(Iteration.class,"iter");
         iteration.createCriteria("assignments","assigments").createCriteria("user").add(Restrictions.idEq(user.getId()));     
         
         Criteria stories = iteration.createCriteria("assignedStories");
@@ -163,7 +214,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
 
     public List<UnassignedLoadTO> getUnassignedIterationTasksWithEffortLeft(User user,
             Interval interval) {
-        Criteria iteration = getCurrentSession().createCriteria(Iteration.class,"iter");
+        Criteria iteration = this.createCriteria(Iteration.class,"iter");
         iteration.createCriteria("assignments","assigments").createCriteria("user").add(Restrictions.idEq(user.getId()));     
                 
         IterationDAOHelpers.addIterationIntervalLimit(iteration, interval);
@@ -198,7 +249,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
     /** {@inheritDoc} */
     public Collection<Task> getTasksWithRankBetween(int lower, int upper,
             Iteration parentIteration, Story parentStory) {
-        Criteria task = getCurrentSession().createCriteria(Task.class);
+        Criteria task = this.createCriteria(Task.class);
         addParentRestriction(task, parentIteration, parentStory);
         task.add(Restrictions.between("rank", lower, upper));
         return asList(task);
@@ -206,7 +257,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
     
     /** {@inheritDoc} */
     public Task getNextTaskInRank(int rank, Iteration iteration, Story story) {
-        Criteria task = getCurrentSession().createCriteria(Task.class);
+        Criteria task = this.createCriteria(Task.class);
         addParentRestriction(task, iteration, story);
         task.add(Restrictions.gt("rank", rank));
         task.addOrder(Order.asc("rank"));
@@ -217,7 +268,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
     
     /** {@inheritDoc} */
     public Task getLastTaskInRank(Story story, Iteration iteration) {
-        Criteria task = getCurrentSession().createCriteria(Task.class);
+        Criteria task = this.createCriteria(Task.class);
         
         addParentRestriction(task, iteration, story);
         
@@ -238,7 +289,7 @@ public class TaskDAOHibernate extends GenericDAOHibernate<Task> implements
     /** {@inheritDoc} */
     public List<Task> searchByName(String name)
     {
-        Criteria crit = getCurrentSession().createCriteria(Task.class);
+        Criteria crit = this.createCriteria(Task.class);
         crit.add(Restrictions.like("name", name, MatchMode.ANYWHERE));
         crit.addOrder(Order.asc("name"));
         crit.setMaxResults(SearchBusiness.MAX_RESULTS_PER_TYPE);

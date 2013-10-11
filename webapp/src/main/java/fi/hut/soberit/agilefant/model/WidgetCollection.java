@@ -34,7 +34,7 @@ public class WidgetCollection {
             targetEntity = fi.hut.soberit.agilefant.model.AgilefantWidget.class,
             mappedBy = "widgetCollection"
     )
-    private Collection<AgilefantWidget> agilefantWidgets = new HashSet<AgilefantWidget>();
+    private Collection<AgilefantWidget> widgets = new HashSet<AgilefantWidget>();
 
     public int getId() {
         return id;
@@ -61,10 +61,10 @@ public class WidgetCollection {
     }
 
     public Collection<AgilefantWidget> getWidgets() {
-        return agilefantWidgets;
+        return widgets;
     }
 
     public void setWidgets(Collection<AgilefantWidget> agilefantWidgets) {
-        this.agilefantWidgets = agilefantWidgets;
+        this.widgets = agilefantWidgets;
     }
 }

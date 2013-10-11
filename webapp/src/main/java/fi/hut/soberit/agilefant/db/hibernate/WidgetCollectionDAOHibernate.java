@@ -22,7 +22,7 @@ public class WidgetCollectionDAOHibernate extends
     
     /** {@inheritDoc} */
     public List<WidgetCollection> getCollectionsForUser(User user) {
-        Criteria collectionCriteria = getCurrentSession().createCriteria(WidgetCollection.class);
+        Criteria collectionCriteria = this.createCriteria(WidgetCollection.class);
         if (user == null) {
             collectionCriteria.add(Restrictions.isNull("user"));
         }

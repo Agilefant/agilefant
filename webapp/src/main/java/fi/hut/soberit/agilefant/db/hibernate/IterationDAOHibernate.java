@@ -54,12 +54,12 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
     }
 
     public List<Task> getAllTasksForIteration(Iteration iteration) {
-        Criteria storyTaskCrit = getCurrentSession().createCriteria(Task.class);
+        Criteria storyTaskCrit = this.createCriteria(Task.class);
         storyTaskCrit.setFetchMode("iteration",FetchMode.SELECT);
         storyTaskCrit = storyTaskCrit.createCriteria("story").createCriteria("iteration");
         storyTaskCrit.add(Restrictions.idEq(iteration.getId()));
         
-        Criteria tasksWoStoryCrit = getCurrentSession().createCriteria(Task.class);
+        Criteria tasksWoStoryCrit = this.createCriteria(Task.class);
         tasksWoStoryCrit.setFetchMode("story", FetchMode.SELECT);
         tasksWoStoryCrit = tasksWoStoryCrit.createCriteria("iteration");
         tasksWoStoryCrit.add(Restrictions.idEq(iteration.getId()));
@@ -74,7 +74,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
     }
 
     public Map<StoryState, Integer> countIterationStoriesByState(int iterationId) {
-        Criteria criteria = getCurrentSession().createCriteria(Story.class);
+        Criteria criteria = this.createCriteria(Story.class);
         criteria.add(Restrictions.eq("iteration.id", iterationId));
         criteria.setProjection(Projections.projectionList().add(
                 Projections.property("state")).add(Projections.rowCount(),
@@ -100,7 +100,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
 
     private Pair<Integer, Integer> getGenericCountDoneNonDeferred(Class<?> type,
             Collection<String> joins, Iteration iteration) {
-            Criteria criteria = getCurrentSession().createCriteria(type);
+            Criteria criteria = this.createCriteria(type);
             criteria.setProjection(Projections.projectionList().add(
                     Projections.property("state")).add(Projections.rowCount(),
                     "taskCount").add(Projections.groupProperty("state"), "state"));
@@ -119,7 +119,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
     
     private Pair<Integer, Integer> getCounOfDoneAndAllNonDeffered(Class<?> type,
             Object doneValue, Collection<String> joins, Iteration iteration) {
-        Criteria criteria = getCurrentSession().createCriteria(type);
+        Criteria criteria = this.createCriteria(type);
         criteria.setProjection(Projections.projectionList().add(
                 Projections.property("state")).add(Projections.rowCount(),
                 "taskCount").add(Projections.groupProperty("state"), "state"));
@@ -192,7 +192,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
         if (iterationIds == null || iterationIds.size() == 0) {
             return Collections.emptyMap();
         }
-        Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
         crit.add(Restrictions.in("id", iterationIds));
         crit.createAlias("assignments", "assignments");
         crit.setProjection(Projections.projectionList().add(
@@ -208,7 +208,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
 
     public List<Iteration> retrieveEmptyIterationsWithPlannedSize(
             DateTime startDate, DateTime endDate, User assignee) {
-        Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
 
         // interval limitations
         Criterion startDateLimit = Restrictions.between("startDate", startDate,
@@ -238,20 +238,20 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
 
     public List<Iteration> retrieveCurrentAndFutureIterationsAt(DateTime point) {
 
-        Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
         crit.add(Restrictions.ge("endDate", point));
         return asList(crit);
     }
     
     public List<Iteration> retrieveAllStandAloneIterations() {
-        final Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        final Criteria crit = this.createCriteria(Iteration.class);
         crit.add(Restrictions.isNull("parent"));
         crit.addOrder(Order.asc("name"));
         return asList(crit);
     }
     
     public Iteration retrieveDeep(int iterationId) {
-        Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
 
         //doesn't work: will cause the same task responsible to be inserted too many times
         //Criteria iterationTasksCrit = crit.createCriteria("tasks", CriteriaSpecification.LEFT_JOIN);
@@ -271,13 +271,13 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
         crit.add(Restrictions.idEq(iterationId));
 
         crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-        return (Iteration) crit.uniqueResult();
+        return this.uniqueResult(crit);
     }
 
     public Map<Integer, StoryMetrics> calculateIterationDirectStoryMetrics(
             Iteration iteration) {
         
-        Criteria taskMetrics = this.getCurrentSession().createCriteria(
+        Criteria taskMetrics = this.createCriteria(
                 Task.class);
         taskMetrics.add(Restrictions.ne("state", TaskState.DEFERRED));
         taskMetrics.createCriteria("story", "story").add(
@@ -288,7 +288,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
         taskSums.add(Projections.sum("originalEstimate"));
         taskMetrics.setProjection(taskSums);
 
-        Criteria storySpentEffort = this.getCurrentSession().createCriteria(
+        Criteria storySpentEffort = this.createCriteria(
                 StoryHourEntry.class);
         storySpentEffort.createCriteria("story", "story").add(
                 Restrictions.eq("iteration", iteration));
@@ -297,7 +297,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
         storySpentEffortSums.add(Projections.sum("minutesSpent"));
         storySpentEffort.setProjection(storySpentEffortSums);
 
-        Criteria taskSpentEffort = this.getCurrentSession().createCriteria(
+        Criteria taskSpentEffort = this.createCriteria(
                 TaskHourEntry.class);
         taskSpentEffort.createCriteria("task", "task").createCriteria("story",
                 "story").add(Restrictions.eq("iteration", iteration));
@@ -343,7 +343,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
     }
     
     public Map<Integer, Long> calculateIterationTaskEffortSpent(Iteration iteration) {
-        Criteria crit = getCurrentSession().createCriteria(TaskHourEntry.class);
+        Criteria crit = this.createCriteria(TaskHourEntry.class);
         Criteria taskCrit = crit.createCriteria("task");
         taskCrit.createAlias("story", "story", CriteriaSpecification.LEFT_JOIN);
         taskCrit.add(Restrictions.or(Restrictions.eq("iteration", iteration), Restrictions.eq("story.iteration", iteration)));
@@ -362,8 +362,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
     }
 
     public List<Iteration> retrieveActiveWithUserAssigned(int userId) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
         crit.setFetchMode("parent", FetchMode.JOIN);
         crit.add(Restrictions.gt("endDate", new DateTime()));
         crit = crit.createCriteria("assignments");
@@ -380,7 +379,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
      * @return true if iteration has an associated readonly token, false otherwise
      */
     public boolean hasReadonlyToken(int iterationId) {
-        Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
         crit.add(Restrictions.idEq(iterationId));
         crit.add(Restrictions.and(Restrictions.isNotNull("readonlyToken"), Restrictions.ne("readonlyToken", "")));
         
@@ -401,7 +400,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
             return false;
         }
         
-        Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
         crit.add(Restrictions.eq("readonlyToken", token));
         
         return !asList(crit).isEmpty();
@@ -421,7 +420,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
             return null;
         }
         
-        Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
         crit.add(Restrictions.eq("readonlyToken", token));
         List<Iteration> dummy = asList(crit);
         return dummy.get(0);
@@ -442,7 +441,7 @@ public class IterationDAOHibernate extends GenericDAOHibernate<Iteration>
             return 0;
         }
         
-        Criteria crit = getCurrentSession().createCriteria(Iteration.class);
+        Criteria crit = this.createCriteria(Iteration.class);
         crit.add(Restrictions.eq("readonlyToken", token));
         List<Iteration> dummy = asList(crit);
         return dummy.size();

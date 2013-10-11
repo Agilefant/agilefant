@@ -212,7 +212,7 @@ public class TaskDAOTest extends AbstractHibernateTests {
         iter.setId(1);
         executeClassSql();
         Task actual = taskDAO.getNextTaskInRank(0, iter, null);       
-        assertEquals(1, actual.getRank());
+        assertEquals(1, actual.getRank().intValue());
     }
     
     @Test
@@ -221,7 +221,7 @@ public class TaskDAOTest extends AbstractHibernateTests {
         executeClassSql();
         Task actual = taskDAO.getNextTaskInRank(25, iter, null);       
         assertEquals(17, actual.getId());
-        assertEquals(1500, actual.getRank());
+        assertEquals(1500, actual.getRank().intValue());
     }
     
     @Test
@@ -236,7 +236,7 @@ public class TaskDAOTest extends AbstractHibernateTests {
         story.setId(55);
         executeClassSql();
         Task actual = taskDAO.getNextTaskInRank(0, null, story);
-        assertEquals(1, actual.getRank());
+        assertEquals(1, actual.getRank().intValue());
         assertEquals(21, actual.getId());
     }
     
@@ -247,7 +247,7 @@ public class TaskDAOTest extends AbstractHibernateTests {
         Task actual = taskDAO.getNextTaskInRank(25, null, story);
         
         assertEquals(22, actual.getId());
-        assertEquals(666, actual.getRank());
+        assertEquals(666, actual.getRank().intValue());
     }
     
     @Test
@@ -263,7 +263,7 @@ public class TaskDAOTest extends AbstractHibernateTests {
         executeClassSql();
         Task actual = taskDAO.getLastTaskInRank(null, iter);
         assertEquals(17, actual.getId());
-        assertEquals(1500, actual.getRank());
+        assertEquals(1500, actual.getRank().intValue());
     }
     
     @Test
@@ -272,7 +272,7 @@ public class TaskDAOTest extends AbstractHibernateTests {
         executeClassSql();
         Task actual = taskDAO.getLastTaskInRank(story, null);
         assertEquals(22, actual.getId());
-        assertEquals(666, actual.getRank());
+        assertEquals(666, actual.getRank().intValue());
     }
     
     @Test

@@ -123,6 +123,12 @@
   <c:set var="errorAddedClass" value="loginWrapperWithError" />
 </c:if>
 
+<script type="text/javascript">
+window.onload = function() {
+  document.getElementById("username").focus();
+}
+</script>
+
 <div id="outerWrapper">
 
   <div id="loginWrapper" class="dynamictable ui-widget-content ui-corner-all ${errorAddedClass}">
@@ -146,7 +152,7 @@
       <form method="post" action="j_spring_security_check">
         <table border="0">
         <tr>
-          <td rowspan="4" style="padding: 0 1em 0 0;"><img src="static/img/agilefant-logo-80px.png" width="80" /></td>
+          <td rowspan="4" style="padding: 0 1em 0 0;"><img src="static/img/agilefant-logo-94px.png" width="94" /></td>
           <td>Username</td><td><input id="username" name="j_username" type="text" style="width: 150px;"/></td>
         </tr>
         <tr>

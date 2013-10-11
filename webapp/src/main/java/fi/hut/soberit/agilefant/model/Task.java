@@ -53,7 +53,7 @@ public class Task implements TimesheetLoggable, NamedObject, Rankable {
     private Story story;
     
     private TaskState state;
-    private int rank = 0;
+    private Integer rank = 0;
     
     private ExactEstimate effortLeft;
     private ExactEstimate originalEstimate;
@@ -224,11 +224,11 @@ public class Task implements TimesheetLoggable, NamedObject, Rankable {
 
     @Column(nullable = false, columnDefinition = "int default 0")
     @XmlAttribute
-    public int getRank() {
+    public Integer getRank() {
         return rank;
     }
     
-    public void setRank(int rank) {
+    public void setRank(Integer rank) {
         this.rank = rank;
     }
 

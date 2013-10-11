@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 
 /**
@@ -25,19 +26,22 @@ public class TextUserType implements UserType {
 
     private static final int[] SQL_TYPES = { Types.CLOB };
 
+    @Override
     public int[] sqlTypes() {
         return SQL_TYPES;
     }
 
-    @SuppressWarnings("unchecked")
-    public Class returnedClass() {
+    @Override
+    public Class<?> returnedClass() {
         return String.class;
     }
 
+    @Override
     public boolean isMutable() {
         return false;
     }
 
+    @Override
     public Object deepCopy(Object value) {
         if (value == null)
             return null;
@@ -45,6 +49,7 @@ public class TextUserType implements UserType {
         return new String(str);
     }
 
+    @Override
     public boolean equals(Object x, Object y) {
         if (x == y)
             return true;
@@ -53,15 +58,14 @@ public class TextUserType implements UserType {
         return x.equals(y);
     }
 
-    public Object replace(Object original, Object target, Object owner)
-            throws HibernateException {
+    @Override
+    public Object replace(Object original, Object target, Object owner) throws HibernateException {
         String t = (String) original;
         return new String(t);
     }
 
-    public Object nullSafeGet(ResultSet resultSet, String[] names, Object owner)
-            throws HibernateException, SQLException {
-
+    @Override
+    public Object nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
         String s = resultSet.getString(names[0]);
 
         if (resultSet.wasNull())
@@ -70,9 +74,8 @@ public class TextUserType implements UserType {
         return new String(s);
     }
 
-    public void nullSafeSet(PreparedStatement statement, Object value, int index)
-            throws HibernateException, SQLException {
-
+    @Override
+    public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
         if (value == null) {
             statement.setNull(index, Types.LONGVARCHAR);
             return;
@@ -83,16 +86,18 @@ public class TextUserType implements UserType {
         statement.setString(index, str);
     }
 
+    @Override
     public int hashCode(Object x) throws HibernateException {
         return x.hashCode();
     }
 
+    @Override
     public Serializable disassemble(Object value) throws HibernateException {
         return (Serializable) value;
     }
 
-    public Object assemble(Serializable cached, Object owner)
-            throws HibernateException {
+    @Override
+    public Object assemble(Serializable cached, Object owner) throws HibernateException {
         return cached;
     }
 }

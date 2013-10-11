@@ -66,7 +66,11 @@ public class ResolveSearchResultAction extends ActionSupport {
     
     private String resolveTaskContainer() {
         Task task = this.taskBusiness.retrieve(targetObjectId);
-        if(task.getStory() != null) {
+        if(task.getStory() != null && task.getStory().getIteration() != null) {
+            this.targetBacklogId = task.getStory().getIteration().getId();
+            return "iteration";
+        }
+        else if(task.getStory() != null && task.getStory().getBacklog() != null) {
             this.targetBacklogId = task.getStory().getBacklog().getId();
             if(task.getStory().getBacklog() instanceof Iteration) {
                 return "iteration";
@@ -76,9 +80,10 @@ public class ResolveSearchResultAction extends ActionSupport {
                 return "product";
             }
         }
-        else
+        else {
             this.targetBacklogId = task.getIteration().getId();
             return "iteration";
+        }
     }
 
     public void setTargetObjectId(int targetObjectId) {

@@ -23,7 +23,7 @@ public class BacklogHistoryEntryDAOHibernate extends
     }
 
     public BacklogHistoryEntry retrieveLatest(DateTime timestamp, int backlogId) {
-        Criteria crit = getCurrentSession().createCriteria(
+        Criteria crit = this.createCriteria(
                 BacklogHistoryEntry.class);
         crit.add(Restrictions.eq("backlog.id", backlogId));
         crit.add(Restrictions.le("timestamp", timestamp));
@@ -33,7 +33,7 @@ public class BacklogHistoryEntryDAOHibernate extends
     }
 
     public ProjectBurnupData retrieveBurnupData(int projectId) {
-        Criteria crit = getCurrentSession().createCriteria(
+        Criteria crit = this.createCriteria(
                 BacklogHistoryEntry.class);
         crit.add(Restrictions.eq("backlog.id", projectId));
         crit.addOrder(Order.asc("timestamp"));

@@ -39,7 +39,7 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
 
     public StoryMetrics calculateMetrics(int storyId) {
         StoryMetrics metrics = new StoryMetrics();
-        Criteria criteria = getCurrentSession().createCriteria(Task.class);
+        Criteria criteria = this.createCriteria(Task.class);
         criteria.setProjection(
                 Projections.projectionList()
                 .add(Projections.sum("originalEstimate"), "originalEstimateSum")
@@ -47,7 +47,7 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
                 );
         criteria.add(Restrictions.eq("story.id", storyId));
         criteria.add(Restrictions.ne("state", TaskState.DEFERRED));
-        Object[] result = (Object[])criteria.uniqueResult();
+        Object[] result = (Object[])this.uniqueResult(criteria);
         if (result[0] != null) {
             metrics.setOriginalEstimate((Long)result[0]);
         }
@@ -58,12 +58,12 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
     }
     
     public int getStoryPointSumByIteration(int iterationId) {
-        Criteria criteria = getCurrentSession().createCriteria(Story.class);
+        Criteria criteria = this.createCriteria(Story.class);
         criteria.add(Restrictions.eq("iteration.id", iterationId));
         criteria.add(Restrictions.isNotNull("storyPoints"));
         criteria.add(Restrictions.ne("state", StoryState.DEFERRED));
         criteria.setProjection(Projections.sum("storyPoints"));
-        Object result = criteria.uniqueResult();
+        Object result = this.uniqueResult(criteria);
         if (result == null) {
             return 0;
         }
@@ -71,12 +71,12 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
     }
     
     public int getStoryValueSumByIteration(int iterationId) {
-        Criteria criteria = getCurrentSession().createCriteria(Story.class);
+        Criteria criteria = this.createCriteria(Story.class);
         criteria.add(Restrictions.eq("iteration.id", iterationId));
         criteria.add(Restrictions.isNotNull("storyValue"));
         criteria.add(Restrictions.not(Restrictions.eq("state", StoryState.DEFERRED)));
         criteria.setProjection(Projections.sum("storyValue"));
-        Object result = criteria.uniqueResult();
+        Object result = this.uniqueResult(criteria);
         if (result == null) {
             return 0;
         }
@@ -84,13 +84,13 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
     }
     
     public int getCompletedStoryValueSumByIteration(int iterationId) {
-        Criteria criteria = getCurrentSession().createCriteria(Story.class);
+        Criteria criteria = this.createCriteria(Story.class);
         criteria.add(Restrictions.eq("iteration.id", iterationId));
         criteria.add(Restrictions.isNotNull("storyValue"));
         criteria.add(Restrictions.not(Restrictions.eq("state", StoryState.DEFERRED)));
         criteria.add(Restrictions.eq("state", StoryState.DONE));
         criteria.setProjection(Projections.sum("storyValue"));
-        Object result = criteria.uniqueResult();
+        Object result = this.uniqueResult(criteria);
         if (result == null) {
             return 0;
         }
@@ -102,7 +102,7 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
         if(storyIds == null || storyIds.size() == 0) {
             return Collections.emptyMap();
         }
-        Criteria crit = getCurrentSession().createCriteria(Story.class);
+        Criteria crit = this.createCriteria(Story.class);
         crit.add(Restrictions.in("id", storyIds));
         crit.createAlias("responsibles", "responsible");
         ProjectionList sums = Projections.projectionList();
@@ -125,7 +125,7 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
         ArrayList<Story> stories = new ArrayList<Story>();
         
         // Add  stories that don't have an iteration
-        Criteria crit = getCurrentSession().createCriteria(Story.class);
+        Criteria crit = this.createCriteria(Story.class);
         crit.createCriteria("responsibles").add(Restrictions.idEq(user.getId()));
                 
         Criteria backlogCriteria = crit.createCriteria("backlog");
@@ -136,7 +136,7 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
         stories.addAll(dummy);
         
         // Add stories in iterations
-        Criteria standaloneCrit = getCurrentSession().createCriteria(Story.class);
+        Criteria standaloneCrit = this.createCriteria(Story.class);
         standaloneCrit.createCriteria("responsibles").add(Restrictions.idEq(user.getId()));
         
         Criteria iterationCrit = standaloneCrit.createCriteria("iteration");
@@ -153,7 +153,7 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
         ArrayList<Story> stories = new ArrayList<Story>();
 
         // all stories in iteration
-        Criteria criteria = getCurrentSession().createCriteria(Story.class);
+        Criteria criteria = this.createCriteria(Story.class);
         criteria.add(Restrictions.eq("iteration.id", iteration.getId()));
 
         // sort by rank
@@ -182,11 +182,11 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
         query.setParameter("userId", userId);
         query.setParameter("now", new DateTime());
         query.setParameter("backlogType", "Iteration");
-        return query.list();
+        return this.asList(query);
     }
     
     public List<Story> searchByName(String name) {
-        Criteria crit = getCurrentSession().createCriteria(Story.class);
+        Criteria crit = this.createCriteria(Story.class);
         crit.add(Restrictions.like("name", name, MatchMode.ANYWHERE));
         crit.addOrder(Order.asc("name"));
         crit.setMaxResults(SearchBusiness.MAX_RESULTS_PER_TYPE);
@@ -195,7 +195,7 @@ public class StoryDAOHibernate extends GenericDAOHibernate<Story> implements
     
     public List<Story> searchByID(String id) {
         int tempID = Integer.parseInt(id);
-        Criteria crit = getCurrentSession().createCriteria(Story.class);
+        Criteria crit = this.createCriteria(Story.class);
         crit.addOrder(Order.asc("name"));
         crit.setMaxResults(SearchBusiness.MAX_RESULTS_PER_TYPE);
         List<Story> stories = asList(crit);

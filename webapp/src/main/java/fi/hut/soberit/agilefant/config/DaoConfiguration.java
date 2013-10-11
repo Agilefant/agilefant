@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
 import com.googlecode.flyway.core.Flyway;
 import com.typesafe.config.Config;
@@ -44,11 +44,11 @@ public class DaoConfiguration {
     }
 
     @Bean
-    public AnnotationSessionFactoryBean sessionFactory() throws Exception {
+    public LocalSessionFactoryBean sessionFactory() throws Exception {
         flyway();
         databaseInitializer();
 
-        AnnotationSessionFactoryBean bean = new AnnotationSessionFactoryBean();
+        LocalSessionFactoryBean bean = new LocalSessionFactoryBean();
         bean.setConfigLocation(resourceLoader.getResource("/WEB-INF/hibernate.cfg.xml"));
         bean.setDataSource(dataSource);
 

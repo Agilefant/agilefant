@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -65,7 +66,7 @@ public class Project extends Backlog implements Schedulable, Rankable {
 
     private DateTime startDate;
 
-    private int rank = 0;
+    private Integer rank = 0;
 
     private Status status = Status.GREEN;
 
@@ -82,7 +83,7 @@ public class Project extends Backlog implements Schedulable, Rankable {
     }
     
     @JSON
-    @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime", parameters = @Parameter(name = "databaseZone", value = "jvm"))
     @XmlJavaTypeAdapter(XmlDateTimeAdapter.class)
     @XmlElement
     public DateTime getEndDate() {
@@ -94,7 +95,7 @@ public class Project extends Backlog implements Schedulable, Rankable {
     }
 
     @JSON
-    @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime", parameters = @Parameter(name = "databaseZone", value = "jvm"))
     @XmlJavaTypeAdapter(XmlDateTimeAdapter.class)
     @XmlElement
     public DateTime getStartDate() {
@@ -103,11 +104,11 @@ public class Project extends Backlog implements Schedulable, Rankable {
 
     @Column(nullable = true)
     @JSON
-    public int getRank() {
+    public Integer getRank() {
         return rank;
     }
 
-    public void setRank(int rank) {
+    public void setRank(Integer rank) {
         this.rank = rank;
     }
 

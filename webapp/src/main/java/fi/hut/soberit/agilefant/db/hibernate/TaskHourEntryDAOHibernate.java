@@ -2,7 +2,7 @@ package fi.hut.soberit.agilefant.db.hibernate;
 
 import java.util.List;
 
-import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -18,14 +18,10 @@ public class TaskHourEntryDAOHibernate extends GenericDAOHibernate<TaskHourEntry
         super(TaskHourEntry.class);
     }
     
-    @SuppressWarnings("unchecked")
     public List<TaskHourEntry> retrieveByTask(Task target) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(this
-                .getPersistentClass());
-        criteria.add(Restrictions.eq("task", target));
-        
-        return (List<TaskHourEntry>) hibernateTemplate
-                .findByCriteria(criteria);
+    	Criteria criteria = this.createCriteria(this.getPersistentClass());
+    	criteria.add(Restrictions.eq("task", target));
+    	return this.asList(criteria);
     }
 
 }

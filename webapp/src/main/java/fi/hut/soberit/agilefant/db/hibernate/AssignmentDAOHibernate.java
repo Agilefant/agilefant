@@ -23,7 +23,7 @@ public class AssignmentDAOHibernate extends GenericDAOHibernate<Assignment> impl
 
     public List<Assignment> assigmentsInBacklogTimeframe(Interval interval,
             User user) {
-        Criteria crit = getCurrentSession().createCriteria(Assignment.class);
+        Criteria crit = this.createCriteria(Assignment.class);
         Criteria backlog = crit.createCriteria("backlog");
         crit.createCriteria("user").add(Restrictions.idEq(user.getId()));
         DateTime startDate = interval.getStart();

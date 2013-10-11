@@ -105,6 +105,12 @@ StoryListController.prototype.copyStorySibling = function(originalStory) {
   mockModel._copyStory(originalStory);
 };
 
+StoryListController.prototype.extractUnfinishedStorySibling = function(originalStory) { 
+  var mockModel = ModelFactory.createObject(ModelFactory.types.story);
+  mockModel.setIteration(this.model);
+  mockModel._extractUnfinishedStory(originalStory);
+};
+
 /**
  * Show all tasks lists.
  */
@@ -155,9 +161,6 @@ StoryListController.prototype.firstRenderComplete = function() {
     var hash = window.location.hash;
     var row = this.view.getRowById(hash.substring(1));
     if(row) {
-      if(!$.browser.msie) {
-        window.location.hash = "#";
-      }
       var controller = row.getController();
       controller.showTasks();
       var pos = row.getElement().offset();

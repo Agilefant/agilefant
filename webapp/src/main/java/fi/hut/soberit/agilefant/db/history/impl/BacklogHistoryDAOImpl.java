@@ -2,7 +2,6 @@ package fi.hut.soberit.agilefant.db.history.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
@@ -32,7 +31,7 @@ public class BacklogHistoryDAOImpl extends GenericHistoryDAOImpl<Backlog>
         query.add(AuditEntity.property("backlog_id").eq(backlog.getId()));
         query.add(AuditEntity.revisionType().eq(RevisionType.DEL));
         query.addProjection(AuditEntity.revisionType());
-        query.addProjection(AuditEntity.property("story"));
+        query.addProjection(AuditEntity.property("story_id"));
         
         query.addProjection(AuditEntity.revisionNumber());
         query.addProjection(AuditEntity.revisionProperty("timestamp"));
@@ -44,13 +43,13 @@ public class BacklogHistoryDAOImpl extends GenericHistoryDAOImpl<Backlog>
         List<AgilefantHistoryEntry> result = new ArrayList<AgilefantHistoryEntry>();
         
         for (Object[] row : data) {
-            Map<String, Object> rowData = (Map<String, Object>)row[1];
+            Integer storyId = (Integer) row[1];
             AgilefantRevisionEntity rev = new AgilefantRevisionEntity();
             rev.setId((Integer)row[2]);
             rev.setTimestamp((Long)row[3]);
             rev.setUserId((Integer)row[4]);
             rev.setUserName((String)row[5]);
-            result.add(new AgilefantHistoryEntry((Integer)rowData.get("story_id"), (RevisionType)row[0], rev));
+            result.add(new AgilefantHistoryEntry(storyId, (RevisionType)row[0], rev));
         }
         return result;
     }
@@ -82,7 +81,7 @@ public class BacklogHistoryDAOImpl extends GenericHistoryDAOImpl<Backlog>
         query.add(AuditEntity.property("backlog_id").eq(backlog.getId()));
         query.add(AuditEntity.revisionType().eq(RevisionType.MOD));
         query.addProjection(AuditEntity.revisionType());
-        query.addProjection(AuditEntity.property("story"));
+        query.addProjection(AuditEntity.property("story_id"));
         
         query.addProjection(AuditEntity.revisionNumber());
         query.addProjection(AuditEntity.revisionProperty("timestamp"));
@@ -94,13 +93,13 @@ public class BacklogHistoryDAOImpl extends GenericHistoryDAOImpl<Backlog>
         List<AgilefantHistoryEntry> result = new ArrayList<AgilefantHistoryEntry>();
         
         for (Object[] row : data) {
-            Map<String, Object> rowData = (Map<String, Object>)row[1];
+            Integer storyId = (Integer) row[1];
             AgilefantRevisionEntity rev = new AgilefantRevisionEntity();
             rev.setId((Integer)row[2]);
             rev.setTimestamp((Long)row[3]);
             rev.setUserId((Integer)row[4]);
             rev.setUserName((String)row[5]);
-            result.add(new AgilefantHistoryEntry((Integer)rowData.get("story_id"), (RevisionType)row[0], rev));
+            result.add(new AgilefantHistoryEntry(storyId, (RevisionType)row[0], rev));
         }
         return result;
     }

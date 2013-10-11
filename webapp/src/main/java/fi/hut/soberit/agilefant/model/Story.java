@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -53,8 +54,6 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
     private Iteration iteration;
     private List<Story> children = new ArrayList<Story>();
 
-    private Set<StoryComment> storyComments = new HashSet<StoryComment>(0);
-    
     private Set<Label> labels = new HashSet<Label>();
 
     private Set<User> responsibles = new HashSet<User>();
@@ -62,9 +61,12 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
     private Set<StoryHourEntry> hourEntries = new HashSet<StoryHourEntry>();
     private Set<StoryRank> storyRanks = new HashSet<StoryRank>();
     private Set<StoryAccess> storyAccesses;
+    private Set<WhatsNextStoryEntry> whatsNextStoryEntries = new HashSet<WhatsNextStoryEntry>();
 
     private Integer storyPoints;
     private Integer storyValue;
+    
+    private Story fullInfoStory;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -163,6 +165,22 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
         this.responsibles = responsibles;
     }
     
+    @NotAudited
+    @OneToMany(
+            targetEntity = fi.hut.soberit.agilefant.model.WhatsNextStoryEntry.class,
+            fetch = FetchType.LAZY,
+            mappedBy = "story",
+            cascade = CascadeType.REMOVE
+    )
+    @JSON(include = false)
+    public Set<WhatsNextStoryEntry> getWhatsNextStoryEntries() {
+        return whatsNextStoryEntries;
+    }
+    
+    public void setWhatsNextStoryEntries(Set<WhatsNextStoryEntry> entries) {
+        this.whatsNextStoryEntries = entries;
+    }
+    
     @OneToMany(targetEntity = fi.hut.soberit.agilefant.model.Task.class,
             mappedBy = "story"
     )
@@ -187,15 +205,25 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
         this.storyPoints = storyPoints;
     }
     
+    public void setFullInfoStory(Story fullInfoStory) {
+        this.fullInfoStory = fullInfoStory;
+    }
+    
     @JSON
     @XmlAttribute
-    public String retrieveHighestPoints() {
+    @Transient
+    public String getHighestPoints() {
     	Integer storyPoints = 0;
     	if (getStoryPoints() != null) {
     		storyPoints = getStoryPoints();
     	}
     	StoryHierarchyBusinessImpl impl = new StoryHierarchyBusinessImpl();
-    	StoryTreeBranchMetrics metrics = impl.calculateStoryTreeMetrics(this);
+    	StoryTreeBranchMetrics metrics;
+    	if (this.fullInfoStory != null) {
+    	    metrics = impl.calculateStoryTreeMetrics(this.fullInfoStory);
+    	} else {
+            metrics = impl.calculateStoryTreeMetrics(this);
+    	}
     	long estimatedPoints = metrics.getEstimatedPoints();
     	if (estimatedPoints > storyPoints) {
     		return "<span class='treeChildStoryPoints treeStoryPoints' title='Story child points'>" + metrics.getEstimatedDonePoints() + " / " + estimatedPoints + "</span>";
@@ -303,12 +331,20 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
     public Story()
     { }
     
+    public Story(Story otherStory) {
+        copyStory(otherStory, false);
+    }
+    
+    public Story(Story otherStory, boolean moveFinishedTasks) {
+        copyStory(otherStory, moveFinishedTasks);
+    }
+    
     /**
      * Copying Constructor
      * @author bradens
      * @param otherStory
      */
-    public Story(Story otherStory)
+    public void copyStory(Story otherStory, boolean moveFinishedTasks)
     {
         this.setDescription(otherStory.getDescription());
         this.setStoryValue(otherStory.getStoryValue());
@@ -324,12 +360,18 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
         // Copy the complex members: tasks, users, labels, parents
         for (Task t : otherStory.getTasks())
         {
-            // TODO @bradens find way to persist this task in this entity?  for now persisting it in the
-            // StoryBusinessImpl.
-            t.setStory(this); // To make sure we set the tasks to the new story.
-            Task newTask = new Task(t);
-            t.setStory(otherStory); // set it back
-            this.getTasks().add(newTask);
+            if (moveFinishedTasks) {
+                if (t.getState() != TaskState.DONE && t.getState() != TaskState.IMPLEMENTED) {
+                    t.setStory(this); // To make sure we set the tasks to the new story.
+                }
+            } else {
+                // TODO @bradens find way to persist this task in this entity?  for now persisting it in the
+                // StoryBusinessImpl.
+                t.setStory(this); // To make sure we set the tasks to the new story.
+                Task newTask = new Task(t);
+                t.setStory(otherStory); // set it back
+                this.getTasks().add(newTask);
+            }
         } 
         this.getResponsibles().addAll(otherStory.getResponsibles());
         for (StoryHourEntry entry : this.getHourEntries())
@@ -352,16 +394,10 @@ public class Story implements TimesheetLoggable, LabelContainer, NamedObject, Ta
             newChild.setParent(this);
             this.getChildren().add(newChild);
         }
-    }
-    
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "stories")
-    @XmlElementWrapper
-    @XmlElement(name = "comments")
-    public Set<StoryComment> getStoryComments() {
-            return this.storyComments;
-    }
-
-    public void setStoryComments(Set<StoryComment> storyComments) {
-            this.storyComments = storyComments;
+        for (WhatsNextStoryEntry we : otherStory.getWhatsNextStoryEntries())
+        {
+            WhatsNextStoryEntry newEntry = new WhatsNextStoryEntry(we);
+            this.getWhatsNextStoryEntries().add(newEntry);
+        }
     }
 }

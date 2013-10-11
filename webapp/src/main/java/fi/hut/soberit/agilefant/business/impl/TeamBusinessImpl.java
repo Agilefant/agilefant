@@ -1,8 +1,10 @@
 package fi.hut.soberit.agilefant.business.impl;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +47,11 @@ public class TeamBusinessImpl extends GenericBusinessImpl<Team> implements
     @Autowired
     public void setUserBusiness(UserBusiness userBusiness) {
         this.userBusiness = userBusiness;
+    }
+    
+    @Transactional(readOnly = true)
+    public Team getByTeamName(String teamName) {
+        return teamDAO.getByTeamName(teamName);
     }
 
 
@@ -95,5 +102,29 @@ public class TeamBusinessImpl extends GenericBusinessImpl<Team> implements
         return stored;
     }
 
+	@Override
+	@Transactional(readOnly=true)
+	public Set<User> getUsersInSameTeams(int userId) {
+		User user = this.userBusiness.retrieve(userId);
+
+		Set<User> users = new HashSet<User>();
+		
+        Collection<Team> teams = user.getTeams();
+        for (Team team: teams) {
+            users.addAll(team.getUsers());
+        }
+        
+        return users;
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Collection<Team> withUsers(Call<Collection<Team>> call) {
+		Collection<Team> teams = call.call();
+		for(Team team : teams) {
+			Hibernate.initialize(team.getUsers());
+		}
+		return teams;
+	}
 
 }

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 
 /**
@@ -31,6 +32,7 @@ public class TruncatedStringUserType implements UserType {
     /**
      * Get the sql types to use to save our truncated string object.
      */
+    @Override
     public int[] sqlTypes() {
         return SQL_TYPES;
     }
@@ -39,18 +41,20 @@ public class TruncatedStringUserType implements UserType {
      * Class of the type handled, the hibernate implementation uses this at
      * least for nullSafeGet and set.
      */
-    @SuppressWarnings("unchecked")
-    public Class returnedClass() {
+    @Override
+    public Class<?> returnedClass() {
         return String.class;
     }
 
     /**
      * Is mutable.
      */
+    @Override
     public boolean isMutable() {
         return true;
     }
 
+    @Override
     public Object deepCopy(Object value) {
         if (value == null)
             return null;
@@ -58,6 +62,7 @@ public class TruncatedStringUserType implements UserType {
         return new String(str);
     }
 
+    @Override
     public boolean equals(Object x, Object y) {
         if (x == y)
             return true;
@@ -70,8 +75,8 @@ public class TruncatedStringUserType implements UserType {
      * Called during merge, should replace existing value (target) with a new
      * value (original).
      */
-    public Object replace(Object original, Object target, Object owner)
-            throws HibernateException {
+    @Override
+    public Object replace(Object original, Object target, Object owner) throws HibernateException {
         String t = (String) original;
         return new String(t);
     }
@@ -80,9 +85,8 @@ public class TruncatedStringUserType implements UserType {
      * Construct an object of our type from JDBC resultSet. This is the db
      * "deserialization" method.
      */
-    public Object nullSafeGet(ResultSet resultSet, String[] names, Object owner)
-            throws HibernateException, SQLException {
-
+    @Override
+    public Object nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
         String s = resultSet.getString(names[0]);
 
         if (resultSet.wasNull())
@@ -96,9 +100,8 @@ public class TruncatedStringUserType implements UserType {
      * Insert an object of our type into JDBC statement. This is the db
      * "serialization" method.
      */
-    public void nullSafeSet(PreparedStatement statement, Object value, int index)
-            throws HibernateException, SQLException {
-
+    @Override
+    public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
         if (value == null) {
             statement.setNull(index, Types.VARCHAR);
             return;
@@ -112,6 +115,7 @@ public class TruncatedStringUserType implements UserType {
         statement.setString(index, str);
     }
 
+    @Override
     public int hashCode(Object x) throws HibernateException {
         return x.hashCode();
     }
@@ -119,6 +123,7 @@ public class TruncatedStringUserType implements UserType {
     /**
      * Make a cacheable serialization presentation of our class.
      */
+    @Override
     public Serializable disassemble(Object value) throws HibernateException {
         return (Serializable) value;
     }
@@ -126,8 +131,8 @@ public class TruncatedStringUserType implements UserType {
     /**
      * Create an object from a cached representation.
      */
-    public Object assemble(Serializable cached, Object owner)
-            throws HibernateException {
+    @Override
+    public Object assemble(Serializable cached, Object owner) throws HibernateException {
         return cached;
     }
 }

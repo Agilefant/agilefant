@@ -18,7 +18,6 @@ import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.business.IterationHistoryEntryBusiness;
 import fi.hut.soberit.agilefant.business.LabelBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
-import fi.hut.soberit.agilefant.business.StoryCommentBusiness;
 import fi.hut.soberit.agilefant.business.StoryHierarchyBusiness;
 import fi.hut.soberit.agilefant.business.StoryRankBusiness;
 import fi.hut.soberit.agilefant.business.StoryTreeIntegrityBusiness;
@@ -36,10 +35,12 @@ import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Product;
 import fi.hut.soberit.agilefant.model.Project;
 import fi.hut.soberit.agilefant.model.Story;
+import fi.hut.soberit.agilefant.model.StoryHourEntry;
 import fi.hut.soberit.agilefant.model.StoryRank;
 import fi.hut.soberit.agilefant.model.StoryState;
 import fi.hut.soberit.agilefant.model.Task;
 import fi.hut.soberit.agilefant.model.TaskHourEntry;
+import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.transfer.StoryTO;
 import fi.hut.soberit.agilefant.util.ChildHandlingChoice;
 import fi.hut.soberit.agilefant.util.HourEntryHandlingChoice;
@@ -80,8 +81,6 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
     private StoryTreeIntegrityBusiness storyTreeIntegrityBusiness;
     @Autowired
     private LabelBusiness labelBusiness;
-    @Autowired
-    private StoryCommentBusiness storyCommentBusiness;
     
     public StoryBusinessImpl() {
         super(Story.class);
@@ -259,6 +258,8 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
                 storyRankBusiness.createRank(newStory, newStoryIteration);
             }
             return;
+        } else {
+            storyRankBusiness.removeRank(oldStory, oldStoryIteration);
         }
     }
 
@@ -406,6 +407,39 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             t.setHourEntries(new HashSet<TaskHourEntry>());
             taskBusiness.store(t);
         }
+        if (hasBacklog) {
+            newStory.setBacklog(backlog);
+        }
+        newStory.setIteration(iteration);
+        create(newStory);
+        labelBusiness.createStoryLabelsSet(newStory.getLabels(), newStory.getId());
+        this.storyHierarchyBusiness.moveAfter(newStory, story);
+        rankStoryUnder(newStory, story,backlog );
+        return this.transferObjectBusiness.constructStoryTO(newStory);
+    }
+    
+    public Story extractUnfinishedStorySibling(Integer storyId, Story story)
+    {
+        story = this.retrieve(storyId);
+        Backlog backlog = null;
+        Boolean hasBacklog = story.getBacklog() != null ;
+        if (hasBacklog) {
+            backlog = this.backlogBusiness.retrieve(story.getBacklog().getId());
+            if (backlog == null) {
+                throw new ObjectNotFoundException("backlog.notFound");
+            }
+        }
+        Iteration iteration = story.getIteration();
+        Story newStory = new Story(story, true);
+        newStory.setName("[The part that is not yet done - rename this story accordingly!] " + newStory.getName());
+        story.setName("[The part that got done - rename this story accordingly!] " + story.getName());
+        if (newStory.getName().length() > 255) {
+          newStory.setName(newStory.getName().substring(0, 255));
+        }
+        if (story.getName().length() > 255) {
+          story.setName(story.getName().substring(0, 255));
+        }
+
         if (hasBacklog) {
             newStory.setBacklog(backlog);
         }
@@ -580,7 +614,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         if(parent != null) {
             storyHierarchyBusiness.updateChildrenTreeRanks(parent);
             Backlog parentBacklog = parent.getBacklog();
-            if (parentBacklog != null) {
+            if (parentBacklog != null && parent.getChildren().isEmpty()) {
                 storyRankBusiness.rankToBottom(parent, parentBacklog);
             }
         }
@@ -795,11 +829,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             HourEntryHandlingChoice storyHourEntryHandlingChoice,
             HourEntryHandlingChoice taskHourEntryHandlingChoice,
             ChildHandlingChoice childHandlingChoice) {
-    	try{
-    		storyCommentBusiness.deleteAttachmentsInStoryComments(story.getId());
-    	}catch (Exception e) {
-		}
-
+      
         if (childHandlingChoice != null) {
             switch (childHandlingChoice) {
             case MOVE:
@@ -936,10 +966,6 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         for (Story s : story.getChildren()) {
             s.setParent(null);
         }
-        try{
-        	storyCommentBusiness.deleteAttachmentsInStoryComments(story.getId());
-        }catch (Exception e) {
-		}
         story.getChildren().clear();
         
         // Remove tasks
@@ -1000,8 +1026,9 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
     public void setStoryHierarchyBusiness(StoryHierarchyBusiness storyHierarchyBusiness) {
         this.storyHierarchyBusiness = storyHierarchyBusiness;
     }
-    public void setStoryCommentBusiness(StoryCommentBusiness storyCommentBusiness) {
-        this.storyCommentBusiness = storyCommentBusiness;
+    
+    public void addResponsible(Story story, User user) {
+        story.getResponsibles().add(user);
     }
-
+    
 }

@@ -13,7 +13,7 @@
         <!--</property>-->
     <!--</bean>-->
 
-    <!-- mailSender for project - it migth require different types of settings depending on SMTP server -->
+    <!-- mailSender for project - it might require different types of settings depending on SMTP server -->
     <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="${mailserver.host}" />
         <property name="port" value="${mailserver.port}" />

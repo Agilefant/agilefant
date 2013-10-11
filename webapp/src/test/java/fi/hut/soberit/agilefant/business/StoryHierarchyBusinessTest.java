@@ -725,31 +725,39 @@ public class StoryHierarchyBusinessTest extends MockedTestCase {
     public void testCalculateStoryTreeMetrics() {
        Story root = new Story();
        root.setStoryPoints(20);
+       root.setId(1000);
        
        Story child1 = new Story();
        child1.setStoryPoints(7);
+       child1.setId(1);
        
        Story child11 = new Story();
        child11.setStoryPoints(4);
+       child11.setId(11);
        
        Story child12 = new Story();
        child12.setStoryPoints(4);
        child12.setState(StoryState.DONE);
+       child12.setId(12);
        
        Story child2 = new Story();
        child2.setStoryPoints(14);
        child2.setState(StoryState.DONE);
+       child2.setId(2);
        
        Story child21 = new Story();
        child21.setStoryPoints(8);
        child21.setState(StoryState.DONE);
+       child21.setId(21);
        
        Story child22 = new Story();
        child22.setStoryPoints(4);
        child22.setState(StoryState.DONE);
+       child22.setId(22);
        
        Story child3 = new Story();
        child3.setStoryPoints(10);
+       child3.setId(3);
        
        root.setChildren(Arrays.asList(child1, child2, child3));
        child1.setChildren(Arrays.asList(child11, child12));

@@ -13,7 +13,7 @@ public class PortfolioTO {
     private Integer timeSpanInDays = 0;
 
     public List<Project> getRankedProjects() {
-        return rankedProjects;
+    	return this.rankedProjects;
     }
 
     public void setRankedProjects(List<Project> rankedProjects) {
@@ -21,9 +21,9 @@ public class PortfolioTO {
     }
 
     public Collection<Project> getUnrankedProjects() {
-        return unrankedProjects;
+    	return this.unrankedProjects;
     }
-
+    
     public void setUnrankedProjects(Collection<Project> unrankedProjects) {
         this.unrankedProjects = unrankedProjects;
     }

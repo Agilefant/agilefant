@@ -5,10 +5,10 @@ public interface Rankable {
     /**
      * Get the Rankable's rank.
      */
-    public int getRank();
+    public Integer getRank();
     
     /**
      * Set the Rankable's new rank.
      */
-    public void setRank(int rank);
+    public void setRank(Integer rank);
 }

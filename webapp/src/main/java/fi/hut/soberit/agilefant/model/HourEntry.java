@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -91,7 +92,7 @@ public class HourEntry {
         return this.user;
     }
 
-    @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime", parameters = @Parameter(name = "databaseZone", value = "jvm"))
     @XmlJavaTypeAdapter(XmlDateTimeAdapter.class)
     @XmlAttribute
     public DateTime getDate() {

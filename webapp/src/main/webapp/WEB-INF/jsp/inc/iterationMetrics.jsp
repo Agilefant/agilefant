@@ -25,7 +25,7 @@
 	</tr>
 	<tr>
 		<th>Velocity</th>
-		<td><c:out value="${aef:minutesToString(iterationMetrics.dailyVelocity.minorUnits)} / day" /></td>
+		<td><c:out value="${iterationMetrics.dailyVelocity.minorUnits} points / day" /></td>
 	</tr>
   <%--
 	<c:if test="${iterationMetrics.backlogOngoing}">

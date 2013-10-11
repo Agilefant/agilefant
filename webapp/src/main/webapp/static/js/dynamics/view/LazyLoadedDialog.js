@@ -22,14 +22,22 @@ LazyLoadedDialog.prototype.init = function(options) {
     open: function() {
       me.contentElement.load(me.url, me.data, function(responseText, textStatus, xhr) {
         if (textStatus === 'success') {
-          me.contentElement.dialog('option', 'buttons', {
-            "Cancel": function() {
-              me._cancel();
-            },
-            "Ok": function() {
-              me._ok();
-            }
-          });
+          if (options.hideCancelButton) {
+            me.contentElement.dialog('option', 'buttons', {
+               "Ok": function() {
+                 me._ok();
+               }
+            });
+          } else {
+             me.contentElement.dialog('option', 'buttons', {
+               "Cancel": function() {
+                  me._cancel();
+               },
+               "Ok": function() {
+                 me._ok();
+               }
+             });
+          }
           if (me.loadCallback) {
         	//$(this.parentElement).find('Button')[0].focus();
             me.loadCallback(me.contentElement);

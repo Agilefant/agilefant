@@ -31,7 +31,7 @@ public class MenuAction extends ActionSupport {
     private List<MenuDataNode> assignmentData;    
     
     public String constructBacklogMenuData() {
-        menuData = menuBusiness.constructBacklogMenuData(SecurityUtil.getLoggedUser());
+        menuData = menuBusiness.constructBacklogMenuData();
         return Action.SUCCESS;
     }
     

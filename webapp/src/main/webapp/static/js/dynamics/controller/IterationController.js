@@ -176,6 +176,7 @@ IterationController.prototype.shareIteration = function() {
 		      dialog.init({
 					title: "Share Iteration",
 					url: "ajax/shareIterationForm.action",
+					hideCancelButton: true,
 					data: {
 						IterationId: me.model.getId(),
 						ReadonlyToken: token
@@ -192,6 +193,7 @@ IterationController.prototype.shareIteration = function() {
 		dialog.init({
 			title: "Share Iteration",
 			url: "ajax/shareIterationForm.action",
+			hideCancelButton: true,
 			data: {
 				IterationId: me.model.getId(),
 				ReadonlyToken: token
@@ -317,6 +319,9 @@ IterationController.prototype.initializeTaskList = function() {
  */
 IterationController.prototype.initialize = function() {
   var me = this;
+  var overlay = $("#iterationLoadingOverlay");
+  overlay.fadeIn();
+  overlay.show();
   ModelFactory.initializeFor(ModelFactory.initializeForTypes.iteration,
       this.id, function(model) {
         me.model = model;
@@ -324,6 +329,7 @@ IterationController.prototype.initialize = function() {
         me.paintIterationInfo();
         me.initializeStoryList();
         me.initializeTaskList();
+        jQuery("#iterationPleasewait").remove();
       });
   this.assigneeContainer = new AssignmentContainer(this.id);
   this.assigneeListView = new DynamicTable(this, this.assigneeContainer, this.assigneeListConfiguration,

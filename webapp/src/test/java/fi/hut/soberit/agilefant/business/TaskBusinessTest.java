@@ -53,8 +53,6 @@ public class TaskBusinessTest extends MockedTestCase {
     private TaskDAO taskDAO;
     @TestedBean
     private RankingBusinessImpl rankingBusiness;
-    @Mock
-    private TaskCommentBusiness taskCommentBusiness;
 
     private Iteration iteration;
     private Story story;
@@ -131,7 +129,7 @@ public class TaskBusinessTest extends MockedTestCase {
                 false);
 
         assertEquals(iteration, actualTask.getIteration());
-        assertEquals(23, actualTask.getRank());
+        assertEquals(23, actualTask.getRank().intValue());
 
         verifyAll();
     }
@@ -158,7 +156,7 @@ public class TaskBusinessTest extends MockedTestCase {
                 false);
 
         assertEquals(story, actualTask.getStory());
-        assertEquals(223, actualTask.getRank());
+        assertEquals(223, actualTask.getRank().intValue());
 
         verifyAll();
     }
@@ -819,13 +817,13 @@ public class TaskBusinessTest extends MockedTestCase {
 
     private void checkRanks(int first, int second, int third, int fourth) {
         assertEquals("First rank does not match", first, firstTaskInRank
-                .getRank());
+                .getRank().intValue());
         assertEquals("Second rank does not match", second, secondTaskInRank
-                .getRank());
+                .getRank().intValue());
         assertEquals("Third rank does not match", third, thirdTaskInRank
-                .getRank());
+                .getRank().intValue());
         assertEquals("Fourth rank does not match", fourth, fourthTaskInRank
-                .getRank());
+                .getRank().intValue());
     }
 
     @Test
@@ -948,7 +946,7 @@ public class TaskBusinessTest extends MockedTestCase {
         Task actual = taskBusiness.rankToBottom(task, 22, null);
         verifyAll();
         assertEquals(task.getId(), actual.getId());
-        assertEquals(231, actual.getRank());
+        assertEquals(231, actual.getRank().intValue());
     }
 
     @Test
@@ -963,7 +961,7 @@ public class TaskBusinessTest extends MockedTestCase {
         Task actual = taskBusiness.rankToBottom(task, null, 561);
         verifyAll();
         assertEquals(task.getId(), actual.getId());
-        assertEquals(23, actual.getRank());
+        assertEquals(23, actual.getRank().intValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -1001,7 +999,7 @@ public class TaskBusinessTest extends MockedTestCase {
         verifyAll();
 
         assertEquals(expectedParent, actual.getStory());
-        assertEquals(0, actual.getRank());
+        assertEquals(0, actual.getRank().intValue());
     }
 
     @Test
@@ -1026,7 +1024,7 @@ public class TaskBusinessTest extends MockedTestCase {
         verifyAll();
 
         assertEquals(expectedParent, actual.getIteration());
-        assertEquals(5, actual.getRank());
+        assertEquals(5, actual.getRank().intValue());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -5,7 +5,7 @@
 		  <span class="inlineStoryState storyState${story.state}" title="[@s.text name="story.state.${story.state}" /]">[@s.text name="story.stateAbbr.${story.state}" /]</span>
 			[#break]
 		[#case "storyPoints"]
-			${story.retrieveHighestPoints()}
+			${story.getHighestPoints()}
 			[#break]
 		[#case "labels"]
 			[#if story.labels?size == 0]

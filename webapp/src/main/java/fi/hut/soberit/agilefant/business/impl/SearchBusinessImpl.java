@@ -7,7 +7,9 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import fi.hut.soberit.agilefant.business.AuthorizationBusiness;
 import fi.hut.soberit.agilefant.business.SearchBusiness;
 import fi.hut.soberit.agilefant.db.BacklogDAO;
 import fi.hut.soberit.agilefant.db.StoryDAO;
@@ -36,7 +38,10 @@ public class SearchBusinessImpl implements SearchBusiness {
     private UserDAO userDAO;
     @Autowired
     private TaskDAO taskDAO;
+    @Autowired
+    private AuthorizationBusiness authorizationBusiness;
     
+    @Transactional(readOnly=true)
     public List<SearchResultRow> searchStoriesAndBacklog(String searchTerm) {
         List<SearchResultRow> result = new ArrayList<SearchResultRow>();
         NamedObject quickRefMatch = this.searchByReference(searchTerm);
@@ -78,7 +83,9 @@ public class SearchBusinessImpl implements SearchBusiness {
             List<Task> tasks) {
         for(Task task : tasks) {
             if(task.getStory()!= null){
-                if(checkAccess(task.getStory().getBacklog())){      
+            	Backlog backlog = task.getStory().getBacklog();
+            	Iteration iteration = task.getStory().getIteration();
+            	if((backlog!=null && checkAccess(backlog)) || (iteration!=null && checkAccess(iteration))){
                     result.add(new SearchResultRow(task.getStory().getName() + " > " + 
                         task.getName(), task));
                 }
@@ -109,52 +116,7 @@ public class SearchBusinessImpl implements SearchBusiness {
     }
     
     private boolean checkAccess(Backlog bl){
-        User user = SecurityUtil.getLoggedUser();
-        Product prod = null;
-        
-        if(bl instanceof Project){
-            //look at product
-            prod = (Product)bl.getParent();
-        } else if(bl instanceof Iteration){
-            //look at project, then product
-            Backlog temp = bl.getParent();
-            if(temp == null){
-                //standalone iteration
-                temp = bl;
-                Set<Iteration> allowedIterations = new HashSet<Iteration>();
-                for(Team team : user.getTeams()){
-                    allowedIterations.addAll(team.getIterations());
-                }
-
-                //check if we have access 
-                if(allowedIterations.contains(temp)){
-                    return true;
-                }                
-                return false;
-                
-            } else {
-                if(temp instanceof Product){
-                    //iteration is directly under a product, not in a project
-                    prod = (Product) temp;
-                } else {
-                    prod = (Product) temp.getParent();
-                }
-            }
-        } else if(bl instanceof Product){
-            prod = (Product)bl;
-        }
-        
-        Set<Product> allowedProducts = new HashSet<Product>();
-        for(Team team : user.getTeams()){
-            allowedProducts.addAll(team.getProducts());
-        }
-
-        //check if we have access 
-        if(allowedProducts.contains(prod)){
-            return true;
-        }
-        
-        return false;
+    	return this.authorizationBusiness.isBacklogAccessible(bl.getId(), SecurityUtil.getLoggedUser());
     }
 
     public NamedObject searchByReference(String searchTerm) {
@@ -177,14 +139,14 @@ public class SearchBusinessImpl implements SearchBusiness {
         }
         if (type.equals("story")) {
             Story story = storyDAO.get(objectId);
-            if(story != null && checkAccess(story.getBacklog()) && story.getBacklog() != null){  
+            if(story != null && story.getBacklog() != null && checkAccess(story.getBacklog())){  
                 return story;
             } else if (story != null && story.getBacklog() == null){
                 return story.getIteration();
             }
         } else if (type.equals("backlog")) {
             Backlog bl = backlogDAO.get(objectId);
-            if(checkAccess(bl)){  
+            if(bl!=null && checkAccess(bl)){  
                 return bl;
             }
         }

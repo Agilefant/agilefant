@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import fi.hut.soberit.agilefant.util.XmlExactEstimateAdapter;
 
 @SuppressWarnings("serial")
@@ -22,6 +24,7 @@ public class ExactEstimate extends Number implements Comparable<ExactEstimate> {
     public ExactEstimate() {
     }
 
+    @JsonCreator
     public ExactEstimate(long minorUnits) {
         this.minorUnits = minorUnits;
     }

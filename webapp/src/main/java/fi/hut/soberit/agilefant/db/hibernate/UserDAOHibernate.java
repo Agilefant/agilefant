@@ -23,27 +23,27 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements
 
     /** {@inheritDoc} */
     public User getByLoginName(String loginName) {
-        Criteria crit = getCurrentSession().createCriteria(User.class);
+        Criteria crit = this.createCriteria(User.class);
         crit.add(Restrictions.eq("loginName", loginName));
         return firstResult(crit);
     }
 
     /** {@inheritDoc} */
     public User getByLoginNameIgnoreCase(String loginName) {
-        Criteria crit = getCurrentSession().createCriteria(User.class);
+        Criteria crit = this.createCriteria(User.class);
         crit.add(Restrictions.eq("loginName", loginName).ignoreCase());
         return firstResult(crit);
     }
 
     /** {@inheritDoc} */
     public List<User> listUsersByEnabledStatus(boolean enabled) {
-        Criteria crit = getCurrentSession().createCriteria(User.class);
+        Criteria crit = this.createCriteria(User.class);
         crit.add(Restrictions.eq("enabled", enabled));
         return asList(crit);
     }
 
     public List<User> searchByName(String searchTerm) {
-        Criteria crit = getCurrentSession().createCriteria(User.class);
+        Criteria crit = this.createCriteria(User.class);
         crit.add(Restrictions.or(Restrictions.like("fullName", searchTerm,
                 MatchMode.ANYWHERE), Restrictions.like("initials", searchTerm,
                 MatchMode.ANYWHERE)));

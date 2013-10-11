@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fi.soberit.agilefant</groupId>
 		<artifactId>agilefant-parent</artifactId>
-		<version>3.1.2-SNAPSHOT</version>
+		<version>3.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>agilefant</artifactId>
@@ -75,10 +75,6 @@
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
-			<artifactId>joda-time-hibernate</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
 			<artifactId>joda-time-jsptags</artifactId>
 		</dependency>
 		<dependency>
@@ -140,6 +136,16 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jadira.usertype</groupId>
+			<artifactId>usertype.core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.joda</groupId>
+					<artifactId>joda-money</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.jfree</groupId>
@@ -216,6 +222,22 @@
 			<artifactId>javax.servlet.jsp-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-core</artifactId>
+		</dependency>		
+		<dependency>
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-annotations</artifactId>
+		</dependency>		
+		<dependency>
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-databind</artifactId>
+		</dependency>		
+		<dependency>
+		  <groupId>com.fasterxml.jackson.datatype</groupId>
+		  <artifactId>jackson-datatype-joda</artifactId>
+		</dependency> 		
 		<!-- *** Test dependencies *** -->
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -324,6 +346,24 @@
 
 	<build>
 		<finalName>agilefant</finalName>
+		<plugins>
+			<plugin>
+    			<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>${basedir}/src/main/webapp/WEB-INF</directory>
+    						<filtering>true</filtering>
+    						<targetPath>WEB-INF</targetPath>
+				    		<includes>
+				    			<include>agilefant.conf</include>
+				    		</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>		
+		</plugins>	
 	</build>
 
 </project>

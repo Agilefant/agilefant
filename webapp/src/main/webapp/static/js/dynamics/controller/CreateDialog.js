@@ -219,8 +219,17 @@ CreateDialog.Project = function() {
   // Create the mock model
   this.model = ModelFactory.createObject(ModelFactory.typeToClassName.project);
   
-  this.model.setStartDate(new Date().getTime());
-  this.model.setEndDate(new Date().getTime());
+  var startdate = new Date();
+  var enddate   = new Date();
+
+  startdate.zeroTime();
+  startdate.addHours(8);
+  enddate.zeroTime();
+  enddate.addDays(14);
+  enddate.addHours(18);
+
+  this.model.setStartDate(startdate.getTime());
+  this.model.setEndDate(enddate.getTime());
 
   this.initFormConfig();
   this.init(CreateDialog.configurations.project);
@@ -286,8 +295,17 @@ CreateDialog.Iteration = function() {
   // Create the mock model
   this.model = ModelFactory.createObject(ModelFactory.typeToClassName.iteration);
   
-  this.model.setStartDate(new Date().getTime());
-  this.model.setEndDate(new Date().getTime());
+  var startdate = new Date();
+  var enddate   = new Date();
+
+  startdate.zeroTime();
+  startdate.addHours(8);
+  enddate.zeroTime();
+  enddate.addDays(14);
+  enddate.addHours(18);
+  
+  this.model.setStartDate(startdate.getTime());
+  this.model.setEndDate(enddate.getTime());
  
   this.initFormConfig();
   this.init(CreateDialog.configurations.iteration);
@@ -450,7 +468,7 @@ CreateDialog.Story.prototype.initFormConfig = function() {
     editable : true,
     edit : {
       editor : "InlineAutocomplete",
-      dataType: "backlogs",
+      dataType: "backlogsAndIterations",
       decorator: DynamicsDecorators.propertyDecoratorFactory(BacklogModel.prototype.getName),
       set: StoryModel.prototype.setBacklog
     }
@@ -587,7 +605,7 @@ CreateDialog.User.prototype.initFormConfig = function() {
   var config = new DynamicTableConfiguration({
     leftWidth: '24%',
     rightWidth: '75%',
-    validators: [ UserModel.Validators.passwordValidator ],
+    validators: [ UserModel.Validators.passwordValidator, UserModel.Validators.loginNameValidator ],
     closeRowCallback: CreateDialogClass.prototype.close
   });
   

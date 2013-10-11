@@ -223,7 +223,7 @@
 			<result type="dispatcher">/WEB-INF/jsp/administration/editUser.jsp</result>
 		</action>
 
-		<action name="storeUser" class="userAction" method="store">
+		<action name="storeUserAndRedirect" class="userAction" method="store">
 			<interceptor-ref name="prefetchStack" />
 			<result type="redirectAction">
 				<param name="actionName">editUser</param>
@@ -471,7 +471,6 @@
 			<result>/WEB-INF/jsp/administration/dbExport.jsp</result>
 		</action>
 		
-		
 		<action name="generateDbExport" method="generateDatabaseExport"
 			class="dbExportAction">
 			<result name="success" type="stream">
@@ -482,16 +481,30 @@
 			<result name="error">/WEB-INF/jsp/dbExportError.jsp</result>
 		</action>
 		
-		<action name="generateAnonymousDbExport" method="generateAnonymousDatabaseExport"
-			class="dbExportAction">
-			<result name="success" type="stream">
-				<param name="contentType">application/octet-stream</param>
-				<param name="inputName">databaseStream</param>
-				<param name="contentDisposition">filename="AgilefantAnonymousDatabaseExport.zip"</param>
-			</result>
-			<result name="error">/WEB-INF/jsp/dbExportError.jsp</result>
+		<action name="resultAction" class="dbExportAction" method="databaseImport">
+
+			<interceptor-ref name="exception"/>
+            <interceptor-ref name="i18n"/>
+            <interceptor-ref name="fileUpload">
+       			<param name="allowedTypes">application/zip,application/x-zip-compressed,application/x-zip</param>
+       			<param name="maximumSize">104857600</param>
+  			</interceptor-ref> 
+            <interceptor-ref name="params">
+                <param name="excludeParams">dojo\..*,^struts\..*</param>
+            </interceptor-ref>
+            <interceptor-ref name="validation">
+                <param name="excludeMethods">input,back,cancel,browse</param>
+            </interceptor-ref>
+            <interceptor-ref name="workflow">
+                <param name="excludeMethods">input,back,cancel,browse</param>
+            </interceptor-ref>
+    
+			<result name="success" type="redirectAction">databaseExport</result>
+			<result name="none" type="redirectAction">databaseExport</result>
+			<result name="error">/WEB-INF/jsp/dbImportError.jsp</result>
+			
 		</action>
 		
-		
 	</package>
+	<constant name="struts.multipart.maxSize" value="104857600" />
 </struts>

@@ -176,6 +176,15 @@ var DynamicsDecorators = {
 	}
 	return "";
   },
+  storyPriorityDecorator: function(value) {
+	if(value != null && value.getMyStoriesRank() != null) {
+		if (value.getMyStoriesRank() < 10000) {
+			var story = jQuery("#fi\\.hut\\.soberit\\.agilefant\\.model\\.Story_" + value.getId());
+			story.addClass("dailywork-story-table-row-parent");
+		}
+	}
+	return "";
+  },
   taskContextDecorator: function(value) {
     var returned = "";
     

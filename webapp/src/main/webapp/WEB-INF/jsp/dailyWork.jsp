@@ -51,6 +51,13 @@ Daily Work contains tasks and stories, which are in an <em>ongoing project or it
 <a href="#" style="font-size: 80%; color: #1e5eee; text-decoration: underline;" onclick="HelpUtils.openHelpPopup(this,'Daily Work','static/html/help/dailyWorkPopup.html'); return false;">What is Daily Work?</a>
 </div>
 
+<div id="dailyworkPleasewait" style="height: 200px; width: 100%; position: relative;">
+  <div id="dailyworkLoadingOverlay" class="loadingOverlay">
+    <div class="pleaseWait" style="text-align:center;"><img src="static/img/pleasewait.gif" style="display:inline-block;vertical-align:middle;"/><span style="font-size:100%;color:#666;vertical-align: middle;">Loading...</span></div>
+    <div class="overlay"></div>
+  </div>
+</div>
+
 <!-- Work queue -->
 <form onsubmit="return false;"><div id="work-queue" class="structure-main-block"></div></form>
 

@@ -87,7 +87,11 @@
       </result>
     </action>
     
-    
+     <action name="rankMyStoryAndMoveUnder" method="rankMyStoryAndMoveUnder" class="dailyWorkAction">
+      <result name="success" type="httpheader">
+        <param name="status">200</param>
+      </result>
+    </action>
     
     
     

@@ -15,7 +15,11 @@ import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import fi.hut.soberit.agilefant.business.SettingBusiness;
 import fi.hut.soberit.agilefant.db.SettingDAO;
@@ -30,7 +34,6 @@ import fi.hut.soberit.agilefant.model.Setting;
  */
 @Service("settingBusiness")
 @Transactional
-@Scope(value="singleton")
 public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
         SettingBusiness {
     private static final String CONFIG_LOCATION = "configuration.properties";
@@ -60,19 +63,19 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
     
     public SettingBusinessImpl() {
         super(Setting.class);
+      //  loadProperties();
     }
 
     @Autowired
     private SettingDAO settingDAO;
     private Map<String,Setting> settingCache = new HashMap<String, Setting>();
 
-    
     public void setSettingDAO(SettingDAO settingDAO) {
         this.genericDAO = settingDAO;
         this.settingDAO = settingDAO;
     }
     
-    @PostConstruct
+/*    @PostConstruct
     public void loadSettingCache() {
         this.settingCache.clear();
         Collection<Setting> allSettings = this.settingDAO.getAll();
@@ -80,11 +83,11 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
             this.settingCache.put(setting.getName(), setting);
         }
         loadProperties();
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public Setting retrieveByName(String name) {
-        return this.settingCache.get(name);
+    	return this.settingDAO.getByName(name);
     }
     
     public void storeSetting(String settingName, boolean value) {
@@ -96,6 +99,8 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
     }
     
     public synchronized void storeSetting(String settingName, String value) {
+
+        //loadProperties();
         Setting setting = this.retrieveByName(settingName);
         if (setting == null) {
             setting = new Setting();
@@ -106,7 +111,11 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
             setting.setValue(value);
             this.settingDAO.store(setting);
         } 
-        this.settingCache.put(settingName, setting);
+    }
+    
+    @Transactional
+    public void setValue(String settingName, String value) {
+        this.storeSetting(settingName, value);
     }
     
     @Transactional(readOnly = true)
@@ -477,13 +486,11 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
                         setAttachmentSaveLocation(attachmentProperties.getProperty("attachment.save.location"));
                         setMaxNumberOfAttachment(Integer.parseInt(attachmentProperties.getProperty("attachment.max.files.count")));
                         setMaxSizeForAllAttachment(Integer.parseInt(attachmentProperties.getProperty("attachment.files.max.size"))); 
-                        System.out.println("Attachment properties loaded from "+CONFIG_LOCATION+ " file");
                         propertyLoaded = true;
                     } catch (Exception e) {
                         setAttachmentSaveLocation(FILE_SAVE_LOCATION);
                         setMaxNumberOfAttachment(MAX_NUM_FILES);
                         setMaxSizeForAllAttachment(MAX_FILE_SIZE);
-                        System.out.println("Default properties loaded");
                         propertyLoaded = true;
                         /*            
                         attachmentProperties.put("attachment.save.location", FILE_SAVE_LOCATION);
@@ -503,7 +510,6 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
                             System.out.println("Failed to create child directories make sure read write permission are give to the parent directory");
                             return false;
                         }else{
-                            System.out.println("Child directories created successfully");
                             return true;
                         }
                     }else{
@@ -556,7 +562,8 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
                 System.out.println("Unhandled exception while creating child directories");
                 return false;
             }
-        }
-          
+        }       
+        
+        
     
 }

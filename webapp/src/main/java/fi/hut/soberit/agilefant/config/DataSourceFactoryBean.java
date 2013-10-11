@@ -41,6 +41,8 @@ public class DataSourceFactoryBean implements InitializingBean, DisposableBean, 
         bean.setUsername(config.getString("agilefant.database.username"));
         bean.setPassword(config.getString("agilefant.database.password"));
         bean.setUrl(config.getString("agilefant.database.url"));
+        bean.setTestWhileIdle(true);
+        bean.setValidationQuery("/* ping */ SELECT 1");
 
         log.info("Using locally pooled data source '{}'", bean.getUrl());
 

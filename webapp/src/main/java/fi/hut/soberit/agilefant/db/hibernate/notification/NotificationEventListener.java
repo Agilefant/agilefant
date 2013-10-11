@@ -1,24 +1,18 @@
-/*
- * Copyright (C) 2007-2011, GoodData(R) Corporation. All rights reserved.
- */
 package fi.hut.soberit.agilefant.db.hibernate.notification;
 
-import fi.hut.soberit.agilefant.core.ApplicationContextHolder;
+import org.hibernate.event.spi.PostDeleteEvent;
+import org.hibernate.event.spi.PostDeleteEventListener;
+import org.hibernate.event.spi.PostInsertEvent;
+import org.hibernate.event.spi.PostInsertEventListener;
+import org.hibernate.event.spi.PostUpdateEvent;
+import org.hibernate.event.spi.PostUpdateEventListener;
+import org.springframework.context.ApplicationContext;
+
 import fi.hut.soberit.agilefant.business.NotificationBusiness;
 import fi.hut.soberit.agilefant.business.impl.NotificationEmailSender;
+import fi.hut.soberit.agilefant.core.ApplicationContextHolder;
 import fi.hut.soberit.agilefant.model.notification.NotificationEvent;
 import fi.hut.soberit.agilefant.model.notification.NotificationEventType;
-import org.hibernate.event.PostCollectionRemoveEvent;
-import org.hibernate.event.PostCollectionRemoveEventListener;
-import org.hibernate.event.PostCollectionUpdateEvent;
-import org.hibernate.event.PostCollectionUpdateEventListener;
-import org.hibernate.event.PostDeleteEvent;
-import org.hibernate.event.PostDeleteEventListener;
-import org.hibernate.event.PostInsertEvent;
-import org.hibernate.event.PostInsertEventListener;
-import org.hibernate.event.PostUpdateEvent;
-import org.hibernate.event.PostUpdateEventListener;
-import org.springframework.context.ApplicationContext;
 
 
 /**

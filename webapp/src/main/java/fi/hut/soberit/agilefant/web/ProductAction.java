@@ -15,14 +15,12 @@ import org.springframework.stereotype.Component;
 import com.opensymphony.xwork2.Action;
 
 import fi.hut.soberit.agilefant.annotations.PrefetchId;
+import fi.hut.soberit.agilefant.business.AuthorizationBusiness;
 import fi.hut.soberit.agilefant.business.BacklogBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.business.ProductBusiness;
-import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Product;
 import fi.hut.soberit.agilefant.model.Story;
-import fi.hut.soberit.agilefant.model.Team;
-import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
 import fi.hut.soberit.agilefant.transfer.ProjectTO;
 import fi.hut.soberit.agilefant.util.DateTimeUtils;
@@ -42,6 +40,9 @@ public class ProductAction implements CRUDAction, Prefetching, ContextAware {
     
     @Autowired 
     BacklogBusiness backlogBusiness;
+    
+    @Autowired
+    AuthorizationBusiness authorizationBusiness;
     
     @PrefetchId
     private int productId;
@@ -117,7 +118,7 @@ public class ProductAction implements CRUDAction, Prefetching, ContextAware {
         for (Iterator<Product> iter = canditateProducts.iterator(); iter.hasNext();) {
             Product product = iter.next();
             
-            if (checkTeamAccess(product.getId())) {
+            if (this.authorizationBusiness.isBacklogAccessible(product.getId(), SecurityUtil.getLoggedUser())) {
                 products.add(product);
             }
         }
@@ -197,47 +198,5 @@ public class ProductAction implements CRUDAction, Prefetching, ContextAware {
     public void setTeamIds(Set<Integer> teamIds) {
         this.teamIds = teamIds;
     }
-    
-    private boolean checkTeamAccess(int backlogId) {
-        User user = SecurityUtil.getLoggedUser();
-        Collection<Team> teams = user.getTeams();
         
-        Product product = (backlogBusiness.getParentProduct(backlogBusiness.retrieve(backlogId)));
-        if(product == null){
-            //standalone iteration
-            Iteration iteration = iterationBusiness.retrieve(backlogId);
-            if(iteration.isStandAlone()){
-                for (Iterator<Team> iter = teams.iterator(); iter.hasNext();){
-                    Team team = (Team) iter.next();
-                    
-                    Set<Iteration> iterations = team.getIterations();
-                    
-                    for (Iterator<Iteration> iterationIterator = iterations.iterator(); iterationIterator.hasNext();) {
-                        Iteration teamIteration = (Iteration) iterationIterator.next();
-                        if (teamIteration.getId() == iteration.getId()) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-
-        for (Iterator<Team> iter = teams.iterator(); iter.hasNext();){
-            Team team = (Team) iter.next();
-            
-            Set<Product> products = team.getProducts();
-            
-            for (Iterator<Product> productIterator = products.iterator(); productIterator.hasNext();) {
-                Product teamProduct = (Product) productIterator.next();
-                
-                if (teamProduct.getId() == product.getId()) {
-                    return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-    
 }

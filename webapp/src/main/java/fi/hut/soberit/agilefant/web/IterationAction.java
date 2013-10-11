@@ -1,7 +1,5 @@
 package fi.hut.soberit.agilefant.web;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,6 +18,7 @@ import fi.hut.soberit.agilefant.model.Backlog;
 import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.transfer.AssignmentTO;
 import fi.hut.soberit.agilefant.transfer.IterationMetrics;
+import fi.hut.soberit.agilefant.util.TokenGenerator;
 
 @Component("iterationAction")
 @Scope("prototype")
@@ -56,6 +55,9 @@ public class IterationAction implements CRUDAction, Prefetching, ContextAware {
     
     @Autowired
     private IterationBusiness iterationBusiness;
+    
+    @Autowired
+    private TokenGenerator tokenGenerator;
 
     public String create() {
         iterationId = 0;
@@ -119,7 +121,7 @@ public class IterationAction implements CRUDAction, Prefetching, ContextAware {
     
     public String createReadonlyToken() {
         iteration = iterationBusiness.retrieve(iterationId);
-        iteration.setReadonlyToken(generateReadonlyToken());
+        iteration.setReadonlyToken(tokenGenerator.generateReadonlyToken());
         
         Set<Integer> teams = null;
         if (teamsChanged) {
@@ -154,21 +156,6 @@ public class IterationAction implements CRUDAction, Prefetching, ContextAware {
         this.readonlyToken = iteration.getReadonlyToken();
         
         return Action.SUCCESS;
-    }
-    
-    private String generateReadonlyToken()
-    {
-        SecureRandom r = new SecureRandom();
-        String token = new BigInteger(130, r).toString();
-        
-        int count = iterationBusiness.getIterationCountFromReadonlyToken(token);
-        while(count > 0){
-            r = new SecureRandom();
-            token = new BigInteger(130, r).toString();
-            count = iterationBusiness.getIterationCountFromReadonlyToken(token);
-        }
-        
-        return token;
     }
     
     /*

@@ -58,7 +58,6 @@ public class RankingBusinessImpl implements RankingBusiness {
      */
     public RankDirection findOutRankDirection(Rankable rankable, Rankable upper) {
         validateRankable(rankable);
-        
         if (upper == null) {
             return RankDirection.TOP;    
         }

@@ -34,7 +34,7 @@ WhatsNextEntryDAO {
     }
 
     public WhatsNextEntry getLastTaskInRank(User user) {
-        Criteria entry = getCurrentSession().createCriteria(WhatsNextEntry.class);
+        Criteria entry = this.createCriteria(WhatsNextEntry.class);
 
         entry.add(Restrictions.eq("user", user));
         entry.addOrder(Order.desc("rank"));
@@ -47,7 +47,7 @@ WhatsNextEntryDAO {
     }
 
     public Collection<WhatsNextEntry> getTasksWithRankBetween(int lower, int upper, User user) {
-        Criteria entry = getCurrentSession().createCriteria(WhatsNextEntry.class);
+        Criteria entry = this.createCriteria(WhatsNextEntry.class);
         entry.add(Restrictions.eq("user", user));
         entry.add(Restrictions.between("rank", lower, upper));
         entry.setFetchMode("user", FetchMode.SELECT);
@@ -56,7 +56,7 @@ WhatsNextEntryDAO {
     }
 
     public WhatsNextEntry getWhatsNextEntryFor(User user, Task task) {
-        Criteria crit = getCurrentSession().createCriteria(WhatsNextEntry.class);
+        Criteria crit = this.createCriteria(WhatsNextEntry.class);
         crit.add(Restrictions.eq("user", user));
         crit.add(Restrictions.eq("task", task));
 
@@ -67,7 +67,7 @@ WhatsNextEntryDAO {
     }
 
     public Collection<WhatsNextEntry> getWhatsNextEntriesFor(User user) {
-        Criteria crit = getCurrentSession().createCriteria(WhatsNextEntry.class);
+        Criteria crit = this.createCriteria(WhatsNextEntry.class);
         crit.add(Restrictions.eq("user", user));
         crit.setFetchMode("task", FetchMode.JOIN);
 
@@ -78,7 +78,7 @@ WhatsNextEntryDAO {
     }
     
     public Collection<WhatsNextEntry> getAllWorkQueueEntriesFor(Task task) {
-        Criteria crit = getCurrentSession().createCriteria(WhatsNextEntry.class);
+        Criteria crit = this.createCriteria(WhatsNextEntry.class);
         crit.add(Restrictions.eq("task", task));
         crit.setFetchMode("task", FetchMode.SELECT);
         return asList(crit);
@@ -102,7 +102,7 @@ WhatsNextEntryDAO {
         
         Query q = getCurrentSession().createQuery(hqlQuery);
 
-        List<?> returned = q.list();
+        List<?> returned = this.asList(q);
         
         Map<User, List<Task>> returnValue = new HashMap<User, List<Task>>(returned.size()); 
 

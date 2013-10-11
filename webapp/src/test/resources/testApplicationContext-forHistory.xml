@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <bean name="transactionManager"
-    class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    class="org.springframework.orm.hibernate4.HibernateTransactionManager">
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 
@@ -21,46 +21,15 @@
   </bean>
 
   <bean name="sessionFactory"
-    class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource" />
     <property name="annotatedPackages" value="fi.hut.soberit.agilefant.model" />
     <property name="packagesToScan" value="fi.hut.soberit.agilefant.model" />
-    <property name="eventListeners">
-      <map>
-        <entry key="pre-update">
-          <bean
-            class="org.hibernate.validator.event.ValidatePreUpdateEventListener" />
-        </entry>
-        <entry key="pre-insert">
-          <bean
-            class="org.hibernate.validator.event.ValidatePreInsertEventListener" />
-        </entry>
-        <entry key="post-insert">
-          <bean class="org.hibernate.envers.event.AuditEventListener" />
-        </entry>
-        <entry key="post-update">
-          <bean class="org.hibernate.envers.event.AuditEventListener" />
-        </entry>
-        <entry key="post-delete">
-          <bean class="org.hibernate.envers.event.AuditEventListener" />
-        </entry>
-        <entry key="pre-collection-update">
-          <bean class="org.hibernate.envers.event.AuditEventListener" />
-        </entry>
-        <entry key="pre-collection-remove">
-          <bean class="org.hibernate.envers.event.AuditEventListener" />
-        </entry>
-        <entry key="post-collection-recreate">
-          <bean class="org.hibernate.envers.event.AuditEventListener" />
-        </entry>
-      </map>
-    </property>
     <property name="hibernateProperties">
       <map>
         <entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
         <entry key="hibernate.jdbc.batch_size" value="0" />
         <entry key="hibernate.hbm2ddl.auto" value="create-drop" />
-        <entry key="hibernate.show_sql" value="true" />
       </map>
     </property>
   </bean>

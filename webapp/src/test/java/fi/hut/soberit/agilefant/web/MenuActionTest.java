@@ -41,7 +41,7 @@ public class MenuActionTest {
     
     @Test
     public void testConstructBacklogMenuData() {
-        expect(menuBusiness.constructBacklogMenuData(SecurityUtil.getLoggedUser())).andReturn(
+        expect(menuBusiness.constructBacklogMenuData()).andReturn(
                 Arrays.asList(new MenuDataNode()));
         replayAll();
         assertEquals(Action.SUCCESS, menuAction.constructBacklogMenuData());

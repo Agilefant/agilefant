@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fi.hut.soberit.agilefant.business.AuthorizationBusiness;
 import fi.hut.soberit.agilefant.business.BacklogBusiness;
 import fi.hut.soberit.agilefant.business.HourEntryBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
@@ -31,6 +32,7 @@ import fi.hut.soberit.agilefant.model.Task;
 import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.model.WhatsNextEntry;
+import fi.hut.soberit.agilefant.model.WhatsNextStoryEntry;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
 import fi.hut.soberit.agilefant.transfer.AssignedWorkTO;
 import fi.hut.soberit.agilefant.transfer.AutocompleteDataNode;
@@ -68,10 +70,16 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
     
     @Autowired
     private StoryBusiness storyBusiness;
-    
-    
+   
+    @Autowired
+    private AuthorizationBusiness authorizationBusiness;
+  
     private void fillInEffortSpent(TaskTO taskTO) {
         taskTO.setEffortSpent(hourEntryBusiness.calculateSum(taskTO.getHourEntries()));
+    }
+    
+    private void fillInEffortSpent(StoryTO storyTO) {
+        storyTO.setEffortSpent(hourEntryBusiness.calculateSum(storyTO.getHourEntries()));
     }
     
     /** {@inheritDoc} */
@@ -214,6 +222,9 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
         return autocompleteData; 
     }
 
+    private boolean checkAccess(Backlog bl){
+        return this.authorizationBusiness.isBacklogAccessible(bl.getId(), SecurityUtil.getLoggedUser());
+    }
 
     /** {@inheritDoc} */
     @Transactional(readOnly = true)
@@ -244,25 +255,11 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
             Collection<? extends Backlog> allBacklogs) {
         List<AutocompleteDataNode> autocompleteData = new ArrayList<AutocompleteDataNode>();
         
-        User user = SecurityUtil.getLoggedUser();
         for (Backlog blog : allBacklogs) { 
-            Product prod = null;
-            if(blog instanceof Project){
-                //look at product
-                prod = (Product)blog.getParent();
-            } else if(blog instanceof Iteration){
+            if(blog instanceof Iteration){
                 continue; // iterations should not be included in backlogs list.
-            } else if(blog instanceof Product){
-                prod = (Product)blog;
             }
-            
-            Set<Product> allowedProducts = new HashSet<Product>();
-            for(Team team : user.getTeams()){
-                allowedProducts.addAll(team.getProducts());
-            }
-   
-            //check if we have access 
-            if(allowedProducts.contains(prod)){
+            if (checkAccess(blog)) {
                 String name = recurseBacklogNameWithParents(blog);
                 AutocompleteDataNode node = new AutocompleteDataNode(Backlog.class, blog.getId(), name);
                 node.setMatchedString(name);
@@ -308,11 +305,13 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
         Collection<Iteration> currentAndFutureIterations = this.iterationBusiness.retrieveCurrentAndFutureIterations();
         List<AutocompleteDataNode> autocompleteData = new ArrayList<AutocompleteDataNode>();
         for (Backlog blog : currentAndFutureIterations) {
-            String name = recurseBacklogNameWithParents(blog);
-            AutocompleteDataNode node = new AutocompleteDataNode(Backlog.class,
-                    blog.getId(), name);
-            node.setOriginalObject(blog);
-            autocompleteData.add(node);
+            if (checkAccess(blog)) {
+                String name = recurseBacklogNameWithParents(blog);
+                AutocompleteDataNode node = new AutocompleteDataNode(Backlog.class,
+                        blog.getId(), name);
+                node.setOriginalObject(blog);
+                autocompleteData.add(node);
+            }
         }
         return autocompleteData; 
     }
@@ -323,6 +322,17 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
     public DailyWorkTaskTO constructQueuedDailyWorkTaskTO(WhatsNextEntry entry) {
         Task task = entry.getTask();
         DailyWorkTaskTO toReturn = new DailyWorkTaskTO(task);
+        fillInEffortSpent(toReturn);
+        toReturn.setWorkQueueRank(entry.getRank());
+
+        return toReturn;
+    }
+    
+    /** {@inheritDoc} */
+    @Transactional(readOnly = true)
+    public StoryTO constructQueuedStoryTO(WhatsNextStoryEntry entry) {
+        Story story = entry.getStory();
+        StoryTO toReturn = new StoryTO(story);
         fillInEffortSpent(toReturn);
         toReturn.setWorkQueueRank(entry.getRank());
 
@@ -414,6 +424,10 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
 
     public void setStoryBusiness(StoryBusiness storyBusiness) {
         this.storyBusiness = storyBusiness;
+    }
+    
+    public void setAuthorizationBusiness(AuthorizationBusiness authorizationBusiness) {
+        this.authorizationBusiness = authorizationBusiness;
     }
     
     private User getloggedUser() {

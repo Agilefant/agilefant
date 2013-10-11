@@ -26,7 +26,7 @@ public class StoryAccessDAOHibernate extends GenericDAOHibernate<StoryAccess> im
 
     public Map<Story, Long> calculateAccessCounts(DateTime start,
             DateTime end, User user) {
-        Criteria crit = this.getCurrentSession().createCriteria(StoryAccess.class);
+        Criteria crit = this.createCriteria(StoryAccess.class);
         crit.add(Restrictions.eq("user", user));
         crit.add(Restrictions.between("date", start, end));
         ProjectionList proj = Projections.projectionList();

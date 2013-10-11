@@ -94,9 +94,10 @@ ProductModel.prototype._saveData = function(id, changedData) {
   }
   jQuery.extend(data, this.serializeFields("product", changedData));
   
-  data.productId = id;
   if (!id) {
     url = "ajax/storeNewProduct.action";
+  } else {
+	  data.productId = id;
   }
  
   jQuery.ajax({

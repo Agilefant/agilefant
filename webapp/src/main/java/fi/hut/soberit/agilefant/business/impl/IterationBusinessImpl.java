@@ -36,6 +36,7 @@ import fi.hut.soberit.agilefant.db.history.TaskHistoryDAO;
 import fi.hut.soberit.agilefant.exception.ObjectNotFoundException;
 import fi.hut.soberit.agilefant.model.Assignment;
 import fi.hut.soberit.agilefant.model.Backlog;
+import fi.hut.soberit.agilefant.model.ExactDoubleEstimate;
 import fi.hut.soberit.agilefant.model.ExactEstimate;
 import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.IterationHistoryEntry;
@@ -239,6 +240,23 @@ public class IterationBusinessImpl extends GenericBusinessImpl<Iteration>
         final IterationHistoryEntry entry = iterationHistoryEntryDAO.retrieveByDate(iteration.getId(), today.minusDays(1));
         return calculateDailyVelocity(new LocalDate(iteration.getStartDate()), new LocalDate(iteration.getEndDate()), entry);
     }
+    
+    public ExactDoubleEstimate calculateDailyStoryPointsVelocity(LocalDate start, LocalDate end, int points) {
+        final LocalDate today = new LocalDate();
+
+        if (points == 0)
+            return new ExactDoubleEstimate(0);
+        final LocalDate day = (today.isBefore(end)) ? today : end;
+
+        double length = Days.daysBetween(start, day).getDays();
+        if (length < 1) {
+            length = 1;
+        }
+
+        final double velocity = points / length;
+
+        return new ExactDoubleEstimate(velocity);
+    }
 
     private Integer calculatePercent(Integer part, Integer total) {
         if(total == 0) {
@@ -274,11 +292,12 @@ public class IterationBusinessImpl extends GenericBusinessImpl<Iteration>
         else
             metrics.setPlannedSize(new ExactEstimate(iteration.getBacklogSize().intValue()));
 
-        metrics.setDailyVelocity(calculateDailyVelocity(iteration));
+        int doneStoryPoints = backlogBusiness.calculateDoneStoryPointSum(iteration.getId());
+        metrics.setDailyVelocity(calculateDailyStoryPointsVelocity(new LocalDate(iteration.getStartDate()), new LocalDate(iteration.getEndDate()), doneStoryPoints));
 
         // 2. Set story points
         metrics.setStoryPoints(backlogBusiness.getStoryPointSumByIteration(iteration));
-        metrics.setDoneStoryPoints(backlogBusiness.calculateDoneStoryPointSum(iteration.getId()));
+        metrics.setDoneStoryPoints(doneStoryPoints);
 
         // 3. Set spent effort
         long spentEffort = hourEntryBusiness

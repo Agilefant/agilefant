@@ -26,8 +26,8 @@ public class DatabaseInitializer implements InitializingBean {
 
         jdbc.update("INSERT INTO users (fullName, loginName, password, initials, enabled, recentItemsNumberOfWeeks) VALUES (?, ?, ?, ?, ?, ?)",
                 "Administrator", "admin", "5ebe2294ecd0e0f08eab7690d2a6ee69", "Admin", 1, 16);
-        jdbc.update("INSERT INTO users (admin, fullName, password, initials, enabled, recentItemsNumberOfWeeks) VALUES (?, ?, ?, ?, ?, ?)", 0,
-                "readonly", "5ebe2294ecd0e0f08eab7690d2a6ee69", "readonly", 1, 0);
+        jdbc.update("INSERT INTO users (admin, fullName, loginName, password, initials, enabled, recentItemsNumberOfWeeks) VALUES (?, ?, ?, ?, ?, ?, ?)", 0,
+                "readonly", "readonly", "5ebe2294ecd0e0f08eab7690d2a6ee69", "readonly", 1, 0);
 
         log.info("Initialized users table with default users");
     }

@@ -56,7 +56,6 @@ WorkQueueController.prototype.rankInWorkQueue = function(view, model, previousMo
   if (!(model instanceof WorkQueueTaskModel)) {
     return;
   }
-  
   if (previousModel) {
     model.rankInWorkQueue(previousModel.getId(), this.options.userId);
   }

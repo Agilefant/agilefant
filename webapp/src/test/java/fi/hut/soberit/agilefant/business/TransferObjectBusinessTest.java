@@ -54,6 +54,7 @@ public class TransferObjectBusinessTest {
     private ProductBusiness productBusiness;
     private ProjectBusiness projectBusiness;
     private IterationBusiness iterationBusiness;
+    private AuthorizationBusiness authorizationBusiness;
     
     Project   project;
     Iteration iteration;
@@ -91,18 +92,21 @@ public class TransferObjectBusinessTest {
         storyBusiness = createMock(StoryBusiness.class);
         transferObjectBusiness.setStoryBusiness(storyBusiness);
         
+        authorizationBusiness = createMock(AuthorizationBusiness.class);
+        transferObjectBusiness.setAuthorizationBusiness(authorizationBusiness);
+        
     }
     
     private void verifyAll() {
         verify(hourEntryBusiness, userBusiness, storyBusiness, teamBusiness,
                 backlogBusiness, productBusiness, projectBusiness,
-                iterationBusiness);
+                iterationBusiness, authorizationBusiness);
     }
 
     private void replayAll() {
         replay(hourEntryBusiness, userBusiness, storyBusiness, teamBusiness,
                 backlogBusiness, productBusiness, projectBusiness,
-                iterationBusiness);
+                iterationBusiness, authorizationBusiness);
     }
     
     
@@ -312,6 +316,8 @@ public class TransferObjectBusinessTest {
         
         expect(backlogBusiness.retrieveAll())
             .andReturn(Arrays.asList(product, project, iterationUnderProject, iterationUnderProduct));
+        expect(authorizationBusiness.isBacklogAccessible(1, SecurityUtil.getLoggedUser())).andReturn(true);
+        expect(authorizationBusiness.isBacklogAccessible(7, SecurityUtil.getLoggedUser())).andReturn(true);
         
         replayAll();
         
@@ -354,7 +360,7 @@ public class TransferObjectBusinessTest {
         project.setId(7);
         project.setParent(product);
         project.setName("Project");
-        
+
         expect(backlogBusiness.retrieveAll()).andReturn(Arrays.asList(product, project, product2));
 
         expect(backlogBusiness.retrieve(7)).andReturn(project);
@@ -363,6 +369,9 @@ public class TransferObjectBusinessTest {
         expect(backlogBusiness.getParentProduct(product)).andReturn(product);
         expect(backlogBusiness.getParentProduct(project)).andReturn(product);
         expect(backlogBusiness.getParentProduct(product2)).andReturn(product2);
+        
+        expect(authorizationBusiness.isBacklogAccessible(1, SecurityUtil.getLoggedUser())).andReturn(true);
+        expect(authorizationBusiness.isBacklogAccessible(7, SecurityUtil.getLoggedUser())).andReturn(true);
         
         replayAll();
         
@@ -406,12 +415,12 @@ public class TransferObjectBusinessTest {
         project.setName("Project");
         
         expect(projectBusiness.retrieveAll()).andReturn(Arrays.asList(project));
+        expect(authorizationBusiness.isBacklogAccessible(7, SecurityUtil.getLoggedUser())).andReturn(true);
         
         replayAll();
         
         List<AutocompleteDataNode> nodes = transferObjectBusiness
                 .constructProjectAutocompleteData();
-        
         verifyAll();
         
         assertEquals(1, nodes.size());
@@ -446,6 +455,9 @@ public class TransferObjectBusinessTest {
         
         expect(iterationBusiness.retrieveCurrentAndFutureIterations())
             .andReturn(Arrays.asList(iterationUnderProject, iterationUnderProduct));
+        
+        expect(authorizationBusiness.isBacklogAccessible(333, SecurityUtil.getLoggedUser())).andReturn(true);
+        expect(authorizationBusiness.isBacklogAccessible(615, SecurityUtil.getLoggedUser())).andReturn(true);
         
         replayAll();
         
@@ -493,7 +505,10 @@ public class TransferObjectBusinessTest {
         products.add((Product)product2);
         team.setProducts(products);
         
+        expect(userBusiness.retrieve(0)).andReturn(SecurityUtil.getLoggedUser()).anyTimes();
         expect(productBusiness.retrieveAll()).andReturn(Arrays.asList(product1, product2));
+        expect(authorizationBusiness.isBacklogAccessible(756, SecurityUtil.getLoggedUser())).andReturn(true);
+        expect(authorizationBusiness.isBacklogAccessible(918, SecurityUtil.getLoggedUser())).andReturn(true);
         replayAll();
         List<AutocompleteDataNode> nodes = transferObjectBusiness
                 .constructProductAutocompleteData();

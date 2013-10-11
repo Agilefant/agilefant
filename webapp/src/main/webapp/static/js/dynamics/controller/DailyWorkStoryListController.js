@@ -1,5 +1,9 @@
 
-var DailyWorkStoryListController = function(model, element, parentController) {
+var DailyWorkStoryListController = function(model, element, parentController, options) {
+  this.options = {
+    userId: null  
+  };
+  jQuery.extend(this.options, options);
   StoryListController.call(this, model, element, parentController);
 };
 extendObject(DailyWorkStoryListController, StoryListController);
@@ -15,10 +19,15 @@ DailyWorkStoryListController.prototype._getTableConfig = function() {
     captionConfig: {
       cssClasses: "dynamictable-caption-block ui-widget-header ui-corner-all"
     },
-    cssClass: "ui-widget-content ui-corner-all iteration-story-table",
+    cssClass: "ui-widget-content ui-corner-all iteration-story-unranked-table",
     dataSource: DailyWorkModel.prototype.getAssignedStories,
     beforeCommitFunction: StoryListController.prototype.confirmTasksToDone,    
-    rowControllerFactory : StoryListController.prototype.storyControllerFactory
+    rowControllerFactory : StoryListController.prototype.storyControllerFactory,
+    sortCallback: $.proxy(function(view, model, previousModel) {this.rankInMyStories(view, model, previousModel);}, this),
+    sortOptions: {
+      items: "> .dynamicTableDataRow",
+      handle: "." + DynamicTable.cssClasses.dragHandle
+    }
   });
   return config;
 };
@@ -32,7 +41,7 @@ DailyWorkStoryListController.prototype.storyContextFactory = function(cellView, 
 };
 
 DailyWorkStoryListController.prototype._addColumnConfigs = function(config) {
-  config.addColumnConfiguration(DailyWorkStoryListController.columnIndices.priority, StoryListController.columnConfig.prio);
+  config.addColumnConfiguration(DailyWorkStoryListController.columnIndices.priority, DailyWorkStoryListController.columnConfig.priority);
   
   if (Configuration.isLabelsInStoryList()) {
     config.addColumnConfiguration(DailyWorkStoryListController.columnIndices.labels, StoryListController.columnConfig.labels);
@@ -59,7 +68,6 @@ DailyWorkStoryListController.prototype._addColumnConfigs = function(config) {
   
   /* Overwrite some rules */
   config.columns[DailyWorkStoryListController.columnIndices.name].options.minWidth = 200;
-  config.columns[DailyWorkStoryListController.columnIndices.name].options.dragHandle = false;
 };
 
 
@@ -77,4 +85,46 @@ DailyWorkStoryListController.columnConfig.detailedContext = {
   title : "",
   headerTooltip : '',
   subViewFactory: DailyWorkStoryListController.prototype.storyContextFactory
+};
+
+DailyWorkStoryListController.columnConfig.priority = {
+  minWidth : 24,
+  autoScale : true,
+  title : "#",
+  get: StoryModel.prototype.getThis,
+  decorator: DynamicsDecorators.storyPriorityDecorator,
+  headerTooltip : 'Priority',
+  cssClass: "dailywork-story-table-row",
+  /*get: StoryModel.prototype.getRank,*/
+  sortCallback: DynamicsComparators.valueComparatorFactory(StoryModel.prototype.getMyStoriesRank),
+  defaultSortColumn: true,
+  subViewFactory : StoryController.prototype.taskToggleFactory
+};
+
+DailyWorkStoryListController.prototype.rankInMyStories = function(view, model, previousModel) {
+  if (!(model instanceof StoryModel)) {
+  return;
+  }
+  
+  if (previousModel) {
+    model.rankInMyStories(previousModel.getId(), this.options.userId);
+  }
+  else {
+    model.rankInMyStories(-1, this.options.userId);
+  }
+};
+
+DailyWorkStoryListController.prototype.handleModelEvents = function(event) {
+  var me = this;
+  if (this.parentController) {
+    this.parentController.handleModelEvents(event);
+  }
+  if (event instanceof DynamicsEvents.RankChanged) {
+    if (event.getRankedType() === "myStoriesStory") {
+      this.model.reloadMyStories(this.options.userId, function() {
+        me.getCurrentView().resort();
+        me.getCurrentView().render();
+      });
+    }
+  }
 };

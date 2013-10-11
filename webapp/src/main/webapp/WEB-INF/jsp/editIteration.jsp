@@ -33,15 +33,15 @@
 </div>
 <div class="details" id="backlogAssignees_cont">
     <div class="details" id="backlogAssignees"></div>
-    Iteration availability denotes how unassigned load should bee divided within this iteration. If all assignees have the same iteration availability they will receive the same amount of unassigned load.
+    Iteration availability denotes how unassigned load should be divided within this iteration. If all assignees have the same iteration availability they will receive the same amount of unassigned load.
     <br/>
     Personal adjustment adjusts the iteration baseline load for each user.
   </div>
   <!-- <div class="details" id="iterationHistory">
     <div style="text-align:center; vertical-align: middle;">
       <img src="static/img/pleasewait.gif" style="display: inline-block; vertical-align: middle;"/> Loading...
-    </div>-->
-</div>
+    </div>
+</div>-->
 </div>
 
 
@@ -119,6 +119,13 @@ $(document).ready(function() {
  $("#chartlink").attr("href", $("#chartlink").attr('href') + -d.getTimezoneOffset());
 });
 </script>
+
+<div id="iterationPleasewait" style="height: 200px; width: 100%; position: relative;">
+  <div id="iterationLoadingOverlay" class="loadingOverlay">
+    <div class="pleaseWait" style="text-align:center;"><img src="static/img/pleasewait.gif" style="display:inline-block;vertical-align:middle;"/><span style="font-size:100%;color:#666;vertical-align: middle;">Loading...</span></div>
+    <div class="overlay"></div>
+  </div>
+</div>
 
 <form onsubmit="return false;"><div id="stories" class="structure-main-block">&nbsp;</div></form>
 

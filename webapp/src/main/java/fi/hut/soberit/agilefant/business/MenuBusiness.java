@@ -14,7 +14,7 @@ import fi.hut.soberit.agilefant.transfer.MenuDataNode;
  */
 public interface MenuBusiness {
 
-    public List<MenuDataNode> constructBacklogMenuData(User user);
+    public List<MenuDataNode> constructBacklogMenuData();
 
     List<MenuDataNode> constructMyAssignmentsData(User user);
 

@@ -1,34 +1,31 @@
 package fi.hut.soberit.agilefant.web;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 
+import fi.hut.soberit.agilefant.business.AuthorizationBusiness;
 import fi.hut.soberit.agilefant.business.BacklogBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
-import fi.hut.soberit.agilefant.model.Iteration;
-import fi.hut.soberit.agilefant.model.Product;
-import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.security.SecurityUtil;
 
 @Component("authorizationInterceptor")
 public class AuthorizationInterceptor implements Interceptor {
 
-    @Autowired
+	private static final long serialVersionUID = 540485098014612613L;
+
+	@Autowired
     private BacklogBusiness backlogBusiness;
     
     @Autowired
     private IterationBusiness iterationBusiness;
    
+    @Autowired
+    private AuthorizationBusiness authorizationBusiness;
+    
     @Override
     public void destroy() {}
 
@@ -131,36 +128,10 @@ public class AuthorizationInterceptor implements Interceptor {
         if (accessDenied) return "noauth";
             return invocation.invoke();
     }
-    
+
     // check from the backlogId if the associated product is accessible for the current user    
     private boolean checkAccess(int backlogId){
         User user = SecurityUtil.getLoggedUser();
-        Collection<Team> teams = user.getTeams();
-        
-        Product product = (backlogBusiness.getParentProduct(backlogBusiness.retrieve(backlogId)));
-        if(product == null){
-            //standalone iteration
-            Iteration iteration = iterationBusiness.retrieve(backlogId);
-            if(iteration.isStandAlone()){
-                for (Iterator<Team> iter = teams.iterator(); iter.hasNext();){
-                    Team team = (Team) iter.next();
-                    Set<Iteration> its = team.getIterations();
-                    if (its.contains(iteration)) {
-                        return true; 
-                    }
-                }
-                return false;
-            }
-        }
-
-        for (Iterator<Team> iter = teams.iterator(); iter.hasNext();){
-            Team team = (Team) iter.next();
-            Set<Product> prods = team.getProducts();
-            if (prods.contains(product)) {
-                return true; 
-            }
-        }
-        return false;
+        return this.authorizationBusiness.isBacklogAccessible(backlogId, user);
     }
-
 }

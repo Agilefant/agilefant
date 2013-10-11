@@ -2,6 +2,8 @@ package fi.hut.soberit.agilefant.model;
 
 import javax.persistence.Embeddable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 @SuppressWarnings("serial")
 @Embeddable
 public class SignedExactEstimate extends Number implements Comparable<SignedExactEstimate> {
@@ -13,6 +15,7 @@ public class SignedExactEstimate extends Number implements Comparable<SignedExac
     public SignedExactEstimate() {
     }
 
+    @JsonCreator
     public SignedExactEstimate(long minorUnits) {
         this.minorUnits = minorUnits;
     }

@@ -7,6 +7,8 @@ import fi.hut.soberit.agilefant.exception.ObjectNotFoundException;
 import fi.hut.soberit.agilefant.model.Backlog;
 import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Story;
+import fi.hut.soberit.agilefant.model.Task;
+import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.transfer.StoryTO;
 import fi.hut.soberit.agilefant.util.ChildHandlingChoice;
 import fi.hut.soberit.agilefant.util.HourEntryHandlingChoice;
@@ -91,9 +93,16 @@ public interface StoryBusiness extends GenericBusiness<Story> {
     public void moveStoryAndChildren(Story story, Backlog backlog);
 
     public Story copyStorySibling(Integer storyID, Story story);
+    
+    public Story extractUnfinishedStorySibling(Integer storyID, Story story);
 
     /**
      * If the story is in progress (state is anything but not_started or deferred) then set parent stories as started.
      */
     public void updateParentStates(Story story);
+    
+    /**
+     * Adds the given user to the set of responsibles for story
+     */
+    public void addResponsible(Story story, User user);
 }

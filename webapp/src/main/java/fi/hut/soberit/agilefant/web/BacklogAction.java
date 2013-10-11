@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 
+import fi.hut.soberit.agilefant.business.AuthorizationBusiness;
 import fi.hut.soberit.agilefant.business.BacklogBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.model.Backlog;
@@ -45,6 +46,9 @@ public class BacklogAction extends ActionSupport {
     @Autowired
     private IterationBusiness iterationBusiness;
     
+    @Autowired
+    private AuthorizationBusiness authorizationBusiness;
+    
     public String retrieve() {
         backlog = backlogBusiness.retrieve(backlogId);
         return Action.SUCCESS;
@@ -73,7 +77,7 @@ public class BacklogAction extends ActionSupport {
             // Check team access for standalone iterations.
             for (Iterator<Backlog> iter = canditateBacklogs.iterator(); iter.hasNext();) {
                 Backlog backlog = iter.next();
-                if (checkTeamAccess(backlog.getId())) {
+                if (this.authorizationBusiness.isBacklogAccessible(backlog.getId(), SecurityUtil.getLoggedUser())) {
                     backlogs.add(backlog);
                 }
             }
@@ -131,48 +135,5 @@ public class BacklogAction extends ActionSupport {
 
     public Collection<Backlog> getBacklogs() {
         return backlogs;
-    }
-    
-    private boolean checkTeamAccess(int backlogId) {
-        User user = SecurityUtil.getLoggedUser();
-        Collection<Team> teams = user.getTeams();
-        
-        Product product = (backlogBusiness.getParentProduct(backlogBusiness.retrieve(backlogId)));
-        if(product == null){
-            //standalone iteration
-            Iteration iteration = iterationBusiness.retrieve(backlogId);
-            if(iteration.isStandAlone()){
-                for (Iterator<Team> iter = teams.iterator(); iter.hasNext();){
-                    Team team = (Team) iter.next();
-                    
-                    Set<Iteration> iterations = team.getIterations();
-                    
-                    for (Iterator<Iteration> iterationIterator = iterations.iterator(); iterationIterator.hasNext();) {
-                        Iteration teamIteration = (Iteration) iterationIterator.next();
-                        if (teamIteration.getId() == iteration.getId()) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-
-        for (Iterator<Team> iter = teams.iterator(); iter.hasNext();){
-            Team team = (Team) iter.next();
-            
-            Set<Product> products = team.getProducts();
-            
-            for (Iterator<Product> productIterator = products.iterator(); productIterator.hasNext();) {
-                Product teamProduct = (Product) productIterator.next();
-                
-                if (teamProduct.getId() == product.getId()) {
-                    return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-    
+    }    
 }

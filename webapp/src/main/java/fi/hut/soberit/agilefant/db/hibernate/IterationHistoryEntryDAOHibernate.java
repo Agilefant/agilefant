@@ -32,15 +32,14 @@ public class IterationHistoryEntryDAOHibernate extends
     }
 
     private IterationHistoryEntry retrieveByDateInternal(int iterationId, LocalDate timestamp) {
-        Criteria crit = getCurrentSession().createCriteria(
-                IterationHistoryEntry.class);
+        Criteria crit = this.createCriteria(IterationHistoryEntry.class);
         crit.setMaxResults(1);
         if (timestamp != null) {
             crit.add(Restrictions.le("timestamp", timestamp));
         }
         crit.addOrder(Order.desc("timestamp"));
         crit.add(Restrictions.eq("iteration.id", iterationId));
-        return (IterationHistoryEntry) crit.uniqueResult();
+        return (IterationHistoryEntry) this.uniqueResult(crit);
     }
 
     public IterationHistoryEntry retrieveLatest(int iterationId) {
@@ -63,19 +62,19 @@ public class IterationHistoryEntryDAOHibernate extends
     }
     
     private Pair<ExactEstimate, ExactEstimate> calculateCurrentHistoryData_tasksWithoutStory(int iterationId) {
-        Criteria crit = getCurrentSession().createCriteria(Task.class);
+        Criteria crit = this.createCriteria(Task.class);
         crit.add(Restrictions.eq("iteration.id", iterationId));
         crit.add(Restrictions.ne("state", TaskState.DEFERRED));
         crit.setProjection(Projections.projectionList().add(
                 Projections.sum("effortLeft")).add(
                 Projections.sum("originalEstimate")));
-        Object[] results = (Object[]) crit.uniqueResult();
+        Object[] results = (Object[]) this.uniqueResult(crit);
         
         return parseResultToPair(results);        
     }
     
     private Pair<ExactEstimate, ExactEstimate> calculateCurrentHistoryData_tasksInsideStory(int iterationId) {
-        Criteria crit = getCurrentSession().createCriteria(Task.class);
+        Criteria crit = this.createCriteria(Task.class);
         
         crit.setProjection(Projections.projectionList().add(
                 Projections.sum("effortLeft")).add(
@@ -89,7 +88,7 @@ public class IterationHistoryEntryDAOHibernate extends
         crit = crit.createCriteria("iteration");
         crit.add(Restrictions.idEq(iterationId));
         
-        Object[] results = (Object[]) crit.uniqueResult();
+        Object[] results = (Object[]) this.uniqueResult(crit);
         
         return parseResultToPair(results);
     }
@@ -109,7 +108,7 @@ public class IterationHistoryEntryDAOHibernate extends
     
     public List<IterationHistoryEntry> getHistoryEntriesForIteration(
             int iterationId) {
-        Criteria crit = getCurrentSession().createCriteria(IterationHistoryEntry.class);
+        Criteria crit = this.createCriteria(IterationHistoryEntry.class);
         crit.add(Restrictions.eq("iteration.id", iterationId));
         crit.addOrder(Order.asc("timestamp"));
         return asList(crit);

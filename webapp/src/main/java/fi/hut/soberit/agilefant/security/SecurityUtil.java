@@ -3,16 +3,12 @@ package fi.hut.soberit.agilefant.security;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import fi.hut.soberit.agilefant.db.hibernate.UserDAOHibernate;
+import fi.hut.soberit.agilefant.business.UserBusiness;
+import fi.hut.soberit.agilefant.core.ApplicationContextHolder;
 import fi.hut.soberit.agilefant.model.User;
 import fi.hut.soberit.agilefant.web.RefreshUserInterceptor;
 
@@ -53,23 +49,8 @@ public class SecurityUtil {
             
             return ud.getUserId();
         } catch(ClassCastException cce){
-            //log in read only user
-            SessionFactory sessionFactory = null;
-            UserDAOHibernate userDao = new UserDAOHibernate();
-            
-            try {
-                sessionFactory = (SessionFactory) new InitialContext().lookup("hibernateSessionFactory");
-                userDao.setSessionFactory(sessionFactory);
-            } catch (NamingException e) {
-                e.printStackTrace();
-            }
-            Session session = sessionFactory.openSession();
-            
-            User user = userDao.getByLoginName("readonly");
-            
-            session.disconnect();
-            session.close();
-            
+            UserBusiness userBusiness = ApplicationContextHolder.getApplicationContext().getBean(UserBusiness.class);
+            User user = userBusiness.retrieveByLoginName("readonly");
             return user.getId();
         }
     }

@@ -35,8 +35,7 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
     }
     
     public Collection<User> getAssignedUsers(Project project) {
-        Session sess =  sessionFactory.getCurrentSession();
-        Criteria crit = sess.createCriteria(User.class);
+        Criteria crit = this.createCriteria(User.class);
         crit = crit.createCriteria("assignments");
         crit = crit.createCriteria("backlog");
         crit.add(Restrictions.idEq(project.getId()));
@@ -44,8 +43,7 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
     }
     
     public Collection<Project> getProjectsWithUserAssigned(User user) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(User.class);
+        Criteria criteria = this.createCriteria(User.class);
         criteria.add(Restrictions.idEq(user.getId()));
         criteria = criteria.createCriteria("assignments");
         criteria = criteria.createCriteria("backlog");
@@ -53,20 +51,20 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
     }
 
     public List<Project> getActiveProjectsSortedByRank() {
-        Criteria crit = getCurrentSession().createCriteria(Project.class);
+        Criteria crit = this.createCriteria(Project.class);
         crit.add(Restrictions.gt("endDate", new DateTime()));
         crit.addOrder(Order.desc("rank"));
         return asList(crit);
     }
     
     public Collection<Project> getProjectsWithRankBetween(int lower, int upper) {
-        Criteria crit = getCurrentSession().createCriteria(Project.class);
+        Criteria crit = this.createCriteria(Project.class);
         crit.add(Restrictions.between("rank", lower, upper));
         return asCollection(crit);
     }
     
     public Collection<Project> getUnrankedProjects(LocalDate startDate, LocalDate endDate) {
-        Criteria crit = getCurrentSession().createCriteria(Project.class);
+        Criteria crit = this.createCriteria(Project.class);
         crit.add(Restrictions.ge("endDate", startDate.toDateTimeAtStartOfDay()));
         crit.add(Restrictions.le("startDate", endDate.toDateTimeAtStartOfDay()));
         crit.add(Restrictions.lt("rank", 1));
@@ -74,7 +72,7 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
     }
            
     public List<Project> getRankedProjects(LocalDate startDate, LocalDate endDate) {
-        Criteria crit = getCurrentSession().createCriteria(Project.class);
+        Criteria crit = this.createCriteria(Project.class);
         crit.add(Restrictions.ge("endDate", startDate.toDateTimeAtStartOfDay()));
         crit.add(Restrictions.le("startDate", endDate.toDateTimeAtStartOfDay()));
         crit.add(Restrictions.gt("rank", 0));
@@ -83,7 +81,7 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
     }
     
     public Project getMaxRankedProject() {
-        Criteria crit = getCurrentSession().createCriteria(Project.class);
+        Criteria crit = this.createCriteria(Project.class);
         crit.add(Restrictions.gt("rank", 0));
         crit.addOrder(Order.desc("rank"));
         crit.setMaxResults(1);
@@ -91,7 +89,7 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
     }
 
     public Project getProjectWithRankLessThan(int rank) {
-        Criteria crit = getCurrentSession().createCriteria(Project.class);
+        Criteria crit = this.createCriteria(Project.class);
         crit.add(Restrictions.lt("rank", rank));
         crit.add(Restrictions.gt("rank", 0));
         crit.addOrder(Order.asc("rank"));
@@ -105,8 +103,7 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
     }
     
     public List<Project> retrieveActiveWithUserAssigned(int userId) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Project.class);
+        Criteria crit = this.createCriteria(Project.class);
         crit.add(Restrictions.gt("endDate", new DateTime()));
         crit = crit.createCriteria("assignments");
         crit = crit.createCriteria("user");
@@ -116,7 +113,7 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
     
     public List<BacklogHistoryEntry> getHistoryEntriesForProject(
             int projectId) {
-        Criteria crit = getCurrentSession().createCriteria(BacklogHistoryEntry.class);
+        Criteria crit = this.createCriteria(BacklogHistoryEntry.class);
         crit.add(Restrictions.eq("backlog.id", projectId));
         crit.addOrder(Order.asc("timestamp"));
         return asList(crit);
@@ -129,7 +126,7 @@ public class ProjectDAOHibernate extends GenericDAOHibernate<Project> implements
         return 0;
     }
     public ProjectMetrics calculateProjectStoryMetrics(int backlogId) {
-        Criteria crit = getCurrentSession().createCriteria(Story.class);
+        Criteria crit = this.createCriteria(Story.class);
         ProjectionList proj = Projections.projectionList();
         proj.add(Projections.sum("storyPoints"));
         proj.add(Projections.sum("storyValue"));

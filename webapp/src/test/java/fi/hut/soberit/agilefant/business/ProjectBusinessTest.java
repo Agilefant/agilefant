@@ -307,7 +307,7 @@ public class ProjectBusinessTest  extends MockedTestCase {
         expect(projectDAO.get(500)).andReturn(project);
         replayAll();
         projectBusiness.unrankProject(project.getId());
-        assertEquals(0, project.getRank());
+        assertEquals(0, project.getRank().intValue());
         verifyAll();
     }
     

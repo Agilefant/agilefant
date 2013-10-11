@@ -232,7 +232,7 @@ public class IterationBusinessTest  extends MockedTestCase {
                 Pair.create(1, 2));
         expect(
                 iterationHistoryEntryDAO.retrieveByDate(iteration.getId(),
-                        new LocalDate().minusDays(1))).andReturn(null).times(2);
+                        new LocalDate().minusDays(1))).andReturn(null).times(1);
         expect(backlogBusiness.getStoryValueSumByIteration(iteration)).andReturn(0);
         expect(backlogBusiness.getCompletedStoryValueSumByIteration(iteration)).andReturn(0);
 
@@ -275,9 +275,6 @@ public class IterationBusinessTest  extends MockedTestCase {
         expect(backlogBusiness.calculateDoneStoryPointSum(iteration.getId())).andReturn(0);
         expect(hourEntryBusiness.calculateSumOfIterationsHourEntries(iteration))
                 .andReturn(0L);
-        expect(
-                iterationHistoryEntryDAO.retrieveByDate(iteration.getId(),
-                        new LocalDate().minusDays(1))).andReturn(null).times(1);
         expect(backlogBusiness.getStoryValueSumByIteration(iteration)).andReturn(0);
         expect(backlogBusiness.getCompletedStoryValueSumByIteration(iteration)).andReturn(0);
 
@@ -301,12 +298,9 @@ public class IterationBusinessTest  extends MockedTestCase {
                 Pair.create(2, 4));
         expect(iterationDAO.getCountOfDoneAndAllStories(iteration)).andReturn(
                 Pair.create(1, 3));
-        expect(
-                iterationHistoryEntryDAO.retrieveByDate(iteration.getId(),
-                        new LocalDate().minusDays(1))).andReturn(null).times(1);
 
-        expect(backlogBusiness.getStoryPointSumByIteration(iteration)).andReturn(0);
         expect(backlogBusiness.calculateDoneStoryPointSum(iteration.getId())).andReturn(0);
+        expect(backlogBusiness.getStoryPointSumByIteration(iteration)).andReturn(0);
         expect(hourEntryBusiness.calculateSumOfIterationsHourEntries(iteration))
                 .andReturn(0L);
         expect(backlogBusiness.getStoryValueSumByIteration(iteration)).andReturn(0);
@@ -350,7 +344,7 @@ public class IterationBusinessTest  extends MockedTestCase {
                 Pair.create(1, 2));
         expect(
                 iterationHistoryEntryDAO.retrieveByDate(100, new LocalDate()
-                        .minusDays(1))).andReturn(null).times(2);
+                        .minusDays(1))).andReturn(null).times(1);
         expect(backlogBusiness.getStoryValueSumByIteration(iter)).andReturn(0);
         expect(backlogBusiness.getCompletedStoryValueSumByIteration(iter)).andReturn(0);
         replayAll();

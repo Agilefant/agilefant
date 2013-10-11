@@ -14,6 +14,7 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fi.hut.soberit.agilefant.annotations.PrefetchId;
+import fi.hut.soberit.agilefant.business.TeamBusiness;
 import fi.hut.soberit.agilefant.business.UserBusiness;
 import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
@@ -50,6 +51,9 @@ public class UserAction extends ActionSupport implements CRUDAction, Prefetching
     
     @Autowired
     private UserBusiness userBusiness;
+    
+    @Autowired
+    private TeamBusiness teamBusiness;
 
     @Override
     public String execute() {
@@ -202,12 +206,7 @@ public class UserAction extends ActionSupport implements CRUDAction, Prefetching
         return SecurityUtil.getLoggedUser();
     }
     private void getTeamMembers(User loggedUser) {
-        Collection<Team> t = loggedUser.getTeams();
-        Iterator<Team> iterator = t.iterator();
-        while (iterator.hasNext()) {
-            Team team = (Team) iterator.next();
-            users.addAll(team.getUsers());
-        }
+    	this.users = this.teamBusiness.getUsersInSameTeams(loggedUser.getId());
     }
     private void getLoggedUserAndCheckAdminStatus() {
         loggedUser = getLoggedInUser();

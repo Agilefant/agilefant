@@ -22,7 +22,7 @@ public class HolidayDAOHibernate extends GenericDAOHibernate<Holiday> implements
     }
     
     public List<Holiday> retrieveFutureHolidaysByUser(User user) {
-        Criteria crit = sessionFactory.getCurrentSession().createCriteria(Holiday.class);
+        Criteria crit = this.createCriteria(Holiday.class);
         crit.add(Restrictions.eq("user", user));
         crit.add(Restrictions.ge("endDate", new DateTime()));
         crit.addOrder(Order.asc("startDate"));

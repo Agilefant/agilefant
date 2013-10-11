@@ -14,7 +14,7 @@ WorkQueueTaskModel.prototype.rankInWorkQueue = function(previousTaskId, userId) 
     data: { taskId: this.id, rankUnderId: previousTaskId, userId: userId },
     type: "post",
     success: function(data, status) {
-      MessageDisplay.Ok("Task ranked in work queue");
+      MessageDisplay.Ok("Task ranked in task queue");
       me.callListeners(new DynamicsEvents.RankChanged(me, "workQueueTask"));
     }
   });

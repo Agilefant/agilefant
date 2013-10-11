@@ -11,7 +11,7 @@
   
     <action name="createWidget" class="widgetAction" method="create">
 			<result name="success" type="redirectAction">
-				<param name="actionName">/ajax/widgets/${widget.type}.action</param>
+				<param name="actionName">${widget.type}.action</param>
 				<param name="objectId">${widget.objectId}</param>
 				<param name="widgetId">${widget.id}</param>
 			</result>

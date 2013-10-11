@@ -13,4 +13,5 @@ public interface StoryRankDAO extends GenericDAO<StoryRank> {
     List<StoryRank> retrieveRanksByBacklog(Backlog backlog);
     
     public Collection<StoryRank> getIterationRanksForStories(Collection<Story> stories);
+    public Collection<StoryRank> getProjectRanksForStories(Collection<Story> stories);
 }

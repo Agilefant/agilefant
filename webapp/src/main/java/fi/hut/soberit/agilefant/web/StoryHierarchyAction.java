@@ -1,6 +1,7 @@
 package fi.hut.soberit.agilefant.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,11 +159,40 @@ public class StoryHierarchyAction extends ActionSupport {
         
     public String retrieveProductRootStories() {
         stories = storyHierarchyBusiness.retrieveProductRootStories(productId, storyFilters);
+        for (Story story: stories) {
+            Story fullInfoStory = this.storyBusiness.retrieve(story.getId());
+            story.setFullInfoStory(fullInfoStory);
+            HashMap<Integer, Story> fullInfoStoryMap = new HashMap<Integer, Story>();
+            initHashMap(fullInfoStory.getChildren(), fullInfoStoryMap);
+            setStoriesInformation(story.getChildren(), fullInfoStoryMap);
+        }
         return Action.SUCCESS;
     }
     public String retrieveProjectRootStories() {
         stories = storyHierarchyBusiness.retrieveProjectRootStories(projectId, storyFilters);
+        for (Story story: stories) {
+            Story fullInfoStory = this.storyBusiness.retrieve(story.getId());
+            story.setFullInfoStory(fullInfoStory);
+            HashMap<Integer, Story> fullInfoStoryMap = new HashMap<Integer, Story>();
+            initHashMap(fullInfoStory.getChildren(), fullInfoStoryMap);
+            setStoriesInformation(story.getChildren(), fullInfoStoryMap);
+        }
         return Action.SUCCESS;
+    }
+    
+    private void initHashMap(List<Story> fullInfoStories, HashMap<Integer, Story> fullInfoStoryMap) {
+        for (Story fullInfoStory: fullInfoStories) {
+            fullInfoStoryMap.put(fullInfoStory.getId(), fullInfoStory);
+            initHashMap(fullInfoStory.getChildren(), fullInfoStoryMap);
+        }
+    }
+    
+    private void setStoriesInformation(List<Story> stories, HashMap<Integer, Story> fullInfoStoryMap) {
+        for (Story story: stories) {
+            Story fullInfoStory = fullInfoStoryMap.get(story.getId());
+            story.setFullInfoStory(fullInfoStory);
+            setStoriesInformation(story.getChildren(), fullInfoStoryMap);
+        }
     }
 
     /*

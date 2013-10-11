@@ -4,7 +4,7 @@
 <%@attribute name="navi" fragment="false" required="false"%>
 
 <div id="menuAccordion">
-    <h3 id="menuAccordion-myAssignments"><a href="#">My Stories</a></h3>
+    <h3 id="menuAccordion-myAssignments"><a href="#">My stories</a></h3>
     <div id="assignmentsMenuTree">&nbsp;</div>
     <h3 id="menuAccordion-products"><a href="#">All Backlogs</a></h3>
     <div id="backlogMenuTree">&nbsp;</div>
@@ -53,7 +53,7 @@ $(document).ready(function() {
     $("#menuAccordion").accordion('activate', activatedSection);
   } else {
     window.myAssignmentsMenuController = new MyAssignmentsMenuController($('#assignmentsMenuTree'), $('#menuControl'));
-    $('#menuAccordion').accordion('activate', 0);
+    $('#menuAccordion').accordion('activate', "#menuAccordion-products");
   }
 });
 </script>

@@ -2,19 +2,19 @@ package fi.hut.soberit.agilefant.business.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fi.hut.soberit.agilefant.business.AuthorizationBusiness;
 import fi.hut.soberit.agilefant.business.IterationBusiness;
 import fi.hut.soberit.agilefant.business.MenuBusiness;
 import fi.hut.soberit.agilefant.business.ProductBusiness;
 import fi.hut.soberit.agilefant.business.TransferObjectBusiness;
+import fi.hut.soberit.agilefant.business.UserBusiness;
 import fi.hut.soberit.agilefant.db.IterationDAO;
 import fi.hut.soberit.agilefant.db.ProjectDAO;
 import fi.hut.soberit.agilefant.db.StoryDAO;
@@ -23,8 +23,8 @@ import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Product;
 import fi.hut.soberit.agilefant.model.Project;
 import fi.hut.soberit.agilefant.model.Story;
-import fi.hut.soberit.agilefant.model.Team;
 import fi.hut.soberit.agilefant.model.User;
+import fi.hut.soberit.agilefant.security.SecurityUtil;
 import fi.hut.soberit.agilefant.transfer.BacklogType;
 import fi.hut.soberit.agilefant.transfer.MenuDataNode;
 import fi.hut.soberit.agilefant.util.MyAssignmentsMenuBuilder;
@@ -55,35 +55,31 @@ public class MenuBusinessImpl implements MenuBusiness {
 
     @Autowired
     private TransferObjectBusiness transferObjectBusiness;
+    
+    @Autowired
+    private UserBusiness userBusiness;
+    
+    @Autowired
+    private AuthorizationBusiness authorizationBusiness;
 
     @SuppressWarnings("unchecked")
-    public List<MenuDataNode> constructBacklogMenuData(User user) {
+    public List<MenuDataNode> constructBacklogMenuData() {
+    	
         List<MenuDataNode> nodes = new ArrayList<MenuDataNode>();
         List<Product> products = new ArrayList<Product>(productBusiness
                 .retrieveAllOrderByName());
         Collections.sort(products, new PropertyComparator("name", true, true));
-        
-        Set<Product> allowedProducts = new HashSet<Product>();
-        for(Team team : user.getTeams()){
-            allowedProducts.addAll(team.getProducts());
-        }
-        
+
         for (Product prod : products) {
-            //check if we have access
-            if(allowedProducts.contains(prod)){
+        	if (checkAccess(prod)) {
                 nodes.add(constructMenuDataNode(prod));
             }
         }
         
         final List<Iteration> standAloneIterations = new ArrayList<Iteration>(iterationBusiness.retrieveAllStandAloneIterations());
-        
-        Set<Iteration> allowedIterations = new HashSet<Iteration>();
-        for(Team team : user.getTeams()){
-            allowedIterations.addAll(team.getIterations());
-        }
-        
+
         for (Iteration iteration: standAloneIterations) {
-            if(allowedIterations.contains(iteration)){
+        	if (checkAccess(iteration)) {
                 nodes.add(constructMenuDataNode(iteration));
             }
         }
@@ -137,6 +133,10 @@ public class MenuBusinessImpl implements MenuBusiness {
         
         return builder.getNodes();
     }
+    
+    private boolean checkAccess(Backlog bl){
+        return this.authorizationBusiness.isBacklogAccessible(bl.getId(), SecurityUtil.getLoggedUser());
+    }
 
     public void setProductBusiness(ProductBusiness productBusiness) {
         this.productBusiness = productBusiness;
@@ -161,6 +161,14 @@ public class MenuBusinessImpl implements MenuBusiness {
     
     public void setStoryDAO(StoryDAO storyDAO) {
         this.storyDAO = storyDAO;
+    }
+    
+    public void setUserBusiness(UserBusiness userBusiness) {
+    	this.userBusiness = userBusiness;
+    }
+    
+    public void setAuthorizationBusiness(AuthorizationBusiness authorizationBusiness) {
+    	this.authorizationBusiness = authorizationBusiness;
     }
     
 }
