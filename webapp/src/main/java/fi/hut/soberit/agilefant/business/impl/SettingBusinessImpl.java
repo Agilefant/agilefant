@@ -77,12 +77,7 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
     
 /*    @PostConstruct
     public void loadSettingCache() {
-        this.settingCache.clear();
-        Collection<Setting> allSettings = this.settingDAO.getAll();
-        for(Setting setting : allSettings) {
-            this.settingCache.put(setting.getName(), setting);
-        }
-        loadProperties();
+       
     }*/
 
     @Transactional(readOnly = true)
@@ -416,8 +411,7 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
             if(location != null && !location.isEmpty()){
                 try {
                     attachmentSaveLocationConfiguration = createRequiredDirectory(location);
-                } catch (Exception e) {
-                    System.out.println("Unable to create required directories , check permision of directory selected");     
+                } catch (Exception e) {     
                     attachmentSaveLocationConfiguration = false;
                 }
                 if(attachmentSaveLocationConfiguration){
@@ -507,7 +501,6 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
                     if(parentDirectory.exists()){
                         // Parent directory exists make required child directories
                         if(!childDirectoyCreation(location)){
-                            System.out.println("Failed to create child directories make sure read write permission are give to the parent directory");
                             return false;
                         }else{
                             return true;
@@ -516,10 +509,8 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
                         // Parent directory not exists trying to create parent directory
                        if( parentDirectory.mkdirs() ){
                            if(!childDirectoyCreation(location)){
-                               System.out.println("Failed to create child directories make sure read write permission are give to the parent directory");
                                return false;
                            }else{
-                               System.out.println("Child directories created successfully");
                                return true;
                            }
                        }else{
@@ -544,25 +535,25 @@ public class SettingBusinessImpl extends GenericBusinessImpl<Setting> implements
                 File taskCommentDir = new File(parentLocation.trim()+"task");
                 if(!storyCommentDir.exists()){
                     childDirectoryStatus = storyCommentDir.mkdir();
-                    System.out.println("Directory created : "+childDirectoryStatus);
                 }else{
                     childDirectoryStatus = storyCommentDir.canWrite();
-                    System.out.println("Directory created : "+childDirectoryStatus);
                 }
                 
                 if(!taskCommentDir.exists()){
                     childDirectoryStatus = taskCommentDir.mkdir();
-                    System.out.println("Directory created : "+childDirectoryStatus);
                 }else{
                     childDirectoryStatus = taskCommentDir.canWrite();
-                    System.out.println("Directory created : "+childDirectoryStatus);
                 }
                 return childDirectoryStatus;
             }catch (Exception ioe) {
-                System.out.println("Unhandled exception while creating child directories");
                 return false;
             }
-        }       
+        }
+
+		public void setTransactionManager(
+				PlatformTransactionManager platformTransactionManager) {
+			
+		}       
         
         
     
