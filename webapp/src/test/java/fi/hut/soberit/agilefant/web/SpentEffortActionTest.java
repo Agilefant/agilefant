@@ -70,6 +70,9 @@ public class SpentEffortActionTest {
         int previousWeekYear = current.minusWeeks(1).getYear();
         int currentYear = current.getYear();
         DateTime actual = testable.getSelectedDate();
+        // If Monday is on or after 27 Dec, then 1 Jan of next year is in the same week
+        if (actual.getMonthOfYear() == 12 && actual.getDayOfMonth() >= 27)
+            currentYear--;
         assertEquals(currentYear, actual.getYear());
         assertEquals(currentWeek, actual.getWeekOfWeekyear());
         assertEquals(nextWeek, testable.getNextWeek().getWeekOfWeekyear());
