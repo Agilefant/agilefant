@@ -21,7 +21,7 @@
 		<ehcache.version>2.6.3</ehcache.version>
 		<ehcache.web.version>2.0.4</ehcache.web.version>
 		<flyway.version>2.0.3</flyway.version>
-		<freemarker.version>2.3.19</freemarker.version>
+		<freemarker.version>2.3.22</freemarker.version>
 		<glassfish.jstl.version>1.2</glassfish.jstl.version>
 		<guava.version>13.0.1</guava.version>
 		<h2.version>1.1.114</h2.version>
@@ -46,7 +46,7 @@
 		<spring.version>3.2.13.RELEASE</spring.version>
 		<spring.security.version>3.2.5.RELEASE</spring.security.version>
 		<stringtemplate.version>3.0</stringtemplate.version>
-		<struts.version>2.3.14.2</struts.version>
+		<struts.version>2.3.34</struts.version>
 		<typesafe.config.version>1.0.0</typesafe.config.version>
 		<usertype.version>3.0.0.GA</usertype.version>
 		<jackson.version>2.3.0</jackson.version>
