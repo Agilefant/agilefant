@@ -1,7 +1,7 @@
 <%@tag description="Logout div" %>
 
-<%@taglib uri="../../tlds/aef_structure.tld" prefix="struct" %>
-<%@taglib uri="../../tlds/aef.tld" prefix="aef" %>
+<%@taglib uri="/WEB-INF/tlds/aef_structure.tld" prefix="struct" %>
+<%@taglib uri="/WEB-INF/tlds/aef.tld" prefix="aef" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="/struts-tags" prefix="ww" %>
 
